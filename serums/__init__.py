@@ -1,19 +1,37 @@
 """Package for Statistical Error and Risk Utility for Multi-sensor Systems."""
 import numpy as np
 from scipy.optimize import minimize
+from scipy.stats import ks_2samp, cramervonmises_2samp
 
 
-# TODO: placeholder for now, must have this signature. x is 1-d array of params to est, *args are other data probably data set
-def _gaussian_cost(x, *args):
-    # sample from distribution given by params in x
+def _edparams_cost_factory(dist_type):
+    def cost_function(x, rng, samples, method):
+        # sample from distribution given by params in x
+        if dist_type.lower() == 'gaussian':
+            x_samples = x[1] * rng.standard_normal(size=samples.size) + x[0]
+        elif dist_type.lower() == 'studentst':
+            x_samples = x[1] * rng.standard_t(np.abs(x[2]),
+                                              size=samples.size) + x[0]
+        elif dist_type.lower() == 'cauchy':
+            x_samples = x[1] * rng.standard_t(1, size=samples.size) + x[0]
+        else:
+            fmt = 'Invalid distribution choice: {}'
+            raise RuntimeError(fmt.format(dist_type))
 
-    # Kolmogorov-Smirnov test to get Chi2
+        # Kolmogorov-Smirnov test to get Chi2
+        if method.lower() == 'kolmogorovsmirnov':
+            cost = ks_2samp(x_samples, samples)[0]
+        elif method.lower() == 'cramervonmises':
+            out = cramervonmises_2samp(x_samples, samples)
+            cost = out.statistic
+        else:
+            fmt = 'Invalid method choice: {}'
+            raise RuntimeError(fmt.format(method))
+        return cost
+    return cost_function
 
-    # return -Chi2
-    pass
 
-
-def estimate_distribution_params(params, dist_type, method, args,
+def estimate_distribution_params(params, dist_type, method, samples,
                                  maxiter=100, disp=False):
     """Estimate distribution parameters from data.
 
@@ -43,15 +61,38 @@ def estimate_distribution_params(params, dist_type, method, args,
         DESCRIPTION.
     """
     output = {}
-    if dist_type.lower() == 'gaussian':
-        x0 = np.array([params['mean'], params['std']])
-        res = minimize(_gaussian_cost, x0, args=args, method='Powell',
-                       options={'maxiter': maxiter, 'disp': disp})
-        if not res.success:
-            fmt = 'Parameter estimation failed with:\n{}'
-            raise RuntimeError(fmt.format(res.message))
 
-        output['mean'] = res.x[0]
-        output['std'] = res.x[1]
+    # Select cost function
+    costfun = _edparams_cost_factory(dist_type)
+    if dist_type.lower() in ('gaussian', 'cauchy'):
+        x0 = np.array([params['loc'], params['scale']])
+        rng = np.random.default_rng()
+    elif dist_type.lower() == 'studentst':
+        x0 = np.array([params['loc'], params['scale'], params['df']])
+        rng = np.random.default_rng()
+    else:
+        fmt = 'Invalid distribution choice: {}'
+        raise RuntimeError(fmt.format(dist_type))
+
+    # optimize distribution parameters
+    res = minimize(costfun, x0, args=(rng, samples, method),
+                   method='Powell',
+                   options={'maxiter': maxiter, 'disp': disp})
+
+    if not res.success:
+        fmt = 'Parameter estimation failed with:\n{}'
+        raise RuntimeError(fmt.format(res.message))
+
+    # Set outputs
+    if dist_type.lower() in ('gaussian', 'cauchy'):
+        output['loc'] = res.x[0]
+        output['scale'] = np.abs(res.x[1])
+    elif dist_type.lower() == 'studentst':
+        output['loc'] = res.x[0]
+        output['scale'] = np.abs(res.x[1])
+        output['df'] = np.abs(res.x[2])
+    else:
+        fmt = 'Invalid distribution choice: {}'
+        raise RuntimeError(fmt.format(dist_type))
 
     return output
