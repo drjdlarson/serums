@@ -327,8 +327,16 @@ class BaseMixtureModel:
 
         return p
 
+    def remove_components(self, indices):
+        if not isinstance(indices, list):
+            indices = list(indices)
 
-class _DistListWrapper:
+        for index in sorted(indices, reverse=True):
+            del self._distributions[index]
+            del self.weights[index]
+
+
+class _DistListWrapper(list):
     def __init__(self, dist_lst, attr):
         self.dist_lst = dist_lst
         self.attr = attr
@@ -344,7 +352,8 @@ class _DistListWrapper:
             return getattr(self.dist_lst[index], self.attr)
 
         else:
-            raise RuntimeError('Index must be a integer or slice')
+            fmt = 'Index must be a integer or slice not {}'
+            raise RuntimeError(fmt.format(type(index)))
 
     def __setitem__(self, index, val):
         if isinstance(index, slice):
@@ -358,7 +367,19 @@ class _DistListWrapper:
             setattr(self.dist_lst[index], self.attr, val)
 
         else:
-            raise RuntimeError('Index must be a integer or slice')
+            fmt = 'Index must be a integer or slice not {}'
+            raise RuntimeError(fmt.format(type(index)))
+
+    def __iter__(self):
+        self.n = 0
+        return self
+
+    def __next__(self):
+        if self.n < len(self.dist_lst):
+            self.n += 1
+            return getattr(self.dist_lst[self.n - 1], self.attr)
+        else:
+            raise StopIteration
 
     def __repr__(self):
         return str([getattr(d, self.attr) for d in self.dist_lst])
@@ -394,6 +415,7 @@ class GaussianMixture(BaseMixtureModel):
             return
 
         if len(val) != len(self._distributions):
+            self.weights = [1 / len(val) for ii in range(len(val))]
             self._distributions = [Gaussian() for ii in range(len(val))]
         for ii, v in enumerate(val):
             self._distributions[ii].mean = v
@@ -410,12 +432,19 @@ class GaussianMixture(BaseMixtureModel):
             return
 
         if len(val) != len(self._distributions):
+            self.weights = [1 / len(val) for ii in range(len(val))]
             self._distributions = [Gaussian() for ii in range(len(val))]
 
         for ii, v in enumerate(val):
             self._distributions[ii].covariance = v
 
     def add_components(self, means, covariances, weights):
+        if not isinstance(means, list):
+            means = [means, ]
+        if not isinstance(covariances, list):
+            covariances = [covariances, ]
+        if not isinstance(weights, list):
+            weights = [weights,]
         self._distributions.extend([Gaussian(mean=m, covar=c)
                                    for m, c in zip(means, covariances)])
         self.weights.extend(weights)
@@ -436,6 +465,24 @@ class StudentsTMixture(BaseMixtureModel):
         super().__init__(**kwargs)
 
     @property
+    def means(self):
+        """List of Gaussian means, each is a N x 1 numpy array."""
+        return _DistListWrapper(self._distributions, 'location')
+
+    @means.setter
+    def means(self, val):
+        if not isinstance(val, list):
+            warn('Must set means to a list')
+            return
+
+        if len(val) != len(self._distributions):
+            self.weights = [1 / len(val) for ii in range(len(val))]
+            self._distributions = [StudentsT() for ii in range(len(val))]
+
+        for ii, v in enumerate(val):
+            self._distributions[ii].mean = v
+
+    @property
     def covariances(self):
         """List of Gaussian covariances, each is a N x N numpy array."""
         return _DistListWrapper(self._distributions, 'covariance')
@@ -451,6 +498,7 @@ class StudentsTMixture(BaseMixtureModel):
             return
 
         if len(val) != len(self._distributions):
+            self.weights = [1 / len(val) for ii in range(len(val))]
             self._distributions = [StudentsT() for ii in range(len(val))]
 
         for ii, v in enumerate(val):
@@ -479,6 +527,7 @@ class StudentsTMixture(BaseMixtureModel):
             return
 
         if len(val) != len(self._distributions):
+            self.weights = [1 / len(val) for ii in range(len(val))]
             self._distributions = [StudentsT() for ii in range(len(val))]
 
         for ii, v in enumerate(val):
