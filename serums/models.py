@@ -328,19 +328,20 @@ class BaseMixtureModel:
         return p
 
 
-class _DistLocList:
-    def __init__(self, dist):
-        self.dist = dist
+class _DistListWrapper:
+    def __init__(self, dist_lst, attr):
+        self.dist_lst = dist_lst
+        self.attr = attr
 
     def __getitem__(self, index):
         if isinstance(index, slice):
             step = 1
             if index.step is not None:
                 step = index.step
-            return [self.dist[ii].location
+            return [getattr(self.dist_lst[ii], self.attr)
                     for ii in range(index.start, index.stop, step)]
         elif isinstance(index, int):
-            return self.dist[index].location
+            return getattr(self.dist_lst[index], self.attr)
 
         else:
             raise RuntimeError('Index must be a integer or slice')
@@ -351,131 +352,19 @@ class _DistLocList:
             if index.step is not None:
                 step = index.step
             for ii in range(index.start, index.stop, step):
-                self.dist[ii].location = val
+                setattr(self.dist_lst[ii], self.attr, val)
+
         elif isinstance(index, int):
-            self.dist[index].location = val
+            setattr(self.dist_lst[index], self.attr, val)
+
         else:
             raise RuntimeError('Index must be a integer or slice')
 
     def __repr__(self):
-        return str([d.location for d in self.dist])
+        return str([getattr(d, self.attr) for d in self.dist_lst])
 
-    def append(self, *args):
-        raise RuntimeError('Cannot append, use add_component function instead.')
-
-    def extend(self, *args):
-        raise RuntimeError('Cannot extend, use add_component function instead.')
-
-
-class _DistCovarianceList:
-    def __init__(self, dist):
-        self.dist = dist
-
-    def __getitem__(self, index):
-        if isinstance(index, slice):
-            step = 1
-            if index.step is not None:
-                step = index.step
-            return [self.dist[ii].covariance
-                    for ii in range(index.start, index.stop, step)]
-        elif isinstance(index, int):
-            return self.dist[index].covariance
-
-        else:
-            raise RuntimeError('Index must be a integer or slice')
-
-    def __setitem__(self, index, val):
-        if isinstance(index, slice):
-            step = 1
-            if index.step is not None:
-                step = index.step
-            for ii in range(index.start, index.stop, step):
-                self.dist[ii].covariance = val
-        elif isinstance(index, int):
-            self.dist[index].covariance = val
-        else:
-            raise RuntimeError('Index must be a integer or slice')
-
-    def __repr__(self):
-        return str([d.covariance for d in self.dist])
-
-    def append(self, *args):
-        raise RuntimeError('Cannot append, use add_component function instead.')
-
-    def extend(self, *args):
-        raise RuntimeError('Cannot extend, use add_component function instead.')
-
-
-class _DistScaleList:
-    def __init__(self, dist):
-        self.dist = dist
-
-    def __getitem__(self, index):
-        if isinstance(index, slice):
-            step = 1
-            if index.step is not None:
-                step = index.step
-            return [self.dist[ii].scale
-                    for ii in range(index.start, index.stop, step)]
-        elif isinstance(index, int):
-            return self.dist[index].scale
-
-        else:
-            raise RuntimeError('Index must be a integer or slice')
-
-    def __setitem__(self, index, val):
-        if isinstance(index, slice):
-            step = 1
-            if index.step is not None:
-                step = index.step
-            for ii in range(index.start, index.stop, step):
-                self.dist[ii].scale = val
-        elif isinstance(index, int):
-            self.dist[index].scale = val
-        else:
-            raise RuntimeError('Index must be a integer or slice')
-
-    def __repr__(self):
-        return str([d.scale for d in self.dist])
-
-    def append(self, *args):
-        raise RuntimeError('Cannot append, use add_component function instead.')
-
-    def extend(self, *args):
-        raise RuntimeError('Cannot extend, use add_component function instead.')
-
-
-class _DistDOFList:
-    def __init__(self, dist):
-        self.dist = dist
-
-    def __getitem__(self, index):
-        if isinstance(index, slice):
-            step = 1
-            if index.step is not None:
-                step = index.step
-            return [self.dist[ii].degrees_of_freedom
-                    for ii in range(index.start, index.stop, step)]
-        elif isinstance(index, int):
-            return self.dist[index].degrees_of_freedom
-
-        else:
-            raise RuntimeError('Index must be a integer or slice')
-
-    def __setitem__(self, index, val):
-        if isinstance(index, slice):
-            step = 1
-            if index.step is not None:
-                step = index.step
-            for ii in range(index.start, index.stop, step):
-                self.dist[ii].degrees_of_freedom = val
-        elif isinstance(index, int):
-            self.dist[index].degrees_of_freedom = val
-        else:
-            raise RuntimeError('Index must be a integer or slice')
-
-    def __repr__(self):
-        return str([d.degrees_of_freedom for d in self.dist])
+    def __len__(self):
+        return len(self.dist_lst)
 
     def append(self, *args):
         raise RuntimeError('Cannot append, use add_component function instead.')
@@ -496,7 +385,7 @@ class GaussianMixture(BaseMixtureModel):
     @property
     def means(self):
         """List of Gaussian means, each is a N x 1 numpy array."""
-        return _DistLocList(self._distributions)
+        return _DistListWrapper(self._distributions, 'location')
 
     @means.setter
     def means(self, val):
@@ -512,7 +401,7 @@ class GaussianMixture(BaseMixtureModel):
     @property
     def covariances(self):
         """List of Gaussian covariances, each is a N x N numpy array."""
-        return _DistCovarianceList(self._distributions)
+        return _DistListWrapper(self._distributions, 'scale')
 
     @covariances.setter
     def covariances(self, val):
@@ -549,11 +438,11 @@ class StudentsTMixture(BaseMixtureModel):
     @property
     def covariances(self):
         """List of Gaussian covariances, each is a N x N numpy array."""
-        return _DistCovarianceList(self._distributions)
+        return _DistListWrapper(self._distributions, 'covariance')
 
     @property
     def scalings(self):
-        return _DistScaleList(self._distributions)
+        return _DistListWrapper(self._distributions, 'scale')
 
     @scalings.setter
     def scalings(self, val):
@@ -581,7 +470,7 @@ class StudentsTMixture(BaseMixtureModel):
 
     @property
     def degrees_of_freedom(self):
-        return _DistDOFList(self._distributions)
+        return _DistListWrapper(self._distributions, 'degrees_of_freedom')
 
     @degrees_of_freedom.setter
     def degrees_of_freedom(self, val):
