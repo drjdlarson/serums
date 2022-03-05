@@ -509,7 +509,7 @@ class StudentsTMixture(BaseMixtureModel):
         vals, counts = np.unique([d.degrees_of_freedom for d in self._distributions],
                                  return_counts=True)
         inds = np.argwhere(counts == np.max(counts))
-        return vals[inds[0]]
+        return vals[inds[0]].item()
 
     @dof.setter
     def dof(self, val):
