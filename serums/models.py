@@ -1,4 +1,4 @@
-"""For defining various distribution models."""
+"""Defines various distribution models."""
 import numpy as np
 import numpy.random as rnd
 import scipy.stats as stats
@@ -8,24 +8,86 @@ import serums.enums as enums
 
 
 class BaseSingleModel:
+    """Generic base class for distribution models.
+
+    This defines the required functions and provides their recommended function
+    signature for inherited classes. It also defines base attributes for the
+    distribution.
+
+    Attributes
+    ----------
+    location : N x 1 numpy array
+        location parameter of the distribution
+    scale : N x N numpy array
+        scale parameter of the distribution
+    """
+
     def __init__(self, loc=None, scale=None):
         self.location = loc
         self.scale = scale
 
     def sample(self, rng=None):
+        """Draw a sample from the distribution.
+
+        This should be implemented by the child class.
+
+        Parameters
+        ----------
+        rng : numpy random generator, optional
+            random number generator to use. The default is None.
+
+        Returns
+        -------
+        None.
+        """
         warn('sample not implemented by class {}'.format(type(self).__name__))
 
     def pdf(self, x):
+        """Calculate the PDF value at the given point.
+
+        This should be implemented by the child class.
+
+        Parameters
+        ----------
+        x : N x 1 numpy array
+            Point to evaluate the PDF.
+
+        Returns
+        -------
+        float
+            PDF value.
+        """
         warn('pdf not implemented by class {}'.format(type(self).__name__))
         return np.nan
 
 
 class Gaussian(BaseSingleModel):
-    def __init__(self, mean=None, covar=None):
-        super().__init__(loc=mean, scale=covar)
+    """Represents a Gaussian distribution object."""
+
+    def __init__(self, mean=None, covariance=None):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        mean : N x 1 numpy array, optional
+            Mean of the distribution. The default is None.
+        covariance : N x N numpy array, optional
+            Covariance of the distribution. The default is None.
+
+        Returns
+        -------
+        None.
+        """
+        super().__init__(loc=mean, scale=covariance)
 
     @property
     def mean(self):
+        """Mean of the distribution.
+
+        Returns
+        -------
+        N x 1 nmpy array.
+        """
         return self.location
 
     @mean.setter
@@ -34,6 +96,12 @@ class Gaussian(BaseSingleModel):
 
     @property
     def covariance(self):
+        """Covariance of the distribution.
+
+        Returns
+        -------
+        N x N nmpy array.
+        """
         return self.scale
 
     @covariance.setter
@@ -71,12 +139,26 @@ class Gaussian(BaseSingleModel):
 
 
 class StudentsT(BaseSingleModel):
+    """Represents a Student's t-distribution.
+
+    Attributes
+    ----------
+    degrees_of_freedom : float
+        Degrees of freedom of the distribution, must be greater than 0.
+    """
+
     def __init__(self, mean=None, scale=None, dof=None):
         super().__init__(loc=mean, scale=scale)
         self.degrees_of_freedom = dof
 
     @property
     def mean(self):
+        """Mean of the distribution.
+
+        Returns
+        -------
+        N x 1 nmpy array.
+        """
         return self.location
 
     @mean.setter
@@ -85,6 +167,12 @@ class StudentsT(BaseSingleModel):
 
     @property
     def covariance(self):
+        """Read only covariance of the distribution (if defined).
+
+        Returns
+        -------
+        N x N nmpy array.
+        """
         if self.dof <= 2:
             msg = 'Degrees of freedom is {} and must be > 2'
             raise RuntimeError(msg.format(self.dof))
@@ -159,10 +247,18 @@ class GaussianScaleMixture(BaseSingleModel):
     ----------
     type : :class:`serums.enums.GSMTypes`
         Type of the distribution to represent as a GSM.
-    location_range : tuple, optional
+    location_range : tuple
         Minimum and maximum values for the location parameter. Useful if being
         fed to a filter for estimating the location parameter. Each element must
         match the type of the :attr:`.location` attribute.
+    scale_range : tuple
+        Minimum and maximum values for the scale parameter. Useful if being
+        fed to a filter for estimating the scale parameter. Each element must
+        match the type of the :attr:`.scale` attribute. The default is None.
+    df_range : tuple
+        Minimum and maximum values for the degree of freedom parameter.
+        Useful if being fed to a filter for estimating the degree of freedom
+        parameter. Each element must be a float. The default is None.
     """
 
     __df_types = (enums.GSMTypes.STUDENTS_T, enums.GSMTypes.CAUCHY)
@@ -176,8 +272,8 @@ class GaussianScaleMixture(BaseSingleModel):
         ----------
         gsm_type : :class:`serums.enums.GSMTypes`
             Type of the distribution to represent as a GSM.
-        location : TYPE, optional
-            DESCRIPTION. The default is None.
+        location : N x 1 numpy array, optional
+            location parameter of the distribution. The default is None.
         location_range : tuple, optional
             Minimum and maximum values for the location parameter. Useful if being
             fed to a filter for estimating the location parameter. Each element must
@@ -283,7 +379,33 @@ class GaussianScaleMixture(BaseSingleModel):
 
 
 class BaseMixtureModel:
+    """Generic base class for mixture distribution models.
+
+    This defines the required functions and provides their recommended function
+    signature for inherited classes. It also defines base attributes for the
+    mixture model.
+
+    Attributes
+    ----------
+    weights : list
+        weight of each distribution
+    """
+
     def __init__(self,  distributions=None, weights=None):
+        """Initialize a mixture model object.
+
+        Parameters
+        ----------
+        distributions : list, optional
+            Each element is a :class:`.BaseSingleModel`. The default is None.
+        weights : list, optional
+            Weight of each distribution. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         if distributions is None:
             distributions = []
         if weights is None:
@@ -328,6 +450,17 @@ class BaseMixtureModel:
         return p
 
     def remove_components(self, indices):
+        """Remove component distributions from the mixture by index.
+
+        Parameters
+        ----------
+        indices : list
+            indices of distributions to remove.
+
+        Returns
+        -------
+        None.
+        """
         if not isinstance(indices, list):
             indices = list(indices)
 
@@ -335,13 +468,33 @@ class BaseMixtureModel:
             del self._distributions[index]
             del self.weights[index]
 
+    def add_component(self, *args):
+        """Add a component distribution to the mixture.
+
+        This should be implemented by the child class.
+
+        Parameters
+        ----------
+        *args : tuple
+            Additional arguments specific to the child distribution.
+
+        Returns
+        -------
+        None.
+        """
+        warn('add_component not implemented by {}'.format(type(self).__name__))
+
 
 class _DistListWrapper(list):
+    """Helper class for wrapping lists of BaseSingleModel to get a list of a single parameter."""
+
     def __init__(self, dist_lst, attr):
+        """Give list of distributions and the attribute to access."""
         self.dist_lst = dist_lst
         self.attr = attr
 
     def __getitem__(self, index):
+        """Get the attribute of the item at the index in the list."""
         if isinstance(index, slice):
             step = 1
             if index.step is not None:
@@ -356,6 +509,7 @@ class _DistListWrapper(list):
             raise RuntimeError(fmt.format(type(index)))
 
     def __setitem__(self, index, val):
+        """Set the attribute of the item at the index to the value."""
         if isinstance(index, slice):
             step = 1
             if index.step is not None:
@@ -398,6 +552,23 @@ class GaussianMixture(BaseMixtureModel):
     """Gaussian Mixture object."""
 
     def __init__(self, means=None, covariances=None, **kwargs):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        means : list, optional
+            Each element is a N x 1 numpy array. Will be used in place of supplied
+            distributions but requires covariances to also be given. The default is None.
+        covariances : list, optional
+            Each element is an N x N numpy array. Will be used in place of
+            supplied distributions but requires means to be given. The default is None.
+        **kwargs : dict, optional
+            See the base class for details.
+
+        Returns
+        -------
+        None.
+        """
         if means is not None and covariances is not None:
             kwargs['distributions'] = [Gaussian(mean=m, covar=c)
                                        for m, c in zip(means, covariances)]
@@ -405,7 +576,7 @@ class GaussianMixture(BaseMixtureModel):
 
     @property
     def means(self):
-        """List of Gaussian means, each is a N x 1 numpy array."""
+        """List of Gaussian means, each is a N x 1 numpy array. Recommended to be read only."""
         return _DistListWrapper(self._distributions, 'location')
 
     @means.setter
@@ -422,7 +593,7 @@ class GaussianMixture(BaseMixtureModel):
 
     @property
     def covariances(self):
-        """List of Gaussian covariances, each is a N x N numpy array."""
+        """List of Gaussian covariances, each is a N x N numpy array. Recommended to be read only."""
         return _DistListWrapper(self._distributions, 'scale')
 
     @covariances.setter
@@ -439,12 +610,30 @@ class GaussianMixture(BaseMixtureModel):
             self._distributions[ii].covariance = v
 
     def add_components(self, means, covariances, weights):
+        """Add Gaussian distributions to the mixture.
+
+        Parameters
+        ----------
+        means : list
+            Each is a N x 1 numpy array of the mean of the distributions to add.
+        covariances : list
+            Each is a N x N numpy array of the covariance of the distributions
+            to add.
+        weights : list
+            Each is a float for the weight of the distributions to add. No
+            normalization is done.
+
+        Returns
+        -------
+        None.
+        """
         if not isinstance(means, list):
             means = [means, ]
         if not isinstance(covariances, list):
             covariances = [covariances, ]
         if not isinstance(weights, list):
-            weights = [weights,]
+            weights = [weights, ]
+
         self._distributions.extend([Gaussian(mean=m, covar=c)
                                    for m, c in zip(means, covariances)])
         self.weights.extend(weights)
@@ -466,7 +655,7 @@ class StudentsTMixture(BaseMixtureModel):
 
     @property
     def means(self):
-        """List of Gaussian means, each is a N x 1 numpy array."""
+        """List of Gaussian means, each is a N x 1 numpy array. Recommended to be read only."""
         return _DistListWrapper(self._distributions, 'location')
 
     @means.setter
@@ -484,11 +673,12 @@ class StudentsTMixture(BaseMixtureModel):
 
     @property
     def covariances(self):
-        """List of Gaussian covariances, each is a N x N numpy array."""
+        """Read only list of covariances, each is a N x N numpy array."""
         return _DistListWrapper(self._distributions, 'covariance')
 
     @property
     def scalings(self):
+        """List of scalings, each is a N x N numpy array. Recommended to be read only."""
         return _DistListWrapper(self._distributions, 'scale')
 
     @scalings.setter
@@ -506,6 +696,7 @@ class StudentsTMixture(BaseMixtureModel):
 
     @property
     def dof(self):
+        """Most common degree of freedom for the mixture. Deprecated but kept for compatability, new code should use degrees_of_freedom."""
         vals, counts = np.unique([d.degrees_of_freedom for d in self._distributions],
                                  return_counts=True)
         inds = np.argwhere(counts == np.max(counts))
@@ -518,6 +709,7 @@ class StudentsTMixture(BaseMixtureModel):
 
     @property
     def degrees_of_freedom(self):
+        """List of degrees of freedom, each is a float. Recommended to be read only."""
         return _DistListWrapper(self._distributions, 'degrees_of_freedom')
 
     @degrees_of_freedom.setter
@@ -532,3 +724,37 @@ class StudentsTMixture(BaseMixtureModel):
 
         for ii, v in enumerate(val):
             self._distributions[ii].degrees_of_freedom = v
+
+    def add_components(self, means, scalings, dof_lst, weights):
+        """Add Student's t-distributions to the mixture.
+
+        Parameters
+        ----------
+        means : list
+            Each is a N x 1 numpy array of the mean of the distributions to add.
+        scalings : list
+            Each is a N x N numpy array of the scale of the distributions
+            to add.
+        dof_lst : list
+            Each is a float representing the degrees of freedom of the distribution
+            to add.
+        weights : list
+            Each is a float for the weight of the distributions to add. No
+            normalization is done.
+
+        Returns
+        -------
+        None.
+        """
+        if not isinstance(means, list):
+            means = [means, ]
+        if not isinstance(scalings, list):
+            scalings = [scalings, ]
+        if not isinstance(dof_lst, list):
+            dof_lst = [dof_lst, ]
+        if not isinstance(weights, list):
+            weights = [weights, ]
+
+        self._distributions.extend([StudentsT(mean=m, scale=s, dof=df)
+                                   for m, s, df in zip(means, scalings, dof_lst)])
+        self.weights.extend(weights)
