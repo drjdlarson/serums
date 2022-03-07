@@ -570,7 +570,7 @@ class GaussianMixture(BaseMixtureModel):
         None.
         """
         if means is not None and covariances is not None:
-            kwargs['distributions'] = [Gaussian(mean=m, covar=c)
+            kwargs['distributions'] = [Gaussian(mean=m, covariance=c)
                                        for m, c in zip(means, covariances)]
         super().__init__(**kwargs)
 
@@ -634,7 +634,7 @@ class GaussianMixture(BaseMixtureModel):
         if not isinstance(weights, list):
             weights = [weights, ]
 
-        self._distributions.extend([Gaussian(mean=m, covar=c)
+        self._distributions.extend([Gaussian(mean=m, covariance=c)
                                    for m, c in zip(means, covariances)])
         self.weights.extend(weights)
 
