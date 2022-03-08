@@ -758,3 +758,8 @@ class StudentsTMixture(BaseMixtureModel):
         self._distributions.extend([StudentsT(mean=m, scale=s, dof=df)
                                    for m, s, df in zip(means, scalings, dof_lst)])
         self.weights.extend(weights)
+
+class Cauchy(StudentsT):
+    """RYAN FILL IN HERE, I MADE THIS SO MY TEST FUNCTION DIDN'T EXPLODE"""
+    def __init__(self):
+        self.loc = 1

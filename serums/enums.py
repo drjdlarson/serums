@@ -83,3 +83,18 @@ class MultiObjectDistance(enum.Enum):
     def __str__(self):
         """Return the enum name for strings."""
         return self.name
+
+
+@enum.unique
+class GoodnessOfFitTest(enum.Enum):
+    """Enumeration of Goodness of Fit Tests for distribution parameter estimation."""
+
+    CRAMER_VON_MISES = enum.auto()
+    """Cramer von Mises criterion for goodness of fit of a distribution to a set of samples."""
+
+    KOLMOGOROV_SMIRNOV = enum.auto()
+    """Kolmogorov Smirnov test for goodness of fit of a distribution to a set of samples."""
+
+    def __str__(self):
+        """Return the enum name for strings."""
+        return self.name
