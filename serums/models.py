@@ -23,6 +23,7 @@ class BaseSingleModel:
     """
 
     def __init__(self, loc=None, scale=None):
+        super().__init__()
         self.location = loc
         self.scale = scale
 
@@ -139,17 +140,11 @@ class Gaussian(BaseSingleModel):
 
 
 class StudentsT(BaseSingleModel):
-    """Represents a Student's t-distribution.
-
-    Attributes
-    ----------
-    degrees_of_freedom : float
-        Degrees of freedom of the distribution, must be greater than 0.
-    """
+    """Represents a Student's t-distribution."""
 
     def __init__(self, mean=None, scale=None, dof=None):
         super().__init__(loc=mean, scale=scale)
-        self.degrees_of_freedom = dof
+        self._dof = dof
 
     @property
     def mean(self):
@@ -164,6 +159,15 @@ class StudentsT(BaseSingleModel):
     @mean.setter
     def mean(self, val):
         self.location = val
+
+    @property
+    def degrees_of_freedom(self):
+        """Degrees of freedom of the distribution, must be greater than 0."""
+        return self._dof
+
+    @degrees_of_freedom.setter
+    def degrees_of_freedom(self, value):
+        self._dof = value
 
     @property
     def covariance(self):
@@ -196,7 +200,7 @@ class StudentsT(BaseSingleModel):
             PDF value of the state `x`.
         """
         rv = stats.multivariate_t
-        return rv.pdf(x.flatten(), loc=self.mean.flatten(), shape=self.scale,
+        return rv.pdf(x.flatten(), loc=self.location.flatten(), shape=self.scale,
                       df=self.degrees_of_freedom)
 
     def sample(self, rng=None):
@@ -218,10 +222,50 @@ class StudentsT(BaseSingleModel):
 
         rv = stats.multivariate_t
         rv.random_state = rng
-        x = rv.rvs(loc=self.mean.flatten(),
+        x = rv.rvs(loc=self.location.flatten(),
                    shape=self.scale, df=self.degrees_of_freedom)
 
         return x.reshape((x.size, 1))
+
+
+class Cauchy(StudentsT):
+    """Represents a Cauchy distribution.
+
+    This is a special case of the Student's t-distribution with the degrees of
+    freedom fixed at 1. However, the mean and covariance do not exist for this
+    distribution.
+    """
+
+    def __init__(self, location=None, scale=None):
+        super().__init__(scale=scale, dof=1)
+        self.location = location
+
+    @property
+    def mean(self):
+        """Mean of the distribution."""
+        warn('Mean does not exist for a Cauchy')
+
+    @mean.setter
+    def mean(self, val):
+        warn('Mean does not exist for a Cauchy')
+
+    @property
+    def degrees_of_freedom(self):
+        """Degrees of freedom of the distribution, fixed at 1."""
+        return super().degrees_of_freedom
+
+    @degrees_of_freedom.setter
+    def degrees_of_freedom(self, value):
+        warn('Degrees of freedom is 1 for a Cauchy')
+
+    @property
+    def covariance(self):
+        """Read only covariance of the distribution (if defined)."""
+        warn('Covariance is does not exist.')
+
+    @covariance.setter
+    def covariance(self, val):
+        warn('Covariance is does not exist.')
 
 
 class GaussianScaleMixture(BaseSingleModel):
@@ -758,8 +802,3 @@ class StudentsTMixture(BaseMixtureModel):
         self._distributions.extend([StudentsT(mean=m, scale=s, dof=df)
                                    for m, s, df in zip(means, scalings, dof_lst)])
         self.weights.extend(weights)
-
-class Cauchy(StudentsT):
-    """RYAN FILL IN HERE, I MADE THIS SO MY TEST FUNCTION DIDN'T EXPLODE"""
-    def __init__(self):
-        self.loc = 1

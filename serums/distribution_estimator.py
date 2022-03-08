@@ -10,11 +10,13 @@ def _edparams_cost_factory(dist):
         # sample from distribution given by params in x
         if isinstance(dist, serums.models.Gaussian):
             x_samples = x[1] * rng.standard_normal(size=samples.size) + x[0]
+
+        elif isinstance(dist, serums.models.Cauchy):
+            x_samples = x[1] * rng.standard_t(1, size=samples.size) + x[0]
+
         elif isinstance(dist, serums.models.StudentsT):
             x_samples = x[1] * rng.standard_t(np.abs(x[2]),
                                               size=samples.size) + x[0]
-        elif isinstance(dist, serums.models.Cauchy):
-            x_samples = x[1] * rng.standard_t(1, size=samples.size) + x[0]
         else:
             fmt = 'Invalid distribution choice: {}'
             raise RuntimeError(fmt.format(type(dist).__name__))
@@ -85,14 +87,16 @@ def estimate_distribution_params(dist, method, samples,
 
     # Set outputs
     output = type(dist)()
-    #temporary inclusion of the 1 in reshape, need to modify this later on potentially.
+
     output.location = res.x[0].reshape(np.shape(dist.location))
     output.scale = np.abs(res.x[1]).reshape(np.shape(dist.scale))
 
-    if isinstance(dist, serums.models.StudentsT):
-        output.degrees_of_freedom = np.abs(res.x[2]).item()
-    elif isinstance(dist, (serums.models.Gaussian, serums.models.Cauchy)):
+    if isinstance(dist, (serums.models.Gaussian, serums.models.Cauchy)):
         pass
+
+    elif isinstance(dist, serums.models.StudentsT):
+        output.degrees_of_freedom = np.abs(res.x[2]).item()
+
     else:
         fmt = 'Invalid distribution choice: {}'
         raise RuntimeError(fmt.format(type(dist).__name__))
