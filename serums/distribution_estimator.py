@@ -1,7 +1,7 @@
 """Estimates Parameters of Various Distributions."""
 import numpy as np
 from scipy.optimize import minimize
-from scipy.stats import ks_2samp, cramervonmises_2samp
+from scipy.stats import ks_2samp, cramervonmises_2samp, anderson_ksamp
 import serums.models
 
 
@@ -27,6 +27,8 @@ def _edparams_cost_factory(dist):
         elif method is serums.enums.GoodnessOfFitTest.CRAMER_VON_MISES:
             out = cramervonmises_2samp(x_samples, samples)
             cost = out.statistic
+        elif method is serums.enums.GoodnessOfFitTest.ANDERSON_DARLING:
+            cost = anderson_ksamp([x_samples, samples]).statistic
         else:
             fmt = 'Invalid method choice: {}'
             raise RuntimeError(fmt.format(method))
