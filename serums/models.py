@@ -177,10 +177,10 @@ class StudentsT(BaseSingleModel):
         -------
         N x N nmpy array.
         """
-        if self.dof <= 2:
+        if self._dof <= 2:
             msg = 'Degrees of freedom is {} and must be > 2'
-            raise RuntimeError(msg.format(self.dof))
-        return self.dof / (self.dof - 2) * self.scale
+            raise RuntimeError(msg.format(self._dof))
+        return self._dof / (self._dof - 2) * self.scale
 
     @covariance.setter
     def covariance(self, val):
@@ -224,6 +224,95 @@ class StudentsT(BaseSingleModel):
         rv.random_state = rng
         x = rv.rvs(loc=self.location.flatten(),
                    shape=self.scale, df=self.degrees_of_freedom)
+
+        return x.reshape((x.size, 1))
+
+
+class ChiSquared(BaseSingleModel):
+    """Represents a Chi Squared distribution."""
+
+    def __init__(self, mean=None, scale=None, dof=None):
+        super().__init__(loc=mean, scale=scale)
+        self._dof = dof
+
+    @property
+    def mean(self):
+        """Mean of the distribution.
+
+        Returns
+        -------
+        N x 1 nmpy array.
+        """
+        return self.location
+
+    @mean.setter
+    def mean(self, val):
+        self.location = val
+
+    @property
+    def degrees_of_freedom(self):
+        """Degrees of freedom of the distribution, must be greater than 0."""
+        return self._dof
+
+    @degrees_of_freedom.setter
+    def degrees_of_freedom(self, value):
+        self._dof = value
+
+    @property
+    def covariance(self):
+        """Read only covariance of the distribution (if defined).
+
+        Returns
+        -------
+        N x N nmpy array.
+        """
+        if self._dof < 0:
+            msg = 'Degrees of freedom is {} and must be > 0'
+            raise RuntimeError(msg.format(self._dof))
+        return (self._dof * 2) * (self.scale**2)
+
+    @covariance.setter
+    def covariance(self, val):
+        warn('Covariance is read only.')
+
+    def pdf(self, x):
+        """Multi-variate probability density function for this distribution.
+
+        Parameters
+        ----------
+        x : N x 1 numpy array
+            Value to evaluate the pdf at.
+
+        Returns
+        -------
+        float
+            PDF value of the state `x`.
+        """
+        rv = stats.chi2
+        return rv.pdf(x.flatten(), self._dof,
+                      loc=self.location.flatten(), shape=self.scale)
+
+    def sample(self, rng=None):
+        """Multi-variate probability density function for this distribution.
+
+        Parameters
+        ----------
+        rng : numpy random generator, optional
+            Random number generator to use. If none is given then the numpy
+            default is used. The default is None.
+
+        Returns
+        -------
+        float
+            PDF value of the state `x`.
+        """
+        if rng is None:
+            rng = rnd.default_rng()
+
+        rv = stats.chi2
+        rv.random_state = rng
+        x = rv.rvs(self._dof, loc=self.location.flatten(),
+                   scale=self.scale)
 
         return x.reshape((x.size, 1))
 
@@ -435,7 +524,7 @@ class BaseMixtureModel:
         weight of each distribution
     """
 
-    def __init__(self,  distributions=None, weights=None):
+    def __init__(self, distributions=None, weights=None):
         """Initialize a mixture model object.
 
         Parameters
