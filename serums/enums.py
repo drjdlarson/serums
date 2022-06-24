@@ -96,7 +96,7 @@ class GoodnessOfFitTest(enum.Enum):
     """Kolmogorov Smirnov test for goodness of fit of a distribution to a set of samples."""
 
     ANDERSON_DARLING = enum.auto()
-    """Anderson=Darling test for goodness of fit of two sets of samples.
+    """Anderson-Darling test for goodness of fit of two sets of samples.
     This test puts higher emphasis on the tails of the distribution."""
 
     def __str__(self):

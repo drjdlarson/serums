@@ -87,7 +87,7 @@ class Gaussian(BaseSingleModel):
 
         Returns
         -------
-        N x 1 nmpy array.
+        N x 1 numpy array.
         """
         return self.location
 
@@ -101,7 +101,7 @@ class Gaussian(BaseSingleModel):
 
         Returns
         -------
-        N x N nmpy array.
+        N x N numpy array.
         """
         return self.scale
 
@@ -152,7 +152,7 @@ class StudentsT(BaseSingleModel):
 
         Returns
         -------
-        N x 1 nmpy array.
+        N x 1 numpy array.
         """
         return self.location
 
@@ -175,7 +175,7 @@ class StudentsT(BaseSingleModel):
 
         Returns
         -------
-        N x N nmpy array.
+        N x N numpy array.
         """
         if self._dof <= 2:
             msg = 'Degrees of freedom is {} and must be > 2'
@@ -241,7 +241,7 @@ class ChiSquared(BaseSingleModel):
 
         Returns
         -------
-        N x 1 nmpy array.
+        N x 1 numpy array.
         """
         return self.location
 
@@ -264,7 +264,7 @@ class ChiSquared(BaseSingleModel):
 
         Returns
         -------
-        N x N nmpy array.
+        N x N numpy array.
         """
         if self._dof < 0:
             msg = 'Degrees of freedom is {} and must be > 0'
@@ -358,7 +358,7 @@ class Cauchy(StudentsT):
 
 
 class GaussianScaleMixture(BaseSingleModel):
-    r"""Helper class for defining Gaussian Scale Mixture objects.
+    """Helper class for defining Gaussian Scale Mixture objects.
 
     Note
     ----
@@ -510,6 +510,104 @@ class GaussianScaleMixture(BaseSingleModel):
     def _sample_SaS(self, rng):
         raise RuntimeError('sampling SaS distribution not implemented')
 
+
+class GeneralizedPareto(BaseSingleModel):
+    """Represents a Generalized Pareto distribution (GPD)."""
+
+    def __init__(self, location=None, scale=None, shape=None):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        location : N x 1 numpy array, optional
+            location of the distribution. The default is None.
+        scale : N x 1 numpy array, optional
+            scale of the distribution. The default is None.
+        shape : N x 1 numpy array, optional
+            shape of the distribution. The default is None.
+            
+        Returns
+        -------
+        None.
+        """
+        super().__init__(loc=location, scale=scale)
+        self._shape = shape
+
+    @property
+    def location(self):
+        """Location of the distribution.
+
+        Returns
+        -------
+        N x 1 numpy array.
+        """
+        return self.location
+
+    @location.setter
+    def location(self, val):
+        self.location = val
+
+    @property
+    def scale(self):
+        """Scale of the distribution.
+
+        Returns
+        -------
+        N x 1 numpy array.
+        """
+        return self.scale
+
+    @scale.setter
+    def scale(self, val):
+        self.scale = val
+
+    @property
+    def shape(self):
+        """Shape of the distribution.
+
+        Returns
+        -------
+        N x 1 numpy array.
+        """
+        return self.shape
+
+    @shape.setter
+    def shape(self, val):
+        self.shape = val
+    
+    def sample(self, rng=None):
+        """Draw a sample from the current mixture model.
+
+        Parameters
+        ----------
+        rng : numpy random generator, optional
+            Random number generator to use. If none is given then the numpy
+            default is used. The default is None.
+
+        Returns
+        -------
+        numpy array
+            randomly sampled numpy array of the same shape as the mean.
+        """
+        if rng is None:
+            rng = rnd.default_rng()
+
+        rv = stats.genpareto
+        rv.random_state = rng
+        x = (self.scale * rv.rvs(self.shape) ) + self.location
+
+        return x.reshape((x.size, 1))
+
+    def pdf(self, x):
+        """Multi-variate probability density function for this distribution.
+
+        Returns
+        -------
+        float
+            PDF value of the state `x`.
+        """
+        rv = stats.genpareto
+        return rv.pdf( (x.flatten() - self.location ) / self.scale, shape=self.shape.flatten()) / self.scale
 
 class BaseMixtureModel:
     """Generic base class for mixture distribution models.
