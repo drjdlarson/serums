@@ -5,11 +5,11 @@ from scipy.stats import ks_2samp, cramervonmises_2samp, anderson_ksamp
 import serums.models
 
 
-def grimshaw_MLE(dataset):
+def _grimshaw_MLE(dataset):
     """Find estimates for shape and scale using Grimshaw's MLE Procedure.
 
     Inputs:
-        dataset: 1D vector containing error data with 0 mean
+        dataset: 1D vector containing error data above threshold
 
     Outputs:
         2 element vector containing [shape_gamma, scale_beta]
