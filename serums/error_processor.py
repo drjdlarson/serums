@@ -1,18 +1,35 @@
+"""For preprocessing errors."""
 import numpy as np
-from scipy.optimize import minimize
 from scipy.stats import ks_2samp, cramervonmises_2samp, anderson_ksamp
 import serums.models
-
-"""For processing errors."""
-# Class to represent binned error distribution given truth data, measured data, dependency arrays, an I/O mapping function, and preferences.
+import pandas as pd
 
 
 class BinnedError:
+    """Class to represent binned error distribution.
+    This class must be given truth data, measured data, dependency arrays, an I/O mapping function, and preferences.
+
+    Attributes
+    ----------
+    truth : array_like
+        Truth data.
+    measured : array_like
+        Measured data.
+    dependencies : array_like
+        Dependency arrays.
+    io_map : function
+        I/O mapping function.
+    preferences : dict
+        Preferences. 
+    """
+
     # Initialize binned error distribution
-    def __init__(self, truth, measured, dependencies):
+    def __init__(self, truth, measured, dependencies, io_map, preferences):
         self.truth = truth
-        self.measured = measured
+        self.measured = measured 
         self.dependencies = dependencies
+        self.io_map = io_map
+        self.preferences = preferences
 
     # Function to normalize error distribution by subtracting the truth from the measured data
     def normalize(self):
