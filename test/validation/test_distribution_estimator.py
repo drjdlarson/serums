@@ -19,12 +19,15 @@ def test_Gaussian_KS(num_samples=1000):
     for ii in range(0, num_samples):
         samples = np.append(samples, dist.sample())
 
-    out_dist = de.estimate_distribution_params(dist,
-                                               GoodnessOfFitTest.KOLMOGOROV_SMIRNOV,
-                                               samples)
+    out_dist = de.estimate_distribution_params(
+        dist, GoodnessOfFitTest.KOLMOGOROV_SMIRNOV, samples
+    )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(fmt.format(dist.location, dist.scale,
-                     out_dist.location, out_dist.scale))
+    print(
+        fmt.format(
+            dist.location, dist.scale, out_dist.location, out_dist.scale
+        )
+    )
 
 
 def test_Gaussian_CVM(num_samples=1000):
@@ -35,13 +38,17 @@ def test_Gaussian_CVM(num_samples=1000):
     for ii in range(0, num_samples):
         samples = np.append(samples, dist.sample())
 
-    out_dist = de.estimate_distribution_params(dist,
-                                               GoodnessOfFitTest.CRAMER_VON_MISES,
-                                               samples)
+    out_dist = de.estimate_distribution_params(
+        dist, GoodnessOfFitTest.CRAMER_VON_MISES, samples
+    )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(fmt.format(dist.location, dist.scale,
-                     out_dist.location, out_dist.scale))
-    
+    print(
+        fmt.format(
+            dist.location, dist.scale, out_dist.location, out_dist.scale
+        )
+    )
+
+
 def test_Gaussian_AD(num_samples=1000):
     print("Testing Gaussian distribution with Anderson-Darling Test:")
     dist = smodels.Gaussian(mean=np.array([0]), covariance=np.array([[1]]))
@@ -50,66 +57,93 @@ def test_Gaussian_AD(num_samples=1000):
     for ii in range(0, num_samples):
         samples = np.append(samples, dist.sample())
 
-    out_dist = de.estimate_distribution_params(dist,
-                                               GoodnessOfFitTest.ANDERSON_DARLING,
-                                               samples)
+    out_dist = de.estimate_distribution_params(
+        dist, GoodnessOfFitTest.ANDERSON_DARLING, samples
+    )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(fmt.format(dist.location, dist.scale,
-                     out_dist.location, out_dist.scale))
+    print(
+        fmt.format(
+            dist.location, dist.scale, out_dist.location, out_dist.scale
+        )
+    )
 
 
 def test_StudentsT_KS(num_samples=5000):
     print("Testing Student's T distribution with Kolmogorov Smirnov Test:")
-    dist = smodels.StudentsT(mean=np.array([0]), scale=np.array([[1]]),
-                             dof=np.array([30]))
+    dist = smodels.StudentsT(
+        mean=np.array([0]), scale=np.array([[1]]), dof=np.array([30])
+    )
 
     samples = np.array([])
     for ii in range(0, num_samples):
         samples = np.append(samples, dist.sample())
 
-    out_dist = de.estimate_distribution_params(dist,
-                                               GoodnessOfFitTest.KOLMOGOROV_SMIRNOV,
-                                               samples)
+    out_dist = de.estimate_distribution_params(
+        dist, GoodnessOfFitTest.KOLMOGOROV_SMIRNOV, samples
+    )
     fmt = "\tInput location : {}, Input Scale : {}, Input DOF : {}\n\tOutput location : {}, Output Scale : {}, Output DOF : {}\n"
-    print(fmt.format(dist.location, dist.scale, dist.degrees_of_freedom,
-                     out_dist.location, out_dist.scale,
-                     out_dist.degrees_of_freedom))
+    print(
+        fmt.format(
+            dist.location,
+            dist.scale,
+            dist.degrees_of_freedom,
+            out_dist.location,
+            out_dist.scale,
+            out_dist.degrees_of_freedom,
+        )
+    )
 
 
 def test_StudentsT_CVM(num_samples=5000):
     print("Testing Student's T distribution with Cramer von Mises Criterion:")
-    dist = smodels.StudentsT(mean=np.array([0]), scale=np.array([[1]]),
-                             dof=np.array([30]))
+    dist = smodels.StudentsT(
+        mean=np.array([0]), scale=np.array([[1]]), dof=np.array([30])
+    )
 
     samples = np.array([])
     for ii in range(0, num_samples):
         samples = np.append(samples, dist.sample())
 
-    out_dist = de.estimate_distribution_params(dist,
-                                               GoodnessOfFitTest.CRAMER_VON_MISES,
-                                               samples)
+    out_dist = de.estimate_distribution_params(
+        dist, GoodnessOfFitTest.CRAMER_VON_MISES, samples
+    )
     fmt = "\tInput location : {}, Input Scale : {}, Input DOF : {}\n\tOutput location : {}, Output Scale : {}, Output DOF : {}\n"
-    print(fmt.format(dist.location, dist.scale, dist.degrees_of_freedom,
-                     out_dist.location, out_dist.scale,
-                     out_dist.degrees_of_freedom))
+    print(
+        fmt.format(
+            dist.location,
+            dist.scale,
+            dist.degrees_of_freedom,
+            out_dist.location,
+            out_dist.scale,
+            out_dist.degrees_of_freedom,
+        )
+    )
 
 
 def test_StudentsT_AD(num_samples=1000):
     print("Testing Student's T distribution with Anderson-Darling Test:")
-    dist = smodels.StudentsT(mean=np.array([0]), scale=np.array([[1]]),
-                             dof=np.array([30]))
+    dist = smodels.StudentsT(
+        mean=np.array([0]), scale=np.array([[1]]), dof=np.array([30])
+    )
 
     samples = np.array([])
     for ii in range(0, num_samples):
         samples = np.append(samples, dist.sample())
 
-    out_dist = de.estimate_distribution_params(dist,
-                                               GoodnessOfFitTest.ANDERSON_DARLING,
-                                               samples)
+    out_dist = de.estimate_distribution_params(
+        dist, GoodnessOfFitTest.ANDERSON_DARLING, samples
+    )
     fmt = "\tInput location : {}, Input Scale : {}, Input DOF : {}\n\tOutput location : {}, Output Scale : {}, Output DOF : {}\n"
-    print(fmt.format(dist.location, dist.scale, dist.degrees_of_freedom,
-                     out_dist.location, out_dist.scale,
-                     out_dist.degrees_of_freedom))
+    print(
+        fmt.format(
+            dist.location,
+            dist.scale,
+            dist.degrees_of_freedom,
+            out_dist.location,
+            out_dist.scale,
+            out_dist.degrees_of_freedom,
+        )
+    )
 
 
 def test_Cauchy_KS(num_samples=10000):
@@ -120,11 +154,15 @@ def test_Cauchy_KS(num_samples=10000):
     for ii in range(0, num_samples):
         samples = np.append(samples, dist.sample())
 
-    out_dist = de.estimate_distribution_params(dist,
-                                               GoodnessOfFitTest.KOLMOGOROV_SMIRNOV,
-                                               samples)
+    out_dist = de.estimate_distribution_params(
+        dist, GoodnessOfFitTest.KOLMOGOROV_SMIRNOV, samples
+    )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(fmt.format(dist.location, dist.scale, out_dist.location, out_dist.scale))
+    print(
+        fmt.format(
+            dist.location, dist.scale, out_dist.location, out_dist.scale
+        )
+    )
 
 
 def test_Cauchy_CVM(num_samples=10000):
@@ -135,11 +173,15 @@ def test_Cauchy_CVM(num_samples=10000):
     for ii in range(0, num_samples):
         samples = np.append(samples, dist.sample())
 
-    out_dist = de.estimate_distribution_params(dist,
-                                               GoodnessOfFitTest.CRAMER_VON_MISES,
-                                               samples)
+    out_dist = de.estimate_distribution_params(
+        dist, GoodnessOfFitTest.CRAMER_VON_MISES, samples
+    )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(fmt.format(dist.location, dist.scale, out_dist.location, out_dist.scale))
+    print(
+        fmt.format(
+            dist.location, dist.scale, out_dist.location, out_dist.scale
+        )
+    )
 
 
 def test_Cauchy_AD(num_samples=10000):
@@ -150,11 +192,23 @@ def test_Cauchy_AD(num_samples=10000):
     for ii in range(0, num_samples):
         samples = np.append(samples, dist.sample())
 
-    out_dist = de.estimate_distribution_params(dist,
-                                               GoodnessOfFitTest.ANDERSON_DARLING,
-                                               samples)
+    out_dist = de.estimate_distribution_params(
+        dist, GoodnessOfFitTest.ANDERSON_DARLING, samples
+    )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(fmt.format(dist.location, dist.scale, out_dist.location, out_dist.scale))
+    print(
+        fmt.format(
+            dist.location, dist.scale, out_dist.location, out_dist.scale
+        )
+    )
+
+
+def test_Grimshaw_MLE(num_samples=10000):
+    print("Testing Grimshaw MLE:")
+    # hardcode R code estimates
+    shape_gamma = -0.5
+    scale_beta = 2
+    random_set = genpareto.rvs(shape_gamma, scale=scale_beta, size=1000)
 
 
 if __name__ == "__main__":

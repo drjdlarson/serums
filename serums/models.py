@@ -41,7 +41,7 @@ class BaseSingleModel:
         -------
         None.
         """
-        warn('sample not implemented by class {}'.format(type(self).__name__))
+        warn("sample not implemented by class {}".format(type(self).__name__))
 
     def pdf(self, x):
         """Calculate the PDF value at the given point.
@@ -58,7 +58,7 @@ class BaseSingleModel:
         float
             PDF value.
         """
-        warn('pdf not implemented by class {}'.format(type(self).__name__))
+        warn("pdf not implemented by class {}".format(type(self).__name__))
         return np.nan
 
 
@@ -136,7 +136,9 @@ class Gaussian(BaseSingleModel):
             PDF value of the state `x`.
         """
         rv = stats.multivariate_normal
-        return rv.pdf(x.flatten(), mean=self.mean.flatten(), cov=self.covariance)
+        return rv.pdf(
+            x.flatten(), mean=self.mean.flatten(), cov=self.covariance
+        )
 
 
 class StudentsT(BaseSingleModel):
@@ -178,13 +180,13 @@ class StudentsT(BaseSingleModel):
         N x N numpy array.
         """
         if self._dof <= 2:
-            msg = 'Degrees of freedom is {} and must be > 2'
+            msg = "Degrees of freedom is {} and must be > 2"
             raise RuntimeError(msg.format(self._dof))
         return self._dof / (self._dof - 2) * self.scale
 
     @covariance.setter
     def covariance(self, val):
-        warn('Covariance is read only.')
+        warn("Covariance is read only.")
 
     def pdf(self, x):
         """Multi-variate probability density function for this distribution.
@@ -200,8 +202,12 @@ class StudentsT(BaseSingleModel):
             PDF value of the state `x`.
         """
         rv = stats.multivariate_t
-        return rv.pdf(x.flatten(), loc=self.location.flatten(), shape=self.scale,
-                      df=self.degrees_of_freedom)
+        return rv.pdf(
+            x.flatten(),
+            loc=self.location.flatten(),
+            shape=self.scale,
+            df=self.degrees_of_freedom,
+        )
 
     def sample(self, rng=None):
         """Multi-variate probability density function for this distribution.
@@ -222,8 +228,11 @@ class StudentsT(BaseSingleModel):
 
         rv = stats.multivariate_t
         rv.random_state = rng
-        x = rv.rvs(loc=self.location.flatten(),
-                   shape=self.scale, df=self.degrees_of_freedom)
+        x = rv.rvs(
+            loc=self.location.flatten(),
+            shape=self.scale,
+            df=self.degrees_of_freedom,
+        )
 
         return x.reshape((x.size, 1))
 
@@ -267,13 +276,13 @@ class ChiSquared(BaseSingleModel):
         N x N numpy array.
         """
         if self._dof < 0:
-            msg = 'Degrees of freedom is {} and must be > 0'
+            msg = "Degrees of freedom is {} and must be > 0"
             raise RuntimeError(msg.format(self._dof))
         return (self._dof * 2) * (self.scale**2)
 
     @covariance.setter
     def covariance(self, val):
-        warn('Covariance is read only.')
+        warn("Covariance is read only.")
 
     def pdf(self, x):
         """Multi-variate probability density function for this distribution.
@@ -289,8 +298,12 @@ class ChiSquared(BaseSingleModel):
             PDF value of the state `x`.
         """
         rv = stats.chi2
-        return rv.pdf(x.flatten(), self._dof,
-                      loc=self.location.flatten(), shape=self.scale)
+        return rv.pdf(
+            x.flatten(),
+            self._dof,
+            loc=self.location.flatten(),
+            shape=self.scale,
+        )
 
     def sample(self, rng=None):
         """Multi-variate probability density function for this distribution.
@@ -311,8 +324,7 @@ class ChiSquared(BaseSingleModel):
 
         rv = stats.chi2
         rv.random_state = rng
-        x = rv.rvs(self._dof, loc=self.location.flatten(),
-                   scale=self.scale)
+        x = rv.rvs(self._dof, loc=self.location.flatten(), scale=self.scale)
 
         return x.reshape((x.size, 1))
 
@@ -332,11 +344,11 @@ class Cauchy(StudentsT):
     @property
     def mean(self):
         """Mean of the distribution."""
-        warn('Mean does not exist for a Cauchy')
+        warn("Mean does not exist for a Cauchy")
 
     @mean.setter
     def mean(self, val):
-        warn('Mean does not exist for a Cauchy')
+        warn("Mean does not exist for a Cauchy")
 
     @property
     def degrees_of_freedom(self):
@@ -345,16 +357,16 @@ class Cauchy(StudentsT):
 
     @degrees_of_freedom.setter
     def degrees_of_freedom(self, value):
-        warn('Degrees of freedom is 1 for a Cauchy')
+        warn("Degrees of freedom is 1 for a Cauchy")
 
     @property
     def covariance(self):
         """Read only covariance of the distribution (if defined)."""
-        warn('Covariance is does not exist.')
+        warn("Covariance is does not exist.")
 
     @covariance.setter
     def covariance(self, val):
-        warn('Covariance is does not exist.')
+        warn("Covariance is does not exist.")
 
 
 class GaussianScaleMixture(BaseSingleModel):
@@ -396,9 +408,16 @@ class GaussianScaleMixture(BaseSingleModel):
 
     __df_types = (enums.GSMTypes.STUDENTS_T, enums.GSMTypes.CAUCHY)
 
-    def __init__(self, gsm_type, location=None, location_range=None,
-                 scale=None, scale_range=None, degrees_of_freedom=None,
-                 df_range=None):
+    def __init__(
+        self,
+        gsm_type,
+        location=None,
+        location_range=None,
+        scale=None,
+        scale_range=None,
+        degrees_of_freedom=None,
+        df_range=None,
+    ):
         """Initialize a GSM Object.
 
         Parameters
@@ -434,7 +453,7 @@ class GaussianScaleMixture(BaseSingleModel):
         super().__init__(loc=location, scale=scale)
 
         if not isinstance(gsm_type, enums.GSMTypes):
-            raise RuntimeError('Type ({}) must be a GSMType'.format(gsm_type))
+            raise RuntimeError("Type ({}) must be a GSMType".format(gsm_type))
 
         self.type = gsm_type
 
@@ -461,7 +480,9 @@ class GaussianScaleMixture(BaseSingleModel):
         if self.type in self.__df_types:
             return self._df
         else:
-            msg = 'GSM type {:s} does not have a degree of freedom.'.format(self.type)
+            msg = "GSM type {:s} does not have a degree of freedom.".format(
+                self.type
+            )
             warn(msg)
             return None
 
@@ -469,12 +490,18 @@ class GaussianScaleMixture(BaseSingleModel):
     def degrees_of_freedom(self, val):
         if self.type in self.__df_types:
             if self.type is enums.GSMTypes.CAUCHY:
-                warn('GSM type {:s} requires degree of freedom = 1'.format(self.type))
+                warn(
+                    "GSM type {:s} requires degree of freedom = 1".format(
+                        self.type
+                    )
+                )
                 return
             self._df = val
         else:
-            msg = ('GSM type {:s} does not have a degree of freedom. '
-                   + 'Skipping').format(self.type)
+            msg = (
+                "GSM type {:s} does not have a degree of freedom. "
+                + "Skipping"
+            ).format(self.type)
             warn(msg)
 
     def sample(self, rng=None):
@@ -501,14 +528,17 @@ class GaussianScaleMixture(BaseSingleModel):
             return self._sample_SaS(rng)
 
         else:
-            raise RuntimeError('GSM type: {} is not supported'.format(self.type))
+            raise RuntimeError(
+                "GSM type: {} is not supported".format(self.type)
+            )
 
     def _sample_student_t(self, rng):
-        return stats.t.rvs(self.degrees_of_freedom, scale=self.scale,
-                           random_state=rng)
+        return stats.t.rvs(
+            self.degrees_of_freedom, scale=self.scale, random_state=rng
+        )
 
     def _sample_SaS(self, rng):
-        raise RuntimeError('sampling SaS distribution not implemented')
+        raise RuntimeError("sampling SaS distribution not implemented")
 
 
 class GeneralizedPareto(BaseSingleModel):
@@ -525,56 +555,14 @@ class GeneralizedPareto(BaseSingleModel):
             scale of the distribution. The default is None.
         shape : N x 1 numpy array, optional
             shape of the distribution. The default is None.
-            
+
         Returns
         -------
         None.
         """
         super().__init__(loc=location, scale=scale)
-        self._shape = shape
+        self.shape = shape
 
-    @property
-    def location(self):
-        """Location of the distribution.
-
-        Returns
-        -------
-        N x 1 numpy array.
-        """
-        return self.location
-
-    @location.setter
-    def location(self, val):
-        self.location = val
-
-    @property
-    def scale(self):
-        """Scale of the distribution.
-
-        Returns
-        -------
-        N x 1 numpy array.
-        """
-        return self.scale
-
-    @scale.setter
-    def scale(self, val):
-        self.scale = val
-
-    @property
-    def shape(self):
-        """Shape of the distribution.
-
-        Returns
-        -------
-        N x 1 numpy array.
-        """
-        return self.shape
-
-    @shape.setter
-    def shape(self, val):
-        self.shape = val
-    
     def sample(self, rng=None):
         """Draw a sample from the current mixture model.
 
@@ -594,7 +582,7 @@ class GeneralizedPareto(BaseSingleModel):
 
         rv = stats.genpareto
         rv.random_state = rng
-        x = (self.scale * rv.rvs(self.shape) ) + self.location
+        x = (self.scale * rv.rvs(self.shape)) + self.location
 
         return x.reshape((x.size, 1))
 
@@ -607,7 +595,14 @@ class GeneralizedPareto(BaseSingleModel):
             PDF value of the state `x`.
         """
         rv = stats.genpareto
-        return rv.pdf( (x.flatten() - self.location ) / self.scale, shape=self.shape.flatten()) / self.scale
+        return (
+            rv.pdf(
+                (x.flatten() - self.location) / self.scale,
+                shape=self.shape.flatten(),
+            )
+            / self.scale
+        )
+
 
 class BaseMixtureModel:
     """Generic base class for mixture distribution models.
@@ -661,8 +656,9 @@ class BaseMixtureModel:
         """
         if rng is None:
             rng = rnd.default_rng()
-        mix_ind = rng.choice(np.arange(len(self.weights), dtype=int),
-                             p=self.weights)
+        mix_ind = rng.choice(
+            np.arange(len(self.weights), dtype=int), p=self.weights
+        )
         x = self._distributions[mix_ind].sample(rng=rng)
         return x.reshape((x.size, 1))
 
@@ -713,7 +709,7 @@ class BaseMixtureModel:
         -------
         None.
         """
-        warn('add_component not implemented by {}'.format(type(self).__name__))
+        warn("add_component not implemented by {}".format(type(self).__name__))
 
 
 class _DistListWrapper(list):
@@ -730,13 +726,15 @@ class _DistListWrapper(list):
             step = 1
             if index.step is not None:
                 step = index.step
-            return [getattr(self.dist_lst[ii], self.attr)
-                    for ii in range(index.start, index.stop, step)]
+            return [
+                getattr(self.dist_lst[ii], self.attr)
+                for ii in range(index.start, index.stop, step)
+            ]
         elif isinstance(index, int):
             return getattr(self.dist_lst[index], self.attr)
 
         else:
-            fmt = 'Index must be a integer or slice not {}'
+            fmt = "Index must be a integer or slice not {}"
             raise RuntimeError(fmt.format(type(index)))
 
     def __setitem__(self, index, val):
@@ -752,7 +750,7 @@ class _DistListWrapper(list):
             setattr(self.dist_lst[index], self.attr, val)
 
         else:
-            fmt = 'Index must be a integer or slice not {}'
+            fmt = "Index must be a integer or slice not {}"
             raise RuntimeError(fmt.format(type(index)))
 
     def __iter__(self):
@@ -773,10 +771,14 @@ class _DistListWrapper(list):
         return len(self.dist_lst)
 
     def append(self, *args):
-        raise RuntimeError('Cannot append, use add_component function instead.')
+        raise RuntimeError(
+            "Cannot append, use add_component function instead."
+        )
 
     def extend(self, *args):
-        raise RuntimeError('Cannot extend, use add_component function instead.')
+        raise RuntimeError(
+            "Cannot extend, use add_component function instead."
+        )
 
 
 class GaussianMixture(BaseMixtureModel):
@@ -801,19 +803,21 @@ class GaussianMixture(BaseMixtureModel):
         None.
         """
         if means is not None and covariances is not None:
-            kwargs['distributions'] = [Gaussian(mean=m, covariance=c)
-                                       for m, c in zip(means, covariances)]
+            kwargs["distributions"] = [
+                Gaussian(mean=m, covariance=c)
+                for m, c in zip(means, covariances)
+            ]
         super().__init__(**kwargs)
 
     @property
     def means(self):
         """List of Gaussian means, each is a N x 1 numpy array. Recommended to be read only."""
-        return _DistListWrapper(self._distributions, 'location')
+        return _DistListWrapper(self._distributions, "location")
 
     @means.setter
     def means(self, val):
         if not isinstance(val, list):
-            warn('Must set means to a list')
+            warn("Must set means to a list")
             return
 
         if len(val) != len(self._distributions):
@@ -825,12 +829,12 @@ class GaussianMixture(BaseMixtureModel):
     @property
     def covariances(self):
         """List of Gaussian covariances, each is a N x N numpy array. Recommended to be read only."""
-        return _DistListWrapper(self._distributions, 'scale')
+        return _DistListWrapper(self._distributions, "scale")
 
     @covariances.setter
     def covariances(self, val):
         if not isinstance(val, list):
-            warn('Must set covariances to a list')
+            warn("Must set covariances to a list")
             return
 
         if len(val) != len(self._distributions):
@@ -859,14 +863,24 @@ class GaussianMixture(BaseMixtureModel):
         None.
         """
         if not isinstance(means, list):
-            means = [means, ]
+            means = [
+                means,
+            ]
         if not isinstance(covariances, list):
-            covariances = [covariances, ]
+            covariances = [
+                covariances,
+            ]
         if not isinstance(weights, list):
-            weights = [weights, ]
+            weights = [
+                weights,
+            ]
 
-        self._distributions.extend([Gaussian(mean=m, covariance=c)
-                                   for m, c in zip(means, covariances)])
+        self._distributions.extend(
+            [
+                Gaussian(mean=m, covariance=c)
+                for m, c in zip(means, covariances)
+            ]
+        )
         self.weights.extend(weights)
 
 
@@ -876,23 +890,27 @@ class StudentsTMixture(BaseMixtureModel):
     def __init__(self, means=None, scalings=None, dof=None, **kwargs):
         if means is not None and scalings is not None and dof is not None:
             if isinstance(dof, list):
-                dists = [StudentsT(mean=m, scale=s, dof=df)
-                         for m, s, df in zip(means, scalings, dof)]
+                dists = [
+                    StudentsT(mean=m, scale=s, dof=df)
+                    for m, s, df in zip(means, scalings, dof)
+                ]
             else:
-                dists = [StudentsT(mean=m, scale=s, dof=dof)
-                         for m, s in zip(means, scalings)]
-            kwargs['distributions'] = dists
+                dists = [
+                    StudentsT(mean=m, scale=s, dof=dof)
+                    for m, s in zip(means, scalings)
+                ]
+            kwargs["distributions"] = dists
         super().__init__(**kwargs)
 
     @property
     def means(self):
         """List of Gaussian means, each is a N x 1 numpy array. Recommended to be read only."""
-        return _DistListWrapper(self._distributions, 'location')
+        return _DistListWrapper(self._distributions, "location")
 
     @means.setter
     def means(self, val):
         if not isinstance(val, list):
-            warn('Must set means to a list')
+            warn("Must set means to a list")
             return
 
         if len(val) != len(self._distributions):
@@ -905,17 +923,17 @@ class StudentsTMixture(BaseMixtureModel):
     @property
     def covariances(self):
         """Read only list of covariances, each is a N x N numpy array."""
-        return _DistListWrapper(self._distributions, 'covariance')
+        return _DistListWrapper(self._distributions, "covariance")
 
     @property
     def scalings(self):
         """List of scalings, each is a N x N numpy array. Recommended to be read only."""
-        return _DistListWrapper(self._distributions, 'scale')
+        return _DistListWrapper(self._distributions, "scale")
 
     @scalings.setter
     def scalings(self, val):
         if not isinstance(val, list):
-            warn('Must set scalings to a list')
+            warn("Must set scalings to a list")
             return
 
         if len(val) != len(self._distributions):
@@ -928,8 +946,10 @@ class StudentsTMixture(BaseMixtureModel):
     @property
     def dof(self):
         """Most common degree of freedom for the mixture. Deprecated but kept for compatability, new code should use degrees_of_freedom."""
-        vals, counts = np.unique([d.degrees_of_freedom for d in self._distributions],
-                                 return_counts=True)
+        vals, counts = np.unique(
+            [d.degrees_of_freedom for d in self._distributions],
+            return_counts=True,
+        )
         inds = np.argwhere(counts == np.max(counts))
         return vals[inds[0]].item()
 
@@ -941,12 +961,12 @@ class StudentsTMixture(BaseMixtureModel):
     @property
     def degrees_of_freedom(self):
         """List of degrees of freedom, each is a float. Recommended to be read only."""
-        return _DistListWrapper(self._distributions, 'degrees_of_freedom')
+        return _DistListWrapper(self._distributions, "degrees_of_freedom")
 
     @degrees_of_freedom.setter
     def degrees_of_freedom(self, val):
         if not isinstance(val, list):
-            warn('Must set degrees of freedom to a list')
+            warn("Must set degrees of freedom to a list")
             return
 
         if len(val) != len(self._distributions):
@@ -978,14 +998,26 @@ class StudentsTMixture(BaseMixtureModel):
         None.
         """
         if not isinstance(means, list):
-            means = [means, ]
+            means = [
+                means,
+            ]
         if not isinstance(scalings, list):
-            scalings = [scalings, ]
+            scalings = [
+                scalings,
+            ]
         if not isinstance(dof_lst, list):
-            dof_lst = [dof_lst, ]
+            dof_lst = [
+                dof_lst,
+            ]
         if not isinstance(weights, list):
-            weights = [weights, ]
+            weights = [
+                weights,
+            ]
 
-        self._distributions.extend([StudentsT(mean=m, scale=s, dof=df)
-                                   for m, s, df in zip(means, scalings, dof_lst)])
+        self._distributions.extend(
+            [
+                StudentsT(mean=m, scale=s, dof=df)
+                for m, s, df in zip(means, scalings, dof_lst)
+            ]
+        )
         self.weights.extend(weights)
