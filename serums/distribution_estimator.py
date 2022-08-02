@@ -25,12 +25,12 @@ def _edparams_cost_factory(dist):
             raise RuntimeError(fmt.format(type(dist).__name__))
 
         # Kolmogorov-Smirnov test to get Chi2
-        if method is senums.GoodnessOfFitTest.KOLMOGOROV_SMIRNOV:
+        if method is senums.DistEstimatorMethod.KOLMOGOROV_SMIRNOV:
             cost = ks_2samp(x_samples, samples)[0]
-        elif method is senums.GoodnessOfFitTest.CRAMER_VON_MISES:
+        elif method is senums.DistEstimatorMethod.CRAMER_VON_MISES:
             out = cramervonmises_2samp(x_samples, samples)
             cost = out.statistic
-        elif method is senums.GoodnessOfFitTest.ANDERSON_DARLING:
+        elif method is senums.DistEstimatorMethod.ANDERSON_DARLING:
             cost = anderson_ksamp([x_samples, samples]).statistic
         else:
             fmt = "Invalid method choice: {}"
@@ -137,10 +137,20 @@ def estimate_distribution_params(
             )
 
     elif method is senums.DistEstimatorMethod.METHOD_OF_MOMENTS:
-        pass
+        if not isinstance(dist, serums.models.GeneralizedPareto):
+            raise RuntimeError("Method of Moments only implemented for GPD")
+        else:
+            shape, scale = genpareto_MOM_est(samples)[:2]
+            output.shape = np.array([[shape]])
+            output.scale = np.array([[scale]])
 
     elif method is senums.DistEstimatorMethod.PROBABILITY_WEIGHTED_MOMENTS:
-        pass
+        if not isinstance(dist, serums.models.GeneralizedPareto):
+            raise RuntimeError("PWM only implemented for GPD")
+        else:
+            shape, scale = genpareto_PWM_est(samples)[:2]
+            output.shape = np.array([[shape]])
+            output.scale = np.array([[scale]])
 
     return output
 
@@ -398,5 +408,114 @@ def grimshaw_MLE(dataset):
 
     sub = np.array([[eye_11, eye_12], [eye_21, eye_22]])
     gpd_covar = np.linalg.inv(sub)
+
+    return shape_gamma, scale_beta, gpd_covar
+
+
+def genpareto_MOM_est(dataset):
+    """Finds estimates for GPD shape and scale using the method of moments.
+
+    Important: The covariance of these estimators is only shown to be
+    asymptotically normally distributed and given by the formula below if
+    (shape_gamma < 1/4) is true
+
+    Notes
+    -----
+    This method is taken from
+    :cite:`HoskingWallis1987_ParameterEstimationforGeneralizedParetoDistribution`
+
+    Parameters
+    ----------
+    dataset : N x 1 numpy array
+        Contains positive error data above threshold
+
+    Returns
+    -------
+    shape_gamma : float
+        Shape parameter as defined by Larson dissertation
+    scale_beta : float
+        Scale parameter as defined by Larson dissertation
+    gpd_covar : 2 x 2 numpy array
+        Contains the estimated asymptotic covariance matrix for shape, scale
+        given in Hosking and Wallis
+    """
+    x_bar = np.mean(dataset)
+    svar = np.var(dataset, ddof=1)
+
+    alfahat = 0.5 * x_bar * (1 + (x_bar**2) / svar)
+    khat = 0.5 * (-1 + (x_bar**2) / svar)
+
+    shape_gamma = -khat
+    scale_beta = alfahat
+
+    # Calculate estimated asymptotic covariance matrix
+    n = dataset.size
+    gain = (1 / n) * (
+        ((1 + khat) ** 2) / ((1 + 2 * khat) * (1 + 3 * khat) * (1 + 4 * khat))
+    )
+
+    mat11 = 2 * (alfahat**2) * (1 + 6 * khat + 12 * khat**2)
+    mat12 = alfahat * (1 + 2 * khat) * (1 + 4 * khat + 12 * khat**2)
+    mat21 = mat12
+    mat22 = ((1 + 2 * khat) ** 2) * (1 + khat + 6 * khat**2)
+
+    gpd_covar = gain * np.array([[mat11, mat12], [mat21, mat22]])
+
+    return shape_gamma, scale_beta, gpd_covar
+
+
+def genpareto_PWM_est(dataset):
+    """Finds estimates for GPD shape and scale using the PWM method.
+
+    Important: The covariance matrix calculated below is only valid if the
+    shape parameter gamma is less than 0.5
+
+    Notes
+    -----
+    This method is taken from
+    :cite:`HoskingWallis1987_ParameterEstimationforGeneralizedParetoDistribution`
+
+    Parameters
+    ----------
+    dataset : N x 1 numpy array
+        Contains positive error data above threshold
+
+    Returns
+    -------
+    shape_gamma : float
+        Shape parameter as defined by Larson dissertation
+    scale_beta : float
+        Scale parameter as defined by Larson dissertation
+    gpd_covar : 2 x 2 numpy array
+        Contains the estimated asymptotic covariance matrix for shape, scale
+        given in Hosking and Wallis
+    """
+    n = dataset.size
+    ordered_list = np.sort(dataset)
+
+    gam0bar = (1 / n) * np.sum(dataset)
+
+    summate = 0
+    for ii in range(n):
+        temp = ((n - (ii + 1)) / (n - 1)) * ordered_list[ii]
+        summate = summate + temp
+
+    gam1bar = (1 / n) * summate
+
+    scale_beta = (2 * gam0bar * gam1bar) / (gam0bar - 2 * gam1bar)
+    shape_gamma = -(gam0bar / (gam0bar - 2 * gam1bar) - 2)
+
+    # Calculate estimated asymptotic covariance matrix
+    k = -shape_gamma
+    a = scale_beta
+
+    gain = (1 / n) * (1 / ((1 + 2 * k) * (3 + 2 * k)))
+
+    mat11 = (a**2) * (7 + 18 * k + 11 * k**2 + 2 * k**3)
+    mat12 = a * (2 + k) * (2 + 6 * k + 7 * k**2 + 2 * k**3)
+    mat21 = mat12
+    mat22 = (1 + k) * ((2 + k) ** 2) * (1 + k + 2 * k**2)
+
+    gpd_covar = gain * np.array([[mat11, mat12], [mat21, mat22]])
 
     return shape_gamma, scale_beta, gpd_covar
