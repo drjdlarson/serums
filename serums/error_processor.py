@@ -44,8 +44,9 @@ class BinnedError:
     # Function to recursively bin error distribution by checking for autocorrelation in the error distribution with the dependency array, and bisecting the error distribution if there is autocorrelation
     def autobin(self, error=None):
         # Check for autocorrelation in error distribution
-        if not error: error = self.error
-        if np.any(np.corrcoef(self.error, self.dependencies) > 0.1):
+        if not error:
+            error = self.error
+        if np.any(np.corrcoef(error, self.dependencies) > 0.1):
             # Bisect error distribution, and recursively call autobin on each bin
             bins = self.bisect(error)
             for bin in bins:
