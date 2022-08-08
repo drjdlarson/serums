@@ -26,7 +26,7 @@ class BinnedError:
     # Initialize binned error distribution
     def __init__(self, truth, measured, dependencies, io_map, preferences):
         self.truth = truth
-        self.measured = measured 
+        self.measured = measured
         self.dependencies = dependencies
         self.io_map = io_map
         self.preferences = preferences
@@ -42,24 +42,21 @@ class BinnedError:
         return self.error
 
     # Function to recursively bin error distribution by checking for autocorrelation in the error distribution with the dependency array, and bisecting the error distribution if there is autocorrelation
-    def autobin(self):
+    def autobin(self, error=None):
         # Check for autocorrelation in error distribution
+        if not error: error = self.error
         if np.any(np.corrcoef(self.error, self.dependencies) > 0.1):
-            # Bisect error distribution
-            self.bins = self.bisect(self.error)
+            # Bisect error distribution, and recursively call autobin on each bin
+            bins = self.bisect(error)
+            for bin in bins:
+                self.autobin(bin)
+        else:
+            # Store error distribution as a list of bins
+            self.bins = [error]
         return self.bins
 
-    # Function to bisect error distribution into 2 bins and store the result in binned
+    # Function to bisect error distribution into 2 bins at its midpoint and store the result as a list of bins
     def bisect(self, error):
-        # Initialize binned error distribution
-        bins = np.zeros(2)
-        # Find the midpoint of the error distribution
-        midpoint = np.mean(error)
-        # Find the indices of the error distribution that are less than the midpoint
-        indices = np.where(error < midpoint)[0]
-        # Store the number of indices less than the midpoint in the first bin
-        bins[0] = len(indices)
-        # Store the number of indices greater than the midpoint in the second bin
-        bins[1] = len(error) - len(indices)
-        # Return the binned error distribution
+        midpoint = int(len(error) / 2)
+        bins = [error[:midpoint], error[midpoint:]]
         return bins

@@ -1,0 +1,34 @@
+---
+
+# Data File Paths.
+# Defaulted to the main compile file directory, in a folder called data
+truthFilePath: ~/data/truth_data.csv
+sensorFilePath: ~/data/sensor_data.csv
+dependFilePath: ~/data/depend_data.csv  # Optional! Comment out or use placeholder file if unneeded
+
+# Preferences
+# Dependency Data
+dependent_data: 0   # 0 for no dependent data, 1 for dependent data file
+
+# Data fusion mapping function
+mapping_function: -1    # numbers refer to different presets, if -1 instead of 0, 1, 2, etc, use file path
+mappingFilePath: ~/functions/custom_map.py   # Filepath for mapping function if a custom one is needed. Have dummy files that are ignored without custom info
+
+# Data Type Selection for preprocessor
+data_type: -1   # numbers refer to different presets, if -1 instead of 0, 1, 2, etc, use file paths
+preprocessorFilePath: ~/functions/custom_preprocess.py   # Filepath for preprocessor if a custom one is needed. Have dummy files that are ignored without custom info
+ModelBiasFilePath: ~/data/model_bias.csv   # Filepath for model bias error
+
+# -1:   custom preprocessor and model bias
+# 0:    default data, error directly computed with sensor - truth, with no model bia
+# 1:    GNSS Preprocessor and Model Bias
+# 2:    IMU Preprocessor and Model Bias
+# 3:    Barometer Preprocessor and Model Bias
+# 4:    Radar Altimeter Preprocessor and Model Bias
+# 5:    LIDAR Preprocessor and Model Bias
+
+# Overbound Preferences
+paired: 0   # 0 for single overbound, 1 for paired overbound
+
+# Output Preferences
+# TBD
