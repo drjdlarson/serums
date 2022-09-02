@@ -370,7 +370,7 @@ class Cauchy(StudentsT):
 
 
 class GaussianScaleMixture(BaseSingleModel):
-    """Helper class for defining Gaussian Scale Mixture objects.
+    r"""Helper class for defining Gaussian Scale Mixture objects.
 
     Note
     ----
@@ -604,6 +604,60 @@ class GeneralizedPareto(BaseSingleModel):
         )
 
 
+class BaseMixtureModelIterator:
+    """Iterator for :class:`serums.models.BaseMixutreModel`.
+
+    Attributes
+    ----------
+    weights : list
+        Each element is a float for the weight of a distribution.
+    dists : list
+        Each element is a :class:`serums.models.BaseSingleModel`.
+    idx : int
+        Current index for the iterator.
+    """
+
+    def __init__(self, weights, dists):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        weights : list
+            Each element is a float for the weight of a distribution.
+        dists : list
+            Each element is a :class:`serums.models.BaseSingleModel`.
+        """
+        self.weights = weights
+        self.dists = dists
+        self.idx = 0
+
+    def __iter__(self):
+        """Returns the iterator object."""
+        return self
+
+    def __next__(self):
+        """Get the next element in the iterator.
+
+        Raises
+        ------
+        StopIteration
+            End of the iterator is reached.
+
+        Returns
+        -------
+        float
+            weight of the distribution.
+        :class:`serums.models.BaseSingleModel`
+            distribution object.
+        """
+        self.idx += 1
+        try:
+            return self.weights[self.idx - 1], self.dists[self.idx - 1]
+        except IndexError:
+            self.idx = 0
+            raise StopIteration  # Done iterating.
+
+
 class BaseMixtureModel:
     """Generic base class for mixture distribution models.
 
@@ -640,6 +694,14 @@ class BaseMixtureModel:
         self._distributions = distributions
         self.weights = weights
 
+    def __iter__(self):
+        """Allow iterating over mixture objects by (weight, distribution)."""
+        return BaseMixtureModelIterator(self.weights, self._distributions)
+
+    def __len__(self):
+        """Give the number of distributions in the mixture."""
+        return len(self._distributions)
+
     def sample(self, rng=None):
         """Draw a sample from the current mixture model.
 
@@ -656,9 +718,7 @@ class BaseMixtureModel:
         """
         if rng is None:
             rng = rnd.default_rng()
-        mix_ind = rng.choice(
-            np.arange(len(self.weights), dtype=int), p=self.weights
-        )
+        mix_ind = rng.choice(np.arange(len(self), dtype=int), p=self.weights)
         x = self._distributions[mix_ind].sample(rng=rng)
         return x.reshape((x.size, 1))
 
@@ -671,7 +731,7 @@ class BaseMixtureModel:
             PDF value of the state `x`.
         """
         p = 0
-        for w, dist in zip(self.weights, self._distributions):
+        for w, dist in self:
             p += w * dist.pdf(x)
 
         return p
@@ -695,7 +755,7 @@ class BaseMixtureModel:
             del self._distributions[index]
             del self.weights[index]
 
-    def add_component(self, *args):
+    def add_components(self, *args):
         """Add a component distribution to the mixture.
 
         This should be implemented by the child class.
