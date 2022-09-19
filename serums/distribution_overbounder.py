@@ -2,7 +2,8 @@
 import numpy as np
 from scipy.optimize import minimize
 from scipy.stats import ks_2samp, cramervonmises_2samp, anderson_ksamp
-import serums.models
+import serums.models as smodels
+import serums.distribution_estimator as de
 from abc import abstractmethod, ABC
 from scipy.stats import norm
 import matplotlib.pyplot as plt
@@ -101,25 +102,28 @@ class OverbounderBase(ABC):
 
         return sigma_iter
 
+    def get_pareto_scale(self, Xi, Yi, shape):
+        """Find GPD scale given shape and point on CDF."""
+        return (shape * Xi) / (((1 - Yi) ** -shape) - 1)
+
     @abstractmethod
     def overbound(self, *args, **kwargs):
         """Produce the overbound of the type denoted by the child class name."""
         raise NotImplementedError("not implemented")
 
 
-class SymmetricGaussian(OverbounderBase):
-    """Represents a Symmetric Gaussian Overbound object."""
+class SymmetricGaussianOverbounder(OverbounderBase):
+    """Represents a Symmetric Gaussian Overbounder object."""
 
     def __init__(self):
         super().__init__()
         self.pierce_locator = 1
 
     def overbound(self, data):
-        """Produce Symmetric Gaussian Overbound of empirical error data."""
+        """Produce Gaussian model object that overbounds given error data."""
         n = data.size
-        locator = 1
         sample_sigma = np.std(data, ddof=1)
-        threshold = locator * sample_sigma
+        threshold = self.pierce_locator * sample_sigma
         OB_mean = 0
 
         # Determine points on Half-Gaussian ECDF
@@ -149,7 +153,19 @@ class SymmetricGaussian(OverbounderBase):
         rational_candidates = candidates[~np.isnan(candidates)]
         OB_sigma = np.max(rational_candidates)
 
-        return OB_mean, OB_sigma
+        return smodels.Gaussian(
+            mean=np.array([[OB_mean]]), covariance=np.array([[OB_sigma**2]])
+        )
 
 
-test_instance = SymmetricGaussian()
+class SymmetricGPO(OverbounderBase):
+    """Represents a Symmetric Gaussian-Pareto Overbounder object."""
+
+    def __init__(self):
+        super().__init__()
+        self.inside_pierce_locator = 1
+        self.ThresholdReductionFactor = 1
+
+    def overbound(self, data):
+        """Produce symmetric Gaussian-Pareto mixture model object that overbounds input error data."""
+        pass
