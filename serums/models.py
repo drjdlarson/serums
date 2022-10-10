@@ -625,8 +625,10 @@ class BaseMixtureModel:
         """
         if rng is None:
             rng = rnd.default_rng()
+        weights = np.array(self.weights, dtype=float)
+        weights /= np.sum(weights).astype(float)
         mix_ind = rng.choice(np.arange(len(self), dtype=int),
-                             p=self.weights)
+                             p=weights)
         x = self._distributions[mix_ind].sample(rng=rng)
         return x.reshape((x.size, 1))
 
