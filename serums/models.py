@@ -1081,3 +1081,83 @@ class StudentsTMixture(BaseMixtureModel):
             ]
         )
         self.weights.extend(weights)
+
+
+class SymmetricGaussianPareto(BaseSingleModel):
+    """Represents a Symmetric Guassian-Pareto Mixture Distribution object.
+
+    Attributes
+    ----------
+    location : 1 x 1 numpy array
+        location of the distribution. By definition, it is always 0.
+    scale : 1 x 1 numpy array
+        variance of the core Gaussian region. The default is None.
+    threshold : 1 x 1 numpy array
+        location where the core Gaussian region meets the Pareto tail. The default is None.
+    tail_shape : 1 x 1 numpy array
+        GPD shape parameter of the distribution's tail. The default is None
+    tail_scale : 1 x 1 numpy array
+        GPD scale parameter of the distribution's tail. The default is None
+
+    """
+
+    def __init__(
+        self,
+        scale=None,
+        threshold=None,
+        tail_shape=None,
+        tail_scale=None,
+    ):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        scale : 1 x 1 numpy array, optional
+            variance of the core Gaussian region. The default is None.
+        threshold : 1 x 1 numpy array, optional
+            location where the core Gaussian region meets the Pareto tail. The default is None.
+        tail_shape : 1 x 1 numpy array, optional
+            GPD shape parameter of the distribution's tail. The default is None
+        tail_scale : 1 x 1 numpy array, optional
+            GPD scale parameter of the distribution's tail. The default is None
+
+        Returns
+        -------
+        None.
+        """
+        super().__init__(loc=np.zeros((1, 1)), scale=scale)
+        self.threshold = threshold
+        self.tail_shape = tail_shape
+        self.tail_scale = tail_scale
+
+    def confidence_interval(self, alfa):
+        """Return confidence interval of distribution given significance level.
+
+        Parameters
+        ----------
+        alfa : float
+            significance level of returned confidence interval
+
+        Returns
+        -------
+        2 numpy array
+            the interval containing the largest deviations from 0 that will happen with
+            probability P = (1-alfa).
+        """
+        pass
+
+    def plot_ECDF_and_OB_in_CDF_domain(self):
+        """Plots the input data ECDF against the computed overbound CDF.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        matplotlib line plot
+            shows empirical distribution function of input error data, the
+            associated DKW Lower bound, and the computed symmetric GPO in the
+            CDF domain.
+        """
+        pass
