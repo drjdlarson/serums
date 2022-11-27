@@ -504,7 +504,7 @@ class GaussianScaleMixture(BaseSingleModel):
             raise RuntimeError('GSM type: {} is not supported'.format(self.type))
 
     def _sample_student_t(self, rng):
-        return stats.t.rvs(self.degrees_of_freedom, scale=self.scale,
+        return stats.t.rvs(self.degrees_of_freedom, scale=np.diag(self.scale),
                            random_state=rng)
 
     def _sample_SaS(self, rng):
