@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import serums.distribution_overbounder as sdob
 import serums.models as smodels
-from scipy.stats import norm, genpareto, t, halfnorm
+from scipy.stats import norm, genpareto, t, halfnorm, probplot
 import time
 
 
@@ -36,31 +36,17 @@ def test_SymmetricGaussianOverbound():
     )
 
     if DEBUG:
-        n = data.size
-        ordered_data = np.sort(data)
-        ecdf_ords = np.zeros(n)
-        for i in range(n):
-            ecdf_ords[i] = (i + 1) / n
-
-        X_ECDF = ordered_data
-        X_OB = ordered_data
-        Y_ECDF = ecdf_ords
-        Y_OB = norm.cdf(X_OB, loc=0, scale=np.sqrt(out_dist.scale[0, 0]))
-
-        confidence = 0.95
-        alfa = 1 - confidence
-        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
-        plt.figure("Plot of Symmetric Gaussian Test Case")
-        plt.plot(X_ECDF, Y_ECDF, label="Original ECDF")
-        plt.plot(X_ECDF, np.add(Y_ECDF, epsilon), label="DKW Upper Band")
-        plt.plot(X_ECDF, np.subtract(Y_ECDF, epsilon), label="DKW Lower Band")
-        plt.plot(X_OB, Y_OB, label="Overbound CDF")
-        plt.xlim(np.array([-4, 4]))
-        plt.ylim(np.array([0, 1]))
-        plt.legend()
-        plt.grid()
-        # Note: the overbound passes slightly under the DKW band because the plot
-        # is in the Gaussian CDF domain, not the Half-Gaussian CDF domain
+        alfa = 1e-6
+        interval = out_dist.CI(alfa)
+        print(
+            "Confidence Interval = (",
+            interval[0, 0],
+            ", ",
+            interval[0, 1],
+            ")",
+        )
+        out_dist.CDFplot(data)
+        out_dist.Qplot(data)
 
 
 def test_SymmetricGPO():
@@ -109,6 +95,7 @@ def test_SymmetricGPO():
         # Plot data ECDF, DKW lower bound, and Symmetric GPO in CDF domain
 
         n = data.size
+        # confidence = 1 - 1e-6
         confidence = 0.95
         alfa = 1 - confidence
         epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
@@ -161,7 +148,7 @@ def test_PairedGPO():
 
 if __name__ == "__main__":
     DEBUG = True
-    # test_SymmetricGaussianOverbound()
-    test_SymmetricGPO()
+    test_SymmetricGaussianOverbound()
+    # test_SymmetricGPO()
     # test_PairedGaussianOverbound()
     # test_PairedGPO()

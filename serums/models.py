@@ -3,6 +3,8 @@ import numpy as np
 import numpy.random as rnd
 import scipy.stats as stats
 from warnings import warn
+import matplotlib.pyplot as plt
+from scipy.stats import probplot
 
 import serums.enums as enums
 
@@ -80,6 +82,10 @@ class Gaussian(BaseSingleModel):
         None.
         """
         super().__init__(loc=mean, scale=covariance)
+        if covariance is not None:
+            self.stdev = np.linalg.cholesky(covariance)
+        else:
+            self.stdev = None
 
     @property
     def mean(self):
@@ -108,6 +114,7 @@ class Gaussian(BaseSingleModel):
     @covariance.setter
     def covariance(self, val):
         self.scale = val
+        self.stdev = np.linalg.cholesky(val)
 
     def sample(self, rng=None):
         """Draw a sample from the current mixture model.
@@ -139,6 +146,68 @@ class Gaussian(BaseSingleModel):
         return rv.pdf(
             x.flatten(), mean=self.mean.flatten(), cov=self.covariance
         )
+
+    def CI(self, alfa):
+        """Determine confidence interval given significance level alfa.
+
+        Parameters
+        ----------
+        alfa : float
+            significance level, i.e. confidence level = (1 - alfa)
+
+        Returns
+        -------
+        2 x 1 numpy array
+            array containing upper and lower bound of confidence interval
+        """
+        low = stats.norm.ppf(alfa, loc=self.mean, scale=np.sqrt(self.scale))
+        high = stats.norm.ppf(
+            1 - alfa, loc=self.mean, scale=np.sqrt(self.scale)
+        )
+        return np.array([[low[0, 0], high[0, 0]]])
+
+    def CDFplot(self, data):
+        """Plot Gaussian overbound and DKW bound against ECDF of input data.
+
+        Parameters
+        ----------
+        data : N numpy array
+            numpy array containing the error data used to calculate the
+            overbound
+
+        Returns
+        -------
+        unsure
+        """
+        n = data.size
+        ordered_abs_data = np.sort(np.abs(data))
+        ecdf_ords = np.zeros(n)
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+
+        X_ECDF = ordered_abs_data
+        X_OB = ordered_abs_data
+        Y_ECDF = ecdf_ords
+        Y_OB = stats.halfnorm.cdf(X_OB, loc=0, scale=np.sqrt(self.scale[0, 0]))
+
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+        plt.figure("Half-Gaussian CDF Domain")
+        plt.plot(X_ECDF, Y_ECDF, label="Original ECDF")
+        plt.plot(X_ECDF, np.add(Y_ECDF, epsilon), label="DKW Upper Band")
+        plt.plot(X_ECDF, np.subtract(Y_ECDF, epsilon), label="DKW Lower Band")
+        plt.plot(X_OB, Y_OB, label="Overbound CDF")
+        plt.xlim(np.array([0, 4]))
+        plt.ylim(np.array([0, 1]))
+        plt.legend()
+        plt.grid()
+
+    def Qplot(self, data):
+        """Plot Gaussian overbound and ECDF quantiles against Gaussian quantiles."""
+        plt.figure("Quantile Plot of Symmetric Gaussian Test Case")
+        probplot(data, plot=plt)
+        plt.grid()
 
 
 class StudentsT(BaseSingleModel):
