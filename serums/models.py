@@ -24,12 +24,14 @@ class BaseSingleModel:
         scale parameter of the distribution
     """
 
-    def __init__(self, loc=None, scale=None):
+    def __init__(self, loc=None, scale=None, monte_carlo_size=int(1e4)):
         super().__init__()
         self.location = loc
         self.scale = scale
 
-    def sample(self, rng=None):
+        self.monte_carlo_size = monte_carlo_size
+
+    def sample(self, rng: rnd._generator=None, num_samples: int=None) -> np.ndarray:
         """Draw a sample from the distribution.
 
         This should be implemented by the child class.
@@ -63,6 +65,105 @@ class BaseSingleModel:
         warn("pdf not implemented by class {}".format(type(self).__name__))
         return np.nan
 
+    def __str__(self):
+        msg = "Location = "
+        dim = self.mean.size
+        for ii in range(dim):
+            if ii != 0:
+                msg += "{:11s}".format("")
+
+            if ii == 0 and dim != 1:
+                fmt = "\u2308{:.4e}\u2309\tScale = \u2308"
+                fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "\u2309"
+            elif ii == (dim - 1) and dim != 1:
+                fmt = (
+                    "\u230A{:.4e}\u230B\t"
+                    + "{:8s}\u230A".format("")
+                    + "{:.4e}, " * (dim - 1)
+                    + "{:.4e}"
+                    + "\u230B"
+                )
+            else:
+                fmt = "|{:.4e}|\t"
+                if dim == 1:
+                    fmt += "Scale = |"
+                else:
+                    fmt += "{:8s}|".format("")
+                fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "|"
+            msg += (
+                fmt.format(self.mean.ravel()[ii], *self.covariance[ii, :].tolist())
+                + "\n"
+            )
+        return msg
+
+    def __sub__(self, other: BaseSingleModel) -> np.ndarray:
+        if self.location.size != other.location.size:
+            raise RuntimeError(
+                "Can not subtract distributions of different shapes ({:d} vs {:d})".format(
+                    self.location.size, other.location.size
+                )
+            )
+        return self.sample(num_samples=self.monte_carlo_size) - other.sample(
+            num_samples=self.monte_carlo_size
+        )
+
+    def __neg__(self) -> np.ndarray:
+        """Should only be used to redefine order of operations for a subtraction operation (i.e. -g1 + g2 vs g2 - g1)"""
+        return -self.sample(num_samples=self.monte_carlo_size)
+
+    def __add__(self, other: BaseSingleModel) -> np.ndarray:
+        if self.location.size != other.location.size:
+            raise RuntimeError(
+                "Can not add distributions of different shapes ({:d} vs {:d})".format(
+                    self.location.size, other.location.size
+                )
+            )
+        return self.sample(num_samples=self.monte_carlo_size) - other.sample(
+            num_samples=self.monte_carlo_size
+        )
+
+    def __mul__(self, other: BaseSingleModel) -> np.ndarray:
+        if self.location.size != other.location.size:
+            raise RuntimeError(
+                "Can not multiply distributions of different shapes ({:d} vs {:d})".format(
+                    self.location.size, other.location.size
+                )
+            )
+        return self.sample(num_samples=self.monte_carlo_size) - other.sample(
+            num_samples=self.monte_carlo_size
+        )
+
+    def __truediv__(self, other: BaseSingleModel) -> np.ndarray:
+        if self.location.size != other.location.size:
+            raise RuntimeError(
+                "Can not divide distributions of different shapes ({:d} vs {:d})".format(
+                    self.location.size, other.location.size
+                )
+            )
+        return self.sample(num_samples=self.monte_carlo_size) / other.sample(
+            num_samples=self.monte_carlo_size
+        )
+
+    def __floordiv__(self, other: BaseSingleModel) -> np.ndarray:
+        if self.location.size != other.location.size:
+            raise RuntimeError(
+                "Can not floor divide distributions of different shapes ({:d} vs {:d})".format(
+                    self.location.size, other.location.size
+                )
+            )
+        return self.sample(num_samples=self.monte_carlo_size) // other.sample(
+            num_samples=self.monte_carlo_size
+        )
+
+    def __pow__(self, power: int, modulo=None) -> np.ndarray:
+        if self.location.size != other.location.size:
+            raise RuntimeError(
+                "Can not raise to power for distributions of different shapes ({:d} vs {:d})".format(
+                    self.location.size, other.location.size
+                )
+            )
+        return self.sample(num_samples=self.monte_carlo_size)**2
+
 
 class Gaussian(BaseSingleModel):
     """Represents a Gaussian distribution object."""
@@ -83,9 +184,43 @@ class Gaussian(BaseSingleModel):
         """
         super().__init__(loc=mean, scale=covariance)
         if covariance is not None:
-            self.stdev = np.linalg.cholesky(covariance)
+            try:
+                self.stdev = np.linalg.cholesky(covariance)
+            except np.linalg.LinAlgError:
+                self.stdev = None
         else:
             self.stdev = None
+
+    def __str__(self):
+        msg = "Mean = "
+        dim = self.mean.size
+        for ii in range(dim):
+            if ii != 0:
+                msg += "{:7s}".format("")
+
+            if ii == 0 and dim != 1:
+                fmt = "\u2308{:.4e}\u2309\tCovariance = \u2308"
+                fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "\u2309"
+            elif ii == (dim - 1) and dim != 1:
+                fmt = (
+                    "\u230A{:.4e}\u230B\t"
+                    + "{:13s}\u230A".format("")
+                    + "{:.4e}, " * (dim - 1)
+                    + "{:.4e}"
+                    + "\u230B"
+                )
+            else:
+                fmt = "|{:.4e}|\t"
+                if dim == 1:
+                    fmt += "Covariance = |"
+                else:
+                    fmt += "{:13s}|".format("")
+                fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "|"
+            msg += (
+                fmt.format(self.mean.ravel()[ii], *self.covariance[ii, :].tolist())
+                + "\n"
+            )
+        return msg
 
     @property
     def mean(self):
@@ -114,9 +249,12 @@ class Gaussian(BaseSingleModel):
     @covariance.setter
     def covariance(self, val):
         self.scale = val
-        self.stdev = np.linalg.cholesky(val)
+        try:
+            self.stdev = np.linalg.cholesky(val)
+        except np.linalg.LinAlgError:
+            self.stdev = None
 
-    def sample(self, rng=None):
+    def sample(self, rng=None, num_samples=None):
         """Draw a sample from the current mixture model.
 
         Parameters
@@ -132,7 +270,11 @@ class Gaussian(BaseSingleModel):
         """
         if rng is None:
             rng = rnd.default_rng()
-        return rng.multivariate_normal(self.mean.flatten(), self.covariance)
+        if num_samples is None:
+            num_samples = 1
+        return rng.multivariate_normal(
+            self.mean.flatten(), self.covariance, size=num_samples
+        )
 
     def pdf(self, x):
         """Multi-variate probability density function for this distribution.
@@ -143,9 +285,7 @@ class Gaussian(BaseSingleModel):
             PDF value of the state `x`.
         """
         rv = stats.multivariate_normal
-        return rv.pdf(
-            x.flatten(), mean=self.mean.flatten(), cov=self.covariance
-        )
+        return rv.pdf(x.flatten(), mean=self.mean.flatten(), cov=self.covariance)
 
     def CI(self, alfa):
         """Determine confidence interval given significance level alfa.
@@ -161,9 +301,7 @@ class Gaussian(BaseSingleModel):
             array containing upper and lower bound of confidence interval
         """
         low = stats.norm.ppf(alfa, loc=self.mean, scale=np.sqrt(self.scale))
-        high = stats.norm.ppf(
-            1 - alfa, loc=self.mean, scale=np.sqrt(self.scale)
-        )
+        high = stats.norm.ppf(1 - alfa, loc=self.mean, scale=np.sqrt(self.scale))
         return np.array([[low[0, 0], high[0, 0]]])
 
     def CDFplot(self, data):
@@ -208,6 +346,25 @@ class Gaussian(BaseSingleModel):
         plt.figure("Quantile Plot of Symmetric Gaussian Test Case")
         probplot(data, plot=plt)
         plt.grid()
+
+
+class PairedGaussian(BaseSingleModel):
+    def __init__(self, left: Gaussian, right: Gaussian):
+        super().__init__()
+
+        self.__left = deepcopy(left)
+        self.__right = deepcopy(right)
+
+    def sample(self, rng: rnd._generator=None, num_samples: int=None) -> np.ndarray:
+        if rng is None:
+            rng = rnd.default_rng()
+        if num_samples is None:
+            num_samples = 1
+
+        if rng.uniform() > 0.5:
+            return self.__right.sample(rng=rng, num_samples=num_samples)
+        else:
+            return self.__left.sample(rng=rng, num_samples=num_samples)
 
 
 class StudentsT(BaseSingleModel):
@@ -549,9 +706,7 @@ class GaussianScaleMixture(BaseSingleModel):
         if self.type in self.__df_types:
             return self._df
         else:
-            msg = "GSM type {:s} does not have a degree of freedom.".format(
-                self.type
-            )
+            msg = "GSM type {:s} does not have a degree of freedom.".format(self.type)
             warn(msg)
             return None
 
@@ -559,17 +714,12 @@ class GaussianScaleMixture(BaseSingleModel):
     def degrees_of_freedom(self, val):
         if self.type in self.__df_types:
             if self.type is enums.GSMTypes.CAUCHY:
-                warn(
-                    "GSM type {:s} requires degree of freedom = 1".format(
-                        self.type
-                    )
-                )
+                warn("GSM type {:s} requires degree of freedom = 1".format(self.type))
                 return
             self._df = val
         else:
             msg = (
-                "GSM type {:s} does not have a degree of freedom. "
-                + "Skipping"
+                "GSM type {:s} does not have a degree of freedom. " + "Skipping"
             ).format(self.type)
             warn(msg)
 
@@ -597,14 +747,10 @@ class GaussianScaleMixture(BaseSingleModel):
             return self._sample_SaS(rng)
 
         else:
-            raise RuntimeError(
-                "GSM type: {} is not supported".format(self.type)
-            )
+            raise RuntimeError("GSM type: {} is not supported".format(self.type))
 
     def _sample_student_t(self, rng):
-        return stats.t.rvs(
-            self.degrees_of_freedom, scale=self.scale, random_state=rng
-        )
+        return stats.t.rvs(self.degrees_of_freedom, scale=self.scale, random_state=rng)
 
     def _sample_SaS(self, rng):
         raise RuntimeError("sampling SaS distribution not implemented")
@@ -900,14 +1046,10 @@ class _DistListWrapper(list):
         return len(self.dist_lst)
 
     def append(self, *args):
-        raise RuntimeError(
-            "Cannot append, use add_component function instead."
-        )
+        raise RuntimeError("Cannot append, use add_component function instead.")
 
     def extend(self, *args):
-        raise RuntimeError(
-            "Cannot extend, use add_component function instead."
-        )
+        raise RuntimeError("Cannot extend, use add_component function instead.")
 
 
 class GaussianMixture(BaseMixtureModel):
@@ -933,8 +1075,7 @@ class GaussianMixture(BaseMixtureModel):
         """
         if means is not None and covariances is not None:
             kwargs["distributions"] = [
-                Gaussian(mean=m, covariance=c)
-                for m, c in zip(means, covariances)
+                Gaussian(mean=m, covariance=c) for m, c in zip(means, covariances)
             ]
         super().__init__(**kwargs)
 
@@ -1005,10 +1146,7 @@ class GaussianMixture(BaseMixtureModel):
             ]
 
         self._distributions.extend(
-            [
-                Gaussian(mean=m, covariance=c)
-                for m, c in zip(means, covariances)
-            ]
+            [Gaussian(mean=m, covariance=c) for m, c in zip(means, covariances)]
         )
         self.weights.extend(weights)
 
@@ -1025,8 +1163,7 @@ class StudentsTMixture(BaseMixtureModel):
                 ]
             else:
                 dists = [
-                    StudentsT(mean=m, scale=s, dof=dof)
-                    for m, s in zip(means, scalings)
+                    StudentsT(mean=m, scale=s, dof=dof) for m, s in zip(means, scalings)
                 ]
             kwargs["distributions"] = dists
         super().__init__(**kwargs)
