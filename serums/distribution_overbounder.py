@@ -1,15 +1,14 @@
 """For SERUMS Overbound Estimation."""
 import numpy as np
-from scipy.optimize import minimize
+from scipy.optimize import minimize, basinhopping
 from scipy.stats import ks_2samp, cramervonmises_2samp, anderson_ksamp
 import serums.models as smodels
 import serums.distribution_estimator as de
 from abc import abstractmethod, ABC
 from scipy.stats import norm, halfnorm, genpareto, t
 import matplotlib.pyplot as plt
-import math
 import serums.errors
-import time
+import scipy.special as special
 
 
 class OverbounderBase(ABC):
@@ -102,12 +101,59 @@ class OverbounderBase(ABC):
                 / self.h_prime_sigma(Xi, Yi, sigma_iter)
             )
             i = i + 1
-
         return sigma_iter
 
     def get_pareto_scale(self, Xi, Yi, shape):
         """Find GPD scale given shape and point on CDF."""
         return (shape * Xi) / (((1 - Yi) ** -shape) - 1)
+
+    def gauss_1pt_pierce_cost(self, sigma, pt):
+        """Cost function to be optimized when finding piercing half Gaussian.
+
+        Parameters
+        ----------
+        sigma : 1 numpy array
+            Half-Gaussian standard deviation to be searched over, i.e. the
+            independent variable which is iterated during the optimization
+            routine.
+        pt : 2x1 numpy array
+            Point to seek Half-Gaussian pierce with (0,0). Format is (x, y)
+
+        Returns
+        -------
+        error : float
+            Magnitude of the error in the dependent variable between the actual
+            point and the Half-Gaussian CDF value at the point.
+
+        """
+        error = np.abs(pt[1] - halfnorm.cdf(pt[0], loc=0, scale=sigma))
+        return error
+
+    def gauss_2pt_pierce_cost(self, gauss_param_array, pts):
+        """Cost function for optimization of Gaussian pierce search.
+
+        Parameters
+        ----------
+        gauss_param_array : 2 numpy array
+            Gauss parameters to be searched over. Format is (mu, sigma).
+        pts : 2x2 numpy array
+            Points to seek pierce between. Row 1 is (x1, x2). Row 2 is (y1, y2).
+
+        Returns
+        -------
+        norm : float
+            L2 norm of vector containing errors in CDF function at points 1 & 2.
+
+        """
+        vect = -pts[1] + 0.5 * (
+            1
+            + special.erf(
+                (pts[0] - gauss_param_array[0])
+                / (np.sqrt(2) * gauss_param_array[1])
+            )
+        )
+
+        return np.sum(vect**2)
 
     @abstractmethod
     def overbound(self, *args, **kwargs):
@@ -149,7 +195,18 @@ class SymmetricGaussianOverbounder(OverbounderBase):
 
         # Determine list of candidate sigmas
         for i in sub[0, 0:]:
-            candidates[i] = self.find_sigma_h(abs_data[i], DKW_low[i])
+            pt = np.array([[abs_data[i]], [DKW_low[i]]])
+            ans = minimize(
+                self.gauss_1pt_pierce_cost,
+                sample_sigma,
+                args=(pt,),
+                method="Powell",
+                options={"xtol": 1e-14, "maxfev": 10000, "maxiter": 10000},
+            )
+            if ans.success is True:
+                candidates[i] = ans.x[0]
+            else:
+                candidates[i] = 0
 
         # Select maximum sigma with irrationality protection (likely unneccessary
         # if disregarding inner core)
@@ -184,10 +241,10 @@ class SymmetricGPO(OverbounderBase):
         # print("Most Extreme Deviation in Sample: ", sorted_abs_data[-1])
 
         Nt_min = 250
-        Nt_max = math.ceil(0.1 * n)
+        Nt_max = int(np.ceil(0.1 * n))
         idx_u_min = n - Nt_max - 1
         idx_u_max = n - Nt_min - 1
-        u_idxs = np.arange(idx_u_min, idx_u_max + 1, 1)
+        u_idxs = np.arange(idx_u_min, idx_u_max + 1)
         u_candidates = sorted_abs_data[u_idxs]
         Nu = u_candidates.size
         shapes = np.zeros(Nu)
@@ -199,12 +256,12 @@ class SymmetricGPO(OverbounderBase):
         for i in range(Nu):
             if i < Nu - 1:
                 fraction = i / Nu
-                checkpoint = math.floor(10 * fraction)
+                checkpoint = np.floor(10 * fraction)
                 diagnostic = (10 * fraction) - checkpoint
                 if diagnostic < resolution:
-                    print("{:3d}%".format(checkpoint * 10))
+                    print("{:3d}%".format(int(checkpoint * 10)))
             else:
-                print("100 %")
+                print("100%")
 
             try:
                 shapes[i] = de.grimshaw_MLE(
@@ -250,6 +307,7 @@ class SymmetricGPO(OverbounderBase):
             ecdf_ords[i] = (i + 1) / n
 
         # Determine points on lower DKW band
+        # confidence = 1 - 1e-6
         confidence = 0.95
         alfa = 1 - confidence
         epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
@@ -326,3 +384,140 @@ class SymmetricGPO(OverbounderBase):
             u,
             core_sigma,
         )
+
+
+class PairedGaussianOverbounder(OverbounderBase):
+    """Represents a Paired Gaussian Overbound object."""
+
+    def __init__(self):
+        super().__init__()
+
+    def cost_left(self, params, x_check, y_check):
+        y_curve = norm.cdf(x_check, loc=params[0], scale=params[1])
+        cost_vect = y_curve - y_check
+        pos_indices = cost_vect >= 0
+        cost = np.sum(cost_vect[pos_indices])
+        cost += np.sum(-100000 * cost_vect[np.logical_not(pos_indices)])
+        return cost
+
+    def cost_right(self, params, x_check, y_check):
+        y_curve = norm.cdf(x_check, loc=params[0], scale=params[1])
+        cost_vect = y_check - y_curve
+        pos_indices = cost_vect >= 0
+        cost = np.sum(cost_vect[pos_indices])
+        cost += np.sum(-100000 * cost_vect[np.logical_not(pos_indices)])
+        return cost
+
+    def overbound(self, data, debug_plots=False):
+        """Produce Paired Gaussian model object that overbounds input error data.
+
+        Parameters
+        ----------
+        data : N numpy array of error data
+
+        Returns
+        -------
+        out_dist : :class:
+        """
+        n = data.size
+        sorted_data = np.sort(data)
+        init_mean = np.mean(data)
+        init_sigma = np.std(data, ddof=1)
+        init_guess = np.array([init_mean, init_sigma])
+
+        # Generate sample ECDF ordinates
+        ecdf_ords = np.zeros(n)
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+
+        # Compute Upper and Lower 95% DKW Confidence Bounds
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+        DKW_low = np.subtract(ecdf_ords, epsilon)
+        DKW_high = np.add(ecdf_ords, epsilon)
+
+        left_usable_idxs = np.asarray(DKW_high < (1 - epsilon)).nonzero()[0]
+        x_check_left = sorted_data[left_usable_idxs]
+        y_check_left = DKW_high[left_usable_idxs]
+
+        left_result = basinhopping(
+            self.cost_left,
+            init_guess,
+            niter=200,
+            stepsize=np.array([init_mean / 2, init_sigma / 2]),
+            minimizer_kwargs={
+                "args": (x_check_left, y_check_left),
+                "method": "Powell",
+                "options": {
+                    "xtol": 1e-14,
+                    "ftol": 1e-6,
+                    "maxfev": 10000,
+                    "maxiter": 10000,
+                },
+            },
+        )
+        # if debug_plots:
+        #     plt.figure("Test Plot Left")
+        #     plt.plot(
+        #         data[left_usable_idxs],
+        #         DKW_high[left_usable_idxs],
+        #         label="Allowable DKW High",
+        #     )
+        #     y_left_ob = norm.cdf(
+        #         data, loc=left_result.x[0], scale=left_result.x[1]
+        #     )
+        #     plt.plot(
+        #         data[left_usable_idxs],
+        #         y_left_ob[left_usable_idxs],
+        #         label="Left OB",
+        #     )
+        #     plt.legend()
+
+        right_usable_idxs = np.asarray(DKW_low > epsilon).nonzero()[0]
+        x_check_right = sorted_data[right_usable_idxs]
+        y_check_right = DKW_low[right_usable_idxs]
+
+        right_result = basinhopping(
+            self.cost_right,
+            init_guess,
+            niter=200,
+            stepsize=np.array([init_mean / 2, init_sigma / 2]),
+            minimizer_kwargs={
+                "args": (x_check_right, y_check_right),
+                "method": "Powell",
+                "options": {
+                    "xtol": 1e-14,
+                    "ftol": 1e-6,
+                    "maxfev": 10000,
+                    "maxiter": 10000,
+                },
+            },
+        )
+        # if debug_plots:
+        #     plt.figure("Test Plot Right")
+        #     plt.plot(
+        #         data[right_usable_idxs],
+        #         DKW_low[right_usable_idxs],
+        #         label="Allowable DKW Low",
+        #     )
+        #     y_left_ob = norm.cdf(
+        #         data, loc=right_result.x[0], scale=right_result.x[1]
+        #     )
+        #     plt.plot(
+        #         data[right_usable_idxs],
+        #         y_left_ob[right_usable_idxs],
+        #         label="Right OB",
+        #     )
+        #     plt.legend()
+
+        left_ob = smodels.Gaussian(
+            mean=left_result.x[0],
+            covariance=np.array([[left_result.x[1] ** 2]]),
+        )
+        right_ob = smodels.Gaussian(
+            mean=right_result.x[0],
+            covariance=np.array([[right_result.x[1] ** 2]]),
+        )
+
+        return smodels.PairedGaussian(left_ob, right_ob)

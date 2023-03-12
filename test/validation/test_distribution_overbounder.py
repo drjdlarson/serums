@@ -139,6 +139,75 @@ def test_SymmetricGPO():
 
 
 def test_PairedGaussianOverbound():
+    print("Testing Paired Gaussian Overbounder:")
+    np.random.seed(seed=233423)
+    n = 10000
+    left = norm.rvs(loc=0, scale=1.5, size=int(n / 2))
+    left = np.abs(left)
+    left = -left
+    left = np.sort(left)
+    np.random.seed(seed=233423)
+    right = norm.rvs(loc=0, scale=1, size=int(n / 2))
+    right = np.abs(right)
+    right = right
+    right = np.sort(right)
+    data = np.concatenate((left, right))
+
+    paired_gaussian_overbounder = sdob.PairedGaussianOverbounder()
+    PairedOB_object = paired_gaussian_overbounder.overbound(
+        data, debug_plots=DEBUG
+    )
+
+    if DEBUG:
+        ecdf_ords = np.zeros(n)
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+        DKW_low = np.subtract(ecdf_ords, epsilon)
+        DKW_high = np.add(ecdf_ords, epsilon)
+
+        left_mean = PairedOB_object.left_gaussian.mean
+        left_std = np.sqrt(PairedOB_object.left_gaussian.covariance)
+        right_mean = PairedOB_object.right_gaussian.mean
+        right_std = np.sqrt(PairedOB_object.right_gaussian.covariance)
+
+        y_left_ob = np.reshape(
+            norm.cdf(data, loc=left_mean, scale=left_std), (n,)
+        )
+        y_right_ob = np.reshape(
+            norm.cdf(data, loc=right_mean, scale=right_std), (n,)
+        )
+        x_paired_ob = np.linspace(
+            np.min(data) - 1, np.max(data) + 1, num=10000
+        )
+        y_paired_ob = np.zeros(x_paired_ob.size)
+        left_pt = PairedOB_object.left_gaussian.mean
+        right_pt = PairedOB_object.right_gaussian.mean
+
+        for i in range(y_paired_ob.size):
+            if x_paired_ob[i] < left_pt:
+                y_paired_ob[i] = norm.cdf(
+                    x_paired_ob[i], loc=left_mean, scale=left_std
+                )
+            elif x_paired_ob[i] > right_pt:
+                y_paired_ob[i] = norm.cdf(
+                    x_paired_ob[i], loc=right_mean, scale=right_std
+                )
+            else:
+                y_paired_ob[i] = 0.5
+
+        plt.figure("Paired Overbound in CDF Domain")
+        plt.plot(data, y_left_ob, label="Left OB", linestyle="--")
+        plt.plot(data, y_right_ob, label="Right OB", linestyle="--")
+        plt.plot(x_paired_ob, y_paired_ob, label="Paired OB")
+        plt.plot(data, ecdf_ords, label="ECDF")
+        plt.plot(data, DKW_high, label="Upper DKW Bound")
+        plt.plot(data, DKW_low, label="Lower DKW Bound")
+        plt.legend()
+
     pass
 
 
@@ -148,7 +217,7 @@ def test_PairedGPO():
 
 if __name__ == "__main__":
     DEBUG = True
-    test_SymmetricGaussianOverbound()
+    # test_SymmetricGaussianOverbound()
     # test_SymmetricGPO()
-    # test_PairedGaussianOverbound()
+    test_PairedGaussianOverbound()
     # test_PairedGPO()
