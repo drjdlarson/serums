@@ -11,6 +11,21 @@ import time
 DEBUG = False
 
 
+def test_FusionGaussian():
+    x = smodels.Gaussian(mean=np.array([[2]]), covariance=np.array([[4]]))
+    y = smodels.Gaussian(mean=np.array([[-3]]), covariance=np.array([[6]]))
+    x.monte_carlo_size = 1e5
+
+    poly = lambda x_, y_: x_ + y_ + x_**2
+
+    z = sdob.fusion([x, y], poly)
+
+    if DEBUG:
+        fig = plt.figure()
+        fig.add_subplot(1, 1, 1)
+        fig.axes[0].hist(z, density=True, cumulative=True, bins=1000, histtype='stepfilled')
+        fig.suptitle("Emperical PDF of Polynomial")
+
 def test_SymmetricGaussianOverbound():
     print("Testing Symmetric Gaussian Overbounder: \n")
     np.random.seed(seed=233423)
@@ -217,7 +232,10 @@ def test_PairedGPO():
 
 if __name__ == "__main__":
     DEBUG = True
+    test_FusionGaussian()
     # test_SymmetricGaussianOverbound()
     # test_SymmetricGPO()
-    test_PairedGaussianOverbound()
+    # test_PairedGaussianOverbound()
     # test_PairedGPO()
+
+    plt.show()

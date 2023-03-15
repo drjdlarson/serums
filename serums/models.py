@@ -105,12 +105,12 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size])
+        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
         return self.sample(num_samples=n_samps) - other.sample(num_samples=n_samps)
 
     def __neg__(self) -> np.ndarray:
         """Should only be used to redefine order of operations for a subtraction operation (i.e. -g1 + g2 vs g2 - g1)"""
-        return -self.sample(num_samples=self.monte_carlo_size)
+        return -self.sample(num_samples=int(self.monte_carlo_size))
 
     def __add__(self, other: BaseSingleModel) -> np.ndarray:
         if self.location.size != other.location.size:
@@ -119,7 +119,7 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size])
+        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
         return self.sample(num_samples=n_samps) + other.sample(num_samples=n_samps)
 
     def __mul__(self, other: BaseSingleModel) -> np.ndarray:
@@ -129,7 +129,7 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size])
+        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
         return self.sample(num_samples=n_samps) * other.sample(num_samples=n_samps)
 
     def __truediv__(self, other: BaseSingleModel) -> np.ndarray:
@@ -139,7 +139,7 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size])
+        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
         return self.sample(num_samples=n_samps) / other.sample(num_samples=n_samps)
 
     def __floordiv__(self, other: BaseSingleModel) -> np.ndarray:
@@ -149,13 +149,11 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size])
+        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
         return self.sample(num_samples=n_samps) // other.sample(num_samples=n_samps)
 
-    def __pow__(self, power: int, modulo=None) -> np.ndarray:
-        return self.sample(num_samples=self.monte_carlo_size).__pow__(
-            power, modulo=modulo
-        )
+    def __pow__(self, power: int) -> np.ndarray:
+        return self.sample(num_samples=int(self.monte_carlo_size))**power
 
 
 class Gaussian(BaseSingleModel):
@@ -266,7 +264,7 @@ class Gaussian(BaseSingleModel):
         if num_samples is None:
             num_samples = 1
         return rng.multivariate_normal(
-            self.mean.flatten(), self.covariance, size=num_samples
+            self.mean.flatten(), self.covariance, size=int(num_samples)
         )
 
     def pdf(self, x):
@@ -355,9 +353,9 @@ class PairedGaussian(BaseSingleModel):
             num_samples = 1
 
         if rng.uniform() > 0.5:
-            return self.right_gaussian.sample(rng=rng, num_samples=num_samples)
+            return self.right_gaussian.sample(rng=rng, num_samples=int(num_samples))
         else:
-            return self.left_gaussian.sample(rng=rng, num_samples=num_samples)
+            return self.left_gaussian.sample(rng=rng, num_samples=int(num_samples))
 
 
 class StudentsT(BaseSingleModel):
@@ -453,7 +451,7 @@ class StudentsT(BaseSingleModel):
             loc=self.location.flatten(),
             shape=self.scale,
             df=self.degrees_of_freedom,
-            size=num_samples,
+            size=int(num_samples),
         )
 
         return x.reshape((x.size, 1))
@@ -548,9 +546,11 @@ class ChiSquared(BaseSingleModel):
 
         rv = stats.chi2
         rv.random_state = rng
-        x = rv.rvs(self._dof, loc=self.location.flatten(), scale=self.scale, size=1)
-
-        return x.reshape((x.size, 1))
+        x = rv.rvs(self._dof, loc=self.location.flatten(), scale=self.scale, size=int(num_samples))
+        if num_samples == 1:
+            return x.reshape((-1, 1))
+        else:
+            return x
 
 
 class Cauchy(StudentsT):
@@ -741,10 +741,10 @@ class GaussianScaleMixture(BaseSingleModel):
             num_samples = 1
 
         if self.type in [enums.GSMTypes.STUDENTS_T, enums.GSMTypes.CAUCHY]:
-            return self._sample_student_t(rng, num_samples)
+            return self._sample_student_t(rng, int(num_samples))
 
         elif self.type is enums.GSMTypes.SYMMETRIC_A_STABLE:
-            return self._sample_SaS(rng, num_samples)
+            return self._sample_SaS(rng, int(num_samples))
 
         else:
             raise RuntimeError("GSM type: {} is not supported".format(self.type))
@@ -804,7 +804,7 @@ class GeneralizedPareto(BaseSingleModel):
 
         rv = stats.genpareto
         rv.random_state = rng
-        x = (self.scale * rv.rvs(self.shape, size=num_samples)) + self.location.ravel()
+        x = (self.scale * rv.rvs(self.shape, size=int(num_samples))) + self.location.ravel()
         if num_samples == 1:
             return x.reshape((-1, 1))
         else:
@@ -950,8 +950,8 @@ class BaseMixtureModel:
             x = self._distributions[mix_ind].sample(rng=rng)
             return x.reshape((x.size, 1))
         else:
-            x = np.nan * np.ones((num_samples, self._distributions[0].location.size()))
-            for ii in range(num_samples):
+            x = np.nan * np.ones((int(num_samples), self._distributions[0].location.size()))
+            for ii in range(int(num_samples)):
                 mix_ind = rng.choice(np.arange(len(self), dtype=int), p=self.weights)
                 x[ii, :] = self._distributions[mix_ind].sample(rng=rng).ravel()
             return x

@@ -16,8 +16,9 @@ def fusion(varList: List[smodels.BaseSingleModel | smodels.BaseMixtureModel],
            poly: Callable[[List[smodels.BaseSingleModel | smodels.BaseMixtureModel]], np.ndarray]) -> np.ndarray:
     max_size = max([x.monte_carlo_size for x in varList])
     for x in varList:
-        x.monte_carlo_size = max_size
+        x.monte_carlo_size = int(max_size)
     return poly(*varList)
+
 
 class OverbounderBase(ABC):
     """Represents base class for any overbound object."""
