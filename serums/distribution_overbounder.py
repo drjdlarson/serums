@@ -1,15 +1,23 @@
 """For SERUMS Overbound Estimation."""
+from __future__ import annotations
+
 import numpy as np
 from scipy.optimize import minimize, basinhopping
-from scipy.stats import ks_2samp, cramervonmises_2samp, anderson_ksamp
 import serums.models as smodels
 import serums.distribution_estimator as de
 from abc import abstractmethod, ABC
-from scipy.stats import norm, halfnorm, genpareto, t
-import matplotlib.pyplot as plt
+from scipy.stats import norm, halfnorm, t
 import serums.errors
 import scipy.special as special
+from typing import List, Callable
 
+
+def fusion(varList: List[smodels.BaseSingleModel | smodels.BaseMixtureModel],
+           poly: Callable[[List[smodels.BaseSingleModel | smodels.BaseMixtureModel]], np.ndarray]) -> np.ndarray:
+    max_size = max([x.monte_carlo_size for x in varList])
+    for x in varList:
+        x.monte_carlo_size = max_size
+    return poly(*varList)
 
 class OverbounderBase(ABC):
     """Represents base class for any overbound object."""
