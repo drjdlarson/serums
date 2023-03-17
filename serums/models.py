@@ -5,7 +5,7 @@ import numpy.random as rnd
 import scipy.stats as stats
 from warnings import warn
 import matplotlib.pyplot as plt
-from scipy.stats import probplot
+from scipy.stats import probplot, norm, halfnorm, genpareto
 from copy import deepcopy
 
 import serums.enums as enums
@@ -28,12 +28,21 @@ class BaseSingleModel:
 
     def __init__(self, loc=None, scale=None, monte_carlo_size=int(1e4)):
         super().__init__()
-        self.location = loc
-        self.scale = scale
+        if isinstance(loc, np.ndarray):
+            self.location = loc
+        else:
+            self.location = np.array([[loc]])
+
+        if isinstance(scale, np.ndarray):
+            self.scale = scale
+        else:
+            self.scale = np.array([[scale]])
 
         self.monte_carlo_size = monte_carlo_size
 
-    def sample(self, rng: rnd._generator = None, num_samples: int = None) -> np.ndarray:
+    def sample(
+        self, rng: rnd._generator = None, num_samples: int = None
+    ) -> np.ndarray:
         """Draw a sample from the distribution.
 
         This should be implemented by the child class.
@@ -93,7 +102,9 @@ class BaseSingleModel:
                     fmt += "{:8s}|".format("")
                 fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "|"
             msg += (
-                fmt.format(self.mean.ravel()[ii], *self.covariance[ii, :].tolist())
+                fmt.format(
+                    self.mean.ravel()[ii], *self.covariance[ii, :].tolist()
+                )
                 + "\n"
             )
         return msg
@@ -105,8 +116,12 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) - other.sample(num_samples=n_samps)
+        n_samps = np.max(
+            [self.monte_carlo_size, other.monte_carlo_size]
+        ).astype(int)
+        return self.sample(num_samples=n_samps) - other.sample(
+            num_samples=n_samps
+        )
 
     def __neg__(self) -> np.ndarray:
         """Should only be used to redefine order of operations for a subtraction operation (i.e. -g1 + g2 vs g2 - g1)"""
@@ -119,8 +134,12 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) + other.sample(num_samples=n_samps)
+        n_samps = np.max(
+            [self.monte_carlo_size, other.monte_carlo_size]
+        ).astype(int)
+        return self.sample(num_samples=n_samps) + other.sample(
+            num_samples=n_samps
+        )
 
     def __mul__(self, other: BaseSingleModel) -> np.ndarray:
         if self.location.size != other.location.size:
@@ -129,8 +148,12 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) * other.sample(num_samples=n_samps)
+        n_samps = np.max(
+            [self.monte_carlo_size, other.monte_carlo_size]
+        ).astype(int)
+        return self.sample(num_samples=n_samps) * other.sample(
+            num_samples=n_samps
+        )
 
     def __truediv__(self, other: BaseSingleModel) -> np.ndarray:
         if self.location.size != other.location.size:
@@ -139,8 +162,12 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) / other.sample(num_samples=n_samps)
+        n_samps = np.max(
+            [self.monte_carlo_size, other.monte_carlo_size]
+        ).astype(int)
+        return self.sample(num_samples=n_samps) / other.sample(
+            num_samples=n_samps
+        )
 
     def __floordiv__(self, other: BaseSingleModel) -> np.ndarray:
         if self.location.size != other.location.size:
@@ -149,11 +176,15 @@ class BaseSingleModel:
                     self.location.size, other.location.size
                 )
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) // other.sample(num_samples=n_samps)
+        n_samps = np.max(
+            [self.monte_carlo_size, other.monte_carlo_size]
+        ).astype(int)
+        return self.sample(num_samples=n_samps) // other.sample(
+            num_samples=n_samps
+        )
 
     def __pow__(self, power: int) -> np.ndarray:
-        return self.sample(num_samples=int(self.monte_carlo_size))**power
+        return self.sample(num_samples=int(self.monte_carlo_size)) ** power
 
 
 class Gaussian(BaseSingleModel):
@@ -208,7 +239,9 @@ class Gaussian(BaseSingleModel):
                     fmt += "{:13s}|".format("")
                 fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "|"
             msg += (
-                fmt.format(self.mean.ravel()[ii], *self.covariance[ii, :].tolist())
+                fmt.format(
+                    self.mean.ravel()[ii], *self.covariance[ii, :].tolist()
+                )
                 + "\n"
             )
         return msg
@@ -276,10 +309,12 @@ class Gaussian(BaseSingleModel):
             PDF value of the state `x`.
         """
         rv = stats.multivariate_normal
-        return rv.pdf(x.flatten(), mean=self.mean.flatten(), cov=self.covariance)
+        return rv.pdf(
+            x.flatten(), mean=self.mean.flatten(), cov=self.covariance
+        )
 
     def CI(self, alfa):
-        """Determine confidence interval given significance level alfa.
+        """Return confidence interval of distribution given a significance level 'alfa'.
 
         Parameters
         ----------
@@ -292,7 +327,9 @@ class Gaussian(BaseSingleModel):
             array containing upper and lower bound of confidence interval
         """
         low = stats.norm.ppf(alfa, loc=self.mean, scale=np.sqrt(self.scale))
-        high = stats.norm.ppf(1 - alfa, loc=self.mean, scale=np.sqrt(self.scale))
+        high = stats.norm.ppf(
+            1 - alfa, loc=self.mean, scale=np.sqrt(self.scale)
+        )
         return np.array([[low[0, 0], high[0, 0]]])
 
     def CDFplot(self, data):
@@ -306,7 +343,7 @@ class Gaussian(BaseSingleModel):
 
         Returns
         -------
-        unsure
+        matplotlib figure
         """
         n = data.size
         ordered_abs_data = np.sort(np.abs(data))
@@ -322,7 +359,9 @@ class Gaussian(BaseSingleModel):
         confidence = 0.95
         alfa = 1 - confidence
         epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
-        plt.figure("Half-Gaussian CDF Domain")
+        plt.figure(
+            "Symmetric Gaussian Overbound Plot in Half-Gaussian CDF Domain"
+        )
         plt.plot(X_ECDF, Y_ECDF, label="Original ECDF")
         plt.plot(X_ECDF, np.add(Y_ECDF, epsilon), label="DKW Upper Band")
         plt.plot(X_ECDF, np.subtract(Y_ECDF, epsilon), label="DKW Lower Band")
@@ -346,16 +385,128 @@ class PairedGaussian(BaseSingleModel):
         self.left_gaussian = deepcopy(left)
         self.right_gaussian = deepcopy(right)
 
-    def sample(self, rng: rnd._generator = None, num_samples: int = None) -> np.ndarray:
+    def sample(
+        self, rng: rnd._generator = None, num_samples: int = None
+    ) -> np.ndarray:
         if rng is None:
             rng = rnd.default_rng()
         if num_samples is None:
             num_samples = 1
 
-        if rng.uniform() > 0.5:
-            return self.right_gaussian.sample(rng=rng, num_samples=int(num_samples))
-        else:
-            return self.left_gaussian.sample(rng=rng, num_samples=int(num_samples))
+        p = rng.uniform(size=num_samples)
+        rcount = int(np.sum(p[p >= 0.5]))
+        lcount = int(num_samples) - rcount
+
+        samp = np.nan * np.ones((num_samples, self.right_gaussian.mean.size))
+        if rcount > 0:
+            rsamp = self.right_gaussian.sample(
+                rng=rng, num_samples=int(rcount)
+            )
+            samp[0:rcount] = (
+                np.abs(rsamp - self.right_gaussian.mean)
+                + self.right_gaussian.mean
+            )
+
+        if lcount > 0:
+            lsamp = self.left_gaussian.sample(rng=rng, num_samples=int(lcount))
+            samp[rcount:] = (
+                -np.abs(lsamp - self.left_gaussian.mean)
+                + self.left_gaussian.mean
+            )
+
+        return samp
+
+    def CI(self, alfa):
+        """Return confidence interval of distribution given a significance level 'alfa'.
+
+        Parameters
+        ----------
+        alfa : float
+            significance level, i.e. confidence level = (1 - alfa)
+
+        Returns
+        -------
+        2 x 1 numpy array
+            array containing upper and lower bound of confidence interval
+        """
+        e = alfa / 2
+        left = norm.ppf(
+            e,
+            loc=self.left_gaussian.location,
+            scale=np.sqrt(self.left_gaussian.scale),
+        )
+        right = norm.ppf(
+            1 - e,
+            loc=self.right_gaussian.location,
+            scale=np.sqrt(self.right_gaussian.scale),
+        )
+        return np.array([[left, right]])
+
+    def CDFplot(self, data):
+        """Plot Paired Gaussian overbound and DKW bound against ECDF of input data.
+
+        Parameters
+        ----------
+        data : N numpy array
+            numpy array containing the error data used to calculate the
+            overbound
+
+        Returns
+        -------
+        matplotlib figure
+        """
+        n = data.size
+        ecdf_ords = np.zeros(n)
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+        DKW_low = np.subtract(ecdf_ords, epsilon)
+        DKW_high = np.add(ecdf_ords, epsilon)
+
+        left_mean = self.left_gaussian.mean
+        left_std = np.sqrt(self.left_gaussian.covariance)
+        right_mean = self.right_gaussian.mean
+        right_std = np.sqrt(self.right_gaussian.covariance)
+
+        y_left_ob = np.reshape(
+            norm.cdf(data, loc=left_mean, scale=left_std), (n,)
+        )
+        y_right_ob = np.reshape(
+            norm.cdf(data, loc=right_mean, scale=right_std), (n,)
+        )
+        x_paired_ob = np.linspace(
+            np.min(data) - 1, np.max(data) + 1, num=10000
+        )
+        y_paired_ob = np.zeros(x_paired_ob.size)
+        left_pt = self.left_gaussian.mean
+        right_pt = self.right_gaussian.mean
+
+        for i in range(y_paired_ob.size):
+            if x_paired_ob[i] < left_pt:
+                y_paired_ob[i] = norm.cdf(
+                    x_paired_ob[i], loc=left_mean, scale=left_std
+                )
+            elif x_paired_ob[i] > right_pt:
+                y_paired_ob[i] = norm.cdf(
+                    x_paired_ob[i], loc=right_mean, scale=right_std
+                )
+            else:
+                y_paired_ob[i] = 0.5
+
+        plt.figure("Paired Overbound in CDF Domain")
+        plt.plot(data, y_left_ob, label="Left OB", linestyle="--")
+        plt.plot(data, y_right_ob, label="Right OB", linestyle="--")
+        plt.plot(x_paired_ob, y_paired_ob, label="Paired OB")
+        plt.plot(data, ecdf_ords, label="ECDF")
+        plt.plot(data, DKW_high, label="Upper DKW Bound")
+        plt.plot(data, DKW_low, label="Lower DKW Bound")
+        plt.legend()
+
+    def Qplot(self, data):
+        pass
 
 
 class StudentsT(BaseSingleModel):
@@ -546,7 +697,12 @@ class ChiSquared(BaseSingleModel):
 
         rv = stats.chi2
         rv.random_state = rng
-        x = rv.rvs(self._dof, loc=self.location.flatten(), scale=self.scale, size=int(num_samples))
+        x = rv.rvs(
+            self._dof,
+            loc=self.location.flatten(),
+            scale=self.scale,
+            size=int(num_samples),
+        )
         if num_samples == 1:
             return x.reshape((-1, 1))
         else:
@@ -704,7 +860,9 @@ class GaussianScaleMixture(BaseSingleModel):
         if self.type in self.__df_types:
             return self._df
         else:
-            msg = "GSM type {:s} does not have a degree of freedom.".format(self.type)
+            msg = "GSM type {:s} does not have a degree of freedom.".format(
+                self.type
+            )
             warn(msg)
             return None
 
@@ -712,12 +870,17 @@ class GaussianScaleMixture(BaseSingleModel):
     def degrees_of_freedom(self, val):
         if self.type in self.__df_types:
             if self.type is enums.GSMTypes.CAUCHY:
-                warn("GSM type {:s} requires degree of freedom = 1".format(self.type))
+                warn(
+                    "GSM type {:s} requires degree of freedom = 1".format(
+                        self.type
+                    )
+                )
                 return
             self._df = val
         else:
             msg = (
-                "GSM type {:s} does not have a degree of freedom. " + "Skipping"
+                "GSM type {:s} does not have a degree of freedom. "
+                + "Skipping"
             ).format(self.type)
             warn(msg)
 
@@ -747,7 +910,9 @@ class GaussianScaleMixture(BaseSingleModel):
             return self._sample_SaS(rng, int(num_samples))
 
         else:
-            raise RuntimeError("GSM type: {} is not supported".format(self.type))
+            raise RuntimeError(
+                "GSM type: {} is not supported".format(self.type)
+            )
 
     def _sample_student_t(self, rng, num_samples=None):
         return stats.t.rvs(
@@ -804,7 +969,9 @@ class GeneralizedPareto(BaseSingleModel):
 
         rv = stats.genpareto
         rv.random_state = rng
-        x = (self.scale * rv.rvs(self.shape, size=int(num_samples))) + self.location.ravel()
+        x = (
+            self.scale * rv.rvs(self.shape, size=int(num_samples))
+        ) + self.location.ravel()
         if num_samples == 1:
             return x.reshape((-1, 1))
         else:
@@ -895,7 +1062,9 @@ class BaseMixtureModel:
         weight of each distribution
     """
 
-    def __init__(self, distributions=None, weights=None, monte_carlo_size=int(1e4)):
+    def __init__(
+        self, distributions=None, weights=None, monte_carlo_size=int(1e4)
+    ):
         """Initialize a mixture model object.
 
         Parameters
@@ -946,16 +1115,21 @@ class BaseMixtureModel:
         if num_samples is None:
             num_samples = 1
         if num_samples == 1:
-            mix_ind = rng.choice(np.arange(len(self), dtype=int), p=self.weights)
+            mix_ind = rng.choice(
+                np.arange(len(self), dtype=int), p=self.weights
+            )
             x = self._distributions[mix_ind].sample(rng=rng)
             return x.reshape((x.size, 1))
         else:
-            x = np.nan * np.ones((int(num_samples), self._distributions[0].location.size()))
+            x = np.nan * np.ones(
+                (int(num_samples), self._distributions[0].location.size())
+            )
             for ii in range(int(num_samples)):
-                mix_ind = rng.choice(np.arange(len(self), dtype=int), p=self.weights)
+                mix_ind = rng.choice(
+                    np.arange(len(self), dtype=int), p=self.weights
+                )
                 x[ii, :] = self._distributions[mix_ind].sample(rng=rng).ravel()
             return x
-
 
     def pdf(self, x):
         """Multi-variate probability density function for this mixture.
@@ -1066,10 +1240,14 @@ class _DistListWrapper(list):
         return len(self.dist_lst)
 
     def append(self, *args):
-        raise RuntimeError("Cannot append, use add_component function instead.")
+        raise RuntimeError(
+            "Cannot append, use add_component function instead."
+        )
 
     def extend(self, *args):
-        raise RuntimeError("Cannot extend, use add_component function instead.")
+        raise RuntimeError(
+            "Cannot extend, use add_component function instead."
+        )
 
 
 class GaussianMixture(BaseMixtureModel):
@@ -1095,7 +1273,8 @@ class GaussianMixture(BaseMixtureModel):
         """
         if means is not None and covariances is not None:
             kwargs["distributions"] = [
-                Gaussian(mean=m, covariance=c) for m, c in zip(means, covariances)
+                Gaussian(mean=m, covariance=c)
+                for m, c in zip(means, covariances)
             ]
         super().__init__(**kwargs)
 
@@ -1166,7 +1345,10 @@ class GaussianMixture(BaseMixtureModel):
             ]
 
         self._distributions.extend(
-            [Gaussian(mean=m, covariance=c) for m, c in zip(means, covariances)]
+            [
+                Gaussian(mean=m, covariance=c)
+                for m, c in zip(means, covariances)
+            ]
         )
         self.weights.extend(weights)
 
@@ -1183,7 +1365,8 @@ class StudentsTMixture(BaseMixtureModel):
                 ]
             else:
                 dists = [
-                    StudentsT(mean=m, scale=s, dof=dof) for m, s in zip(means, scalings)
+                    StudentsT(mean=m, scale=s, dof=dof)
+                    for m, s in zip(means, scalings)
                 ]
             kwargs["distributions"] = dists
         super().__init__(**kwargs)
@@ -1315,11 +1498,11 @@ class SymmetricGaussianPareto(BaseSingleModel):
     Attributes
     ----------
     location : 1 x 1 numpy array
-        location of the distribution. By definition, it is always 0.
+        Location (mean) of the distribution. By definition, it is always 0.
     scale : 1 x 1 numpy array
-        variance of the core Gaussian region. The default is None.
+        Standard deviation of the core Gaussian region. The default is None.
     threshold : 1 x 1 numpy array
-        location where the core Gaussian region meets the Pareto tail. The default is None.
+        Location where the core Gaussian region meets the Pareto tail. The default is None.
     tail_shape : 1 x 1 numpy array
         GPD shape parameter of the distribution's tail. The default is None
     tail_scale : 1 x 1 numpy array
@@ -1329,6 +1512,7 @@ class SymmetricGaussianPareto(BaseSingleModel):
 
     def __init__(
         self,
+        location=0,
         scale=None,
         threshold=None,
         tail_shape=None,
@@ -1338,14 +1522,16 @@ class SymmetricGaussianPareto(BaseSingleModel):
 
         Parameters
         ----------
+        location : 1x1 numpy array
+            Location (mean) of the distribution. By definition, it is always 0.
         scale : 1 x 1 numpy array, optional
-            variance of the core Gaussian region. The default is None.
+            Sets the class attribute "scale".
         threshold : 1 x 1 numpy array, optional
-            location where the core Gaussian region meets the Pareto tail. The default is None.
+            Sets the class attribute "threshold".
         tail_shape : 1 x 1 numpy array, optional
-            GPD shape parameter of the distribution's tail. The default is None
+            Sets the class attribute "tail_shape".
         tail_scale : 1 x 1 numpy array, optional
-            GPD scale parameter of the distribution's tail. The default is None
+            Sets the class attribute "tail_scale".
 
         Returns
         -------
@@ -1356,24 +1542,35 @@ class SymmetricGaussianPareto(BaseSingleModel):
         self.tail_shape = tail_shape
         self.tail_scale = tail_scale
 
-    def confidence_interval(self, alfa):
-        """Return confidence interval of distribution given significance level.
+    def sample(self):
+        pass
+
+    def CI(self, alfa):
+        """Return confidence interval of distribution given a significance level 'alfa'.
 
         Parameters
         ----------
         alfa : float
-            significance level of returned confidence interval
+            significance level, i.e. confidence level = (1 - alfa)
 
         Returns
         -------
-        2 numpy array
-            the interval containing the largest deviations from 0 that will happen with
-            probability P = (1-alfa).
+        2 x 1 numpy array
+            array containing upper and lower bound of confidence interval
         """
-        pass
+        q_u = halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale)
+        q_x = 1 - alfa
+        if q_x <= q_u:
+            value = halfnorm.ppf(1 - alfa, loc=self.location, scale=self.scale)
+        else:
+            temp = (q_x - q_u) / (1 - q_u)
+            value = self.threshold + genpareto.ppf(
+                temp, self.tail_shape, loc=0, scale=self.tail_scale
+            )
+        return np.array([[-value, value]])
 
-    def plot_ECDF_and_OB_in_CDF_domain(self):
-        """Plots the input data ECDF against the computed overbound CDF.
+    def CDFplot(self, data):
+        """Plot Symmetric Gaussian-Pareto overbound and DKW bound against ECDF of input data.
 
         Parameters
         ----------
@@ -1386,4 +1583,55 @@ class SymmetricGaussianPareto(BaseSingleModel):
             associated DKW Lower bound, and the computed symmetric GPO in the
             CDF domain.
         """
+        pos = np.absolute(data)
+        sorted_abs_data = np.sort(pos)
+
+        # Plot data ECDF, DKW lower bound, and Symmetric GPO in CDF domain
+
+        n = data.size
+        # confidence = 1 - 1e-6
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+
+        x_core = np.linspace(0, self.threshold, 10000)
+        x_tail = np.linspace(self.threshold, 1.2 * max(sorted_abs_data), 10000)
+
+        y_core = halfnorm.cdf(x_core, loc=self.location, scale=self.scale)
+        y_tail = genpareto.cdf(
+            x_tail - self.threshold,
+            self.tail_shape,
+            loc=self.location,
+            scale=self.tail_scale,
+        ) * (
+            1
+            - (
+                halfnorm.cdf(
+                    self.threshold, loc=self.location, scale=self.scale
+                )
+            )
+        ) + (
+            halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale)
+        )
+
+        x = np.append(x_core, x_tail)
+        y = np.append(y_core, y_tail)
+
+        ecdf_ords = np.zeros(n)
+
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+
+        DKW_lower_ords = np.subtract(ecdf_ords, epsilon)
+
+        plt.figure("Symmetric GPO Plot in Half-Gaussian CDF Domain")
+        plt.plot(sorted_abs_data, ecdf_ords, label="ECDF")
+        plt.plot(sorted_abs_data, DKW_lower_ords, label="DKW Lower Bound")
+        plt.plot(x, y, label="Symmetric GPO")
+
+        plt.xlim([0, 1.2 * max(sorted_abs_data)])
+        plt.legend()
+        plt.grid()
+
+    def Qplot(self, data):
         pass

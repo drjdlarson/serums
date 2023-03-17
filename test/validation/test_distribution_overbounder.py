@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import serums.distribution_overbounder as sdob
 import serums.models as smodels
-from scipy.stats import norm, genpareto, t, halfnorm, probplot
+from scipy.stats import norm, genpareto, t, halfnorm, probplot, chi2
 import time
 
 
@@ -23,8 +23,11 @@ def test_FusionGaussian():
     if DEBUG:
         fig = plt.figure()
         fig.add_subplot(1, 1, 1)
-        fig.axes[0].hist(z, density=True, cumulative=True, bins=1000, histtype='stepfilled')
+        fig.axes[0].hist(
+            z, density=True, cumulative=True, bins=1000, histtype="stepfilled"
+        )
         fig.suptitle("Emperical PDF of Polynomial")
+
 
 def test_SymmetricGaussianOverbound():
     print("Testing Symmetric Gaussian Overbounder: \n")
@@ -54,7 +57,7 @@ def test_SymmetricGaussianOverbound():
         alfa = 1e-6
         interval = out_dist.CI(alfa)
         print(
-            "Confidence Interval = (",
+            "Confidence Interval for alfa = 1e-6 : (",
             interval[0, 0],
             ", ",
             interval[0, 1],
@@ -76,12 +79,7 @@ def test_SymmetricGPO():
     GPOBer = sdob.SymmetricGPO()
 
     start = time.time()
-    (
-        tail_shape,
-        tail_scale,
-        u,
-        core_sigma,
-    ) = GPOBer.overbound(data)
+    out_dist = GPOBer.overbound(data)
     end = time.time()
 
     print("\n------")
@@ -96,60 +94,25 @@ def test_SymmetricGPO():
             tail_scale_exp,
             u_exp,
             core_sigma_exp,
-            tail_shape,
-            tail_scale,
-            u,
-            core_sigma,
+            out_dist.tail_shape,
+            out_dist.tail_scale,
+            out_dist.threshold,
+            out_dist.scale,
         )
     )
 
     if DEBUG:
-        pos = np.absolute(data)
-        sorted_abs_data = np.sort(pos)
-
-        # Plot data ECDF, DKW lower bound, and Symmetric GPO in CDF domain
-
-        n = data.size
-        # confidence = 1 - 1e-6
-        confidence = 0.95
-        alfa = 1 - confidence
-        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
-
-        x_core = np.linspace(0, u, 10000)
-        x_tail = np.linspace(u, 1.2 * max(sorted_abs_data), 10000)
-
-        y_core = halfnorm.cdf(x_core, loc=0, scale=core_sigma)
-        y_tail = genpareto.cdf(
-            x_tail - u, tail_shape, loc=0, scale=tail_scale
-        ) * (1 - (halfnorm.cdf(u, loc=0, scale=core_sigma))) + (
-            halfnorm.cdf(u, loc=0, scale=core_sigma)
+        alfa = 1e-6
+        interval = out_dist.CI(alfa)
+        print(
+            "Confidence Interval for alfa = 1e-6 : (",
+            interval[0, 0],
+            ", ",
+            interval[0, 1],
+            ")",
         )
-
-        x = np.append(x_core, x_tail)
-        y = np.append(y_core, y_tail)
-
-        ecdf_ords = np.zeros(n)
-
-        for i in range(n):
-            ecdf_ords[i] = (i + 1) / n
-
-        DKW_lower_ords = np.subtract(ecdf_ords, epsilon)
-
-        # Calculate Gaussian OB for comparison
-        gaussian_ober = sdob.SymmetricGaussianOverbounder()
-        out_dist = gaussian_ober.overbound(data)
-
-        X_OB = np.linspace(0, 1.2 * max(sorted_abs_data), 10000)
-        Y_OB = halfnorm.cdf(X_OB, loc=0, scale=np.sqrt(out_dist.scale[0, 0]))
-
-        plt.figure()
-        plt.plot(sorted_abs_data, ecdf_ords, label="ECDF")
-        plt.plot(sorted_abs_data, DKW_lower_ords, label="DKW Lower Bound")
-        plt.plot(x, y, label="Symmetric GPO")
-        plt.plot(X_OB, Y_OB, label="Symmetric Gaussian Overbound")
-
-        plt.xlim([0, 1.2 * max(sorted_abs_data)])
-        plt.legend()
+        out_dist.CDFplot(data)
+        out_dist.Qplot(data)
     pass
 
 
@@ -169,59 +132,23 @@ def test_PairedGaussianOverbound():
     data = np.concatenate((left, right))
 
     paired_gaussian_overbounder = sdob.PairedGaussianOverbounder()
-    PairedOB_object = paired_gaussian_overbounder.overbound(
-        data, debug_plots=DEBUG
-    )
+    out_dist = paired_gaussian_overbounder.overbound(data, debug_plots=DEBUG)
 
     if DEBUG:
-        ecdf_ords = np.zeros(n)
-        for i in range(n):
-            ecdf_ords[i] = (i + 1) / n
-
-        confidence = 0.95
-        alfa = 1 - confidence
-        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
-        DKW_low = np.subtract(ecdf_ords, epsilon)
-        DKW_high = np.add(ecdf_ords, epsilon)
-
-        left_mean = PairedOB_object.left_gaussian.mean
-        left_std = np.sqrt(PairedOB_object.left_gaussian.covariance)
-        right_mean = PairedOB_object.right_gaussian.mean
-        right_std = np.sqrt(PairedOB_object.right_gaussian.covariance)
-
-        y_left_ob = np.reshape(
-            norm.cdf(data, loc=left_mean, scale=left_std), (n,)
+        test_sample = out_dist.sample(num_samples=10000)
+        plt.figure("ECDF of OB Model Sample Obtained through .sample Method")
+        plt.hist(test_sample, bins=1000, cumulative=True, histtype="step")
+        alfa = 1e-6
+        interval = out_dist.CI(alfa)
+        print(
+            "Confidence Interval for alfa = 1e-6 : (",
+            interval[0, 0],
+            ", ",
+            interval[0, 1],
+            ")",
         )
-        y_right_ob = np.reshape(
-            norm.cdf(data, loc=right_mean, scale=right_std), (n,)
-        )
-        x_paired_ob = np.linspace(
-            np.min(data) - 1, np.max(data) + 1, num=10000
-        )
-        y_paired_ob = np.zeros(x_paired_ob.size)
-        left_pt = PairedOB_object.left_gaussian.mean
-        right_pt = PairedOB_object.right_gaussian.mean
-
-        for i in range(y_paired_ob.size):
-            if x_paired_ob[i] < left_pt:
-                y_paired_ob[i] = norm.cdf(
-                    x_paired_ob[i], loc=left_mean, scale=left_std
-                )
-            elif x_paired_ob[i] > right_pt:
-                y_paired_ob[i] = norm.cdf(
-                    x_paired_ob[i], loc=right_mean, scale=right_std
-                )
-            else:
-                y_paired_ob[i] = 0.5
-
-        plt.figure("Paired Overbound in CDF Domain")
-        plt.plot(data, y_left_ob, label="Left OB", linestyle="--")
-        plt.plot(data, y_right_ob, label="Right OB", linestyle="--")
-        plt.plot(x_paired_ob, y_paired_ob, label="Paired OB")
-        plt.plot(data, ecdf_ords, label="ECDF")
-        plt.plot(data, DKW_high, label="Upper DKW Bound")
-        plt.plot(data, DKW_low, label="Lower DKW Bound")
-        plt.legend()
+        out_dist.CDFplot(data)
+        out_dist.Qplot(data)
 
     pass
 
@@ -232,10 +159,10 @@ def test_PairedGPO():
 
 if __name__ == "__main__":
     DEBUG = True
-    test_FusionGaussian()
-    # test_SymmetricGaussianOverbound()
-    # test_SymmetricGPO()
-    # test_PairedGaussianOverbound()
+    # test_FusionGaussian()
+    test_SymmetricGaussianOverbound()
+    test_SymmetricGPO()
+    test_PairedGaussianOverbound()
     # test_PairedGPO()
 
     plt.show()

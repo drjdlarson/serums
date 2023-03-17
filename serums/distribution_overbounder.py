@@ -12,8 +12,12 @@ import scipy.special as special
 from typing import List, Callable
 
 
-def fusion(varList: List[smodels.BaseSingleModel | smodels.BaseMixtureModel],
-           poly: Callable[[List[smodels.BaseSingleModel | smodels.BaseMixtureModel]], np.ndarray]) -> np.ndarray:
+def fusion(
+    varList: List[smodels.BaseSingleModel | smodels.BaseMixtureModel],
+    poly: Callable[
+        [List[smodels.BaseSingleModel | smodels.BaseMixtureModel]], np.ndarray
+    ],
+) -> np.ndarray:
     max_size = max([x.monte_carlo_size for x in varList])
     for x in varList:
         x.monte_carlo_size = int(max_size)
@@ -387,11 +391,11 @@ class SymmetricGPO(OverbounderBase):
         #     tail_scale,
         # )
         print("\nDone.")
-        return (
-            tail_shape,
-            tail_scale,
-            u,
-            core_sigma,
+        return smodels.SymmetricGaussianPareto(
+            scale=core_sigma,
+            threshold=u,
+            tail_shape=tail_shape,
+            tail_scale=tail_scale,
         )
 
 
@@ -406,7 +410,9 @@ class PairedGaussianOverbounder(OverbounderBase):
         cost_vect = y_curve - y_check
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(-100000 * cost_vect[np.logical_not(pos_indices)])
+        cost += np.sum(
+            -1000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
+        )
         return cost
 
     def cost_right(self, params, x_check, y_check):
@@ -414,7 +420,9 @@ class PairedGaussianOverbounder(OverbounderBase):
         cost_vect = y_check - y_curve
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(-100000 * cost_vect[np.logical_not(pos_indices)])
+        cost += np.sum(
+            -1000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
+        )
         return cost
 
     def overbound(self, data, debug_plots=False):
