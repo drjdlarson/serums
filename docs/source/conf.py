@@ -15,6 +15,10 @@ import sys
 import sphinx_theme
 sys.path.append(os.path.abspath('../../serums'))
 
+# run all example code to generate necesary figures
+sys.path.append(os.path.abspath("."))
+from example_runner import run_examples
+run_examples()
 
 # -- Project information -----------------------------------------------------
 

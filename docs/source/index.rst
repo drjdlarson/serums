@@ -7,6 +7,7 @@ Welcome to SERUMS's documentation!
 
    api
    toolchain
+   usage
    References
    license
 
