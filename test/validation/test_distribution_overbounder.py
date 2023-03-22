@@ -97,11 +97,16 @@ def test_SymmetricGPO():
             out_dist.tail_shape,
             out_dist.tail_scale,
             out_dist.threshold,
-            out_dist.scale,
+            float(out_dist.scale),
         )
     )
 
     if DEBUG:
+        test_sample = out_dist.sample(num_samples=10000)
+        plt.figure()
+        plt.title("ECDF of OB Model Sample Obtained through .sample Method")
+        plt.hist(test_sample, bins=1000, cumulative=True, histtype="step")
+        plt.grid()
         alfa = 1e-6
         interval = out_dist.CI(alfa)
         print(
@@ -136,8 +141,10 @@ def test_PairedGaussianOverbound():
 
     if DEBUG:
         test_sample = out_dist.sample(num_samples=10000)
-        plt.figure("ECDF of OB Model Sample Obtained through .sample Method")
+        plt.figure()
+        plt.title("ECDF of OB Model Sample Obtained through .sample Method")
         plt.hist(test_sample, bins=1000, cumulative=True, histtype="step")
+        plt.grid()
         alfa = 1e-6
         interval = out_dist.CI(alfa)
         print(
@@ -165,4 +172,4 @@ if __name__ == "__main__":
     test_PairedGaussianOverbound()
     # test_PairedGPO()
 
-    plt.show()
+    # plt.show()

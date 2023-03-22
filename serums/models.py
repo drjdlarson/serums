@@ -7,6 +7,7 @@ from warnings import warn
 import matplotlib.pyplot as plt
 from scipy.stats import probplot, norm, halfnorm, genpareto
 from copy import deepcopy
+import probscale
 
 import serums.enums as enums
 
@@ -354,7 +355,7 @@ class Gaussian(BaseSingleModel):
         X_ECDF = ordered_abs_data
         X_OB = ordered_abs_data
         Y_ECDF = ecdf_ords
-        Y_OB = stats.halfnorm.cdf(X_OB, loc=0, scale=np.sqrt(self.scale[0, 0]))
+        Y_OB = halfnorm.cdf(X_OB, loc=0, scale=np.sqrt(self.scale[0, 0]))
 
         confidence = 0.95
         alfa = 1 - confidence
@@ -372,13 +373,54 @@ class Gaussian(BaseSingleModel):
         plt.grid()
 
     def Qplot(self, data):
-        """Plot Gaussian overbound and ECDF quantiles against Gaussian quantiles."""
-        plt.figure("Probability Plot of Symmetric Gaussian Test Case")
-        probplot(data, plot=plt)
+        """Generate probability plot for Symmetric Gaussian Overbound.
+
+        Parameters
+        ----------
+        data : N numpy array
+            numpy array containing the error data used to calculate the
+            overbound
+
+        Returns
+        -------
+        matplotlib figure
+        """
+        sorted_abs_data = np.sort(np.abs(data))
+        n = data.size
+        ecdf_ords = np.zeros(n)
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+        x_ecdf = sorted_abs_data
+        y_ecdf = ecdf_ords
+
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+
+        x_dkw = x_ecdf
+        y_dkw = np.subtract(y_ecdf, epsilon)
+
+        x_ob = sorted_abs_data
+        y_ob = halfnorm.cdf(x_ob, loc=0, scale=np.sqrt(self.scale[0, 0]))
+        dist_type = halfnorm()
+
+        figure, ax = plt.subplots()
+        ax.set_ylim(bottom=5, top=99.999)
+        ax.set_yscale("prob", dist=dist_type)
+
+        plt.plot(x_ecdf, 100 * y_ecdf)
+        plt.plot(x_dkw, 100 * y_dkw)
+        plt.plot(x_ob, 100 * y_ob)
+        plt.legend(["ECDF", "DKW Lower Bound", "Symmetric Gaussian Overbound"])
+        plt.title("Probability Plot of Symmetric Gaussian Overbound")
+        plt.ylabel("CDF Percentiles")
+        plt.xlabel("Error")
         plt.grid()
 
 
 class PairedGaussian(BaseSingleModel):
+    """Represents a Paired Gaussian Overbound Distribution Object."""
+
     def __init__(self, left: Gaussian, right: Gaussian):
         super().__init__()
 
@@ -455,6 +497,7 @@ class PairedGaussian(BaseSingleModel):
         -------
         matplotlib figure
         """
+        data = np.sort(data)
         n = data.size
         ecdf_ords = np.zeros(n)
         for i in range(n):
@@ -504,9 +547,91 @@ class PairedGaussian(BaseSingleModel):
         plt.plot(data, DKW_high, label="Upper DKW Bound")
         plt.plot(data, DKW_low, label="Lower DKW Bound")
         plt.legend()
+        plt.grid()
 
     def Qplot(self, data):
-        pass
+        """Generate probability plot for Paired Gaussian Overbound.
+
+        Parameters
+        ----------
+        data : N numpy array
+            numpy array containing the error data used to calculate the
+            overbound
+
+        Returns
+        -------
+        matplotlib figure
+        """
+        n = data.size
+        ecdf_ords = np.zeros(n)
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+        DKW_low = np.subtract(ecdf_ords, epsilon)
+        DKW_high = np.add(ecdf_ords, epsilon)
+
+        left_mean = self.left_gaussian.mean
+        left_std = np.sqrt(self.left_gaussian.covariance)
+        right_mean = self.right_gaussian.mean
+        right_std = np.sqrt(self.right_gaussian.covariance)
+
+        y_left_ob = np.reshape(
+            norm.cdf(data, loc=left_mean, scale=left_std), (n,)
+        )
+        y_right_ob = np.reshape(
+            norm.cdf(data, loc=right_mean, scale=right_std), (n,)
+        )
+        x_paired_ob = np.linspace(np.min(data), np.max(data), num=10000)
+        y_paired_ob = np.zeros(x_paired_ob.size)
+        left_pt = self.left_gaussian.mean
+        right_pt = self.right_gaussian.mean
+
+        for i in range(y_paired_ob.size):
+            if x_paired_ob[i] < left_pt:
+                y_paired_ob[i] = norm.cdf(
+                    x_paired_ob[i], loc=left_mean, scale=left_std
+                )
+            elif x_paired_ob[i] > right_pt:
+                y_paired_ob[i] = norm.cdf(
+                    x_paired_ob[i], loc=right_mean, scale=right_std
+                )
+            else:
+                y_paired_ob[i] = 0.5
+
+        dist_type = norm()
+
+        x_ecdf = np.sort(data)
+        y_ecdf = ecdf_ords
+
+        x_dkw_low = x_ecdf
+        y_dkw_low = DKW_low
+
+        x_dkw_high = x_ecdf
+        y_dkw_high = DKW_high
+
+        figure, ax = plt.subplots()
+        ax.set_ylim(bottom=0.001, top=99.999)
+        ax.set_yscale("prob", dist=dist_type)
+
+        plt.plot(x_ecdf, 100 * y_ecdf)
+        plt.plot(x_dkw_low, 100 * y_dkw_low)
+        plt.plot(x_dkw_high, 100 * y_dkw_high)
+        plt.plot(x_paired_ob, 100 * y_paired_ob)
+        plt.legend(
+            [
+                "ECDF",
+                "DKW Lower Bound",
+                "DKW Upper Bound",
+                "Symmetric Gaussian Overbound",
+            ]
+        )
+        plt.title("Probability Plot of Paired Gaussian Overbound")
+        plt.ylabel("CDF Percentiles")
+        plt.xlabel("Error")
+        plt.grid()
 
 
 class StudentsT(BaseSingleModel):
@@ -1542,8 +1667,48 @@ class SymmetricGaussianPareto(BaseSingleModel):
         self.tail_shape = tail_shape
         self.tail_scale = tail_scale
 
-    def sample(self):
-        pass
+    def sample(
+        self, rng: rnd._generator = None, num_samples: int = None
+    ) -> np.ndarray:
+        """Generate a random sample from the Symmetric Gaussian-Pareto Distribution."""
+        if rng is None:
+            rng = rnd.default_rng()
+        if num_samples is None:
+            num_samples = 1
+
+        p = rng.uniform(size=num_samples)
+        p_sorted = np.sort(p)
+        F_mu = norm.cdf(-self.threshold, loc=self.location, scale=self.scale)
+        F_u = norm.cdf(self.threshold, loc=self.location, scale=self.scale)
+
+        idx_mu = int(np.argmax(p_sorted >= F_mu))
+        idx_u = int(np.argmax(p_sorted >= F_u))
+
+        sample = np.zeros((num_samples, self.location.size))
+        transformed_left = np.add(np.negative(p_sorted[0:idx_mu]), 1)
+        transformed_left = np.subtract(transformed_left, F_u)
+        transformed_left = np.divide(transformed_left, (1 - F_u))
+        left_samp = genpareto.ppf(
+            transformed_left, self.tail_shape, loc=0, scale=self.tail_scale
+        )
+        left_samp = np.subtract(np.negative(left_samp), self.threshold)
+
+        transformed_right = np.subtract(p_sorted[idx_u:], F_u)
+        transformed_right = np.divide(transformed_right, (1 - F_u))
+        right_samp = genpareto.ppf(
+            transformed_right, self.tail_shape, loc=0, scale=self.tail_scale
+        )
+        right_samp = np.add(right_samp, self.threshold)
+
+        center_samp = norm.ppf(
+            p_sorted[idx_mu:idx_u], loc=self.location, scale=self.scale
+        )
+
+        sample[0:idx_mu] = np.transpose(left_samp)
+        sample[idx_mu:idx_u] = np.transpose(center_samp)
+        sample[idx_u:] = np.transpose(right_samp)
+
+        return sample
 
     def CI(self, alfa):
         """Return confidence interval of distribution given a significance level 'alfa'.
@@ -1634,4 +1799,70 @@ class SymmetricGaussianPareto(BaseSingleModel):
         plt.grid()
 
     def Qplot(self, data):
-        pass
+        """Generate probability plot for Symmetric Gaussian-Pareto Overbound.
+
+        Parameters
+        ----------
+        data : N numpy array
+            numpy array containing the error data used to calculate the
+            overbound
+
+        Returns
+        -------
+        matplotlib figure
+        """
+        pos = np.absolute(data)
+        sorted_abs_data = np.sort(pos)
+        n = data.size
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+
+        x_core = np.linspace(0, self.threshold, 10000)
+        x_tail = np.linspace(self.threshold, max(sorted_abs_data), 10000)
+
+        y_core = halfnorm.cdf(x_core, loc=self.location, scale=self.scale)
+        y_tail = genpareto.cdf(
+            x_tail - self.threshold,
+            self.tail_shape,
+            loc=self.location,
+            scale=self.tail_scale,
+        ) * (
+            1
+            - (
+                halfnorm.cdf(
+                    self.threshold, loc=self.location, scale=self.scale
+                )
+            )
+        ) + (
+            halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale)
+        )
+        x_ob = np.append(x_core, x_tail)
+        y_ob = np.append(y_core, y_tail)
+        dist_type = halfnorm()
+
+        ecdf_ords = np.zeros(n)
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+        DKW_lower_ords = np.subtract(ecdf_ords, epsilon)
+
+        x_ecdf = sorted_abs_data
+        y_ecdf = ecdf_ords
+
+        x_dkw = x_ecdf
+        y_dkw = DKW_lower_ords
+
+        figure, ax = plt.subplots()
+        ax.set_ylim(bottom=5, top=99.999)
+        ax.set_yscale("prob", dist=dist_type)
+
+        plt.plot(x_ecdf, 100 * y_ecdf)
+        plt.plot(x_dkw, 100 * y_dkw)
+        plt.plot(x_ob, 100 * y_ob)
+        plt.legend(
+            ["ECDF", "DKW Lower Bound", "Symmetric Gaussian-Pareto Overbound"]
+        )
+        plt.title("Probability Plot of Symmetric Gaussian Overbound")
+        plt.ylabel("CDF Percentiles")
+        plt.xlabel("Error")
+        plt.grid()

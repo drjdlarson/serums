@@ -400,7 +400,7 @@ class SymmetricGPO(OverbounderBase):
 
 
 class PairedGaussianOverbounder(OverbounderBase):
-    """Represents a Paired Gaussian Overbound object."""
+    """Represents a Paired Gaussian Overbounder object."""
 
     def __init__(self):
         super().__init__()
@@ -435,6 +435,7 @@ class PairedGaussianOverbounder(OverbounderBase):
         Returns
         -------
         out_dist : :class:
+            'PairedGaussian' object from serums/models.py
         """
         n = data.size
         sorted_data = np.sort(data)
@@ -538,3 +539,25 @@ class PairedGaussianOverbounder(OverbounderBase):
         )
 
         return smodels.PairedGaussian(left_ob, right_ob)
+
+
+class PairedGPO(OverbounderBase):
+    """Represents a Paired Gaussian-Pareto Overbounder Object."""
+
+    def __init__(self):
+        super().__init__()
+        self.ThresholdReductionFactor = 1
+
+    def overbound(self, data):
+        """Produce Paired Gaussian-Pareto model object that overbounds input error data.
+
+        Parameters
+        ----------
+        data : N numpy array of error data
+
+        Returns
+        -------
+        out_dist : :class:
+            'PairedGaussianPareto' object from serums/models.py
+        """
+        pass
