@@ -3,98 +3,45 @@ serums
 
 A Python package for Statistical Error and Risk Utility for Multi-sensor Systems (SERUMS) developed by the Laboratory for Autonomy, GNC, and Estimation Research (LAGER) at the University of Alabama (UA).
 
+.. contents:: Table of Contents
+    :depth: 2
+    :local:
+
+
 ..
     BEGIN TOOLCHAIN INCLUDE
 
 .. _serums: https://github.com/drjdlarson/serums
 .. _STACKOVERFLOW: https://stackoverflow.com/questions/69704561/cannot-update-spyder-5-1-5-on-new-anaconda-install
 .. _SUBMODULE: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+.. |Open in Dev Containers| image:: https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode
+   :target: https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/drjdlarson/gncpy.git
 
 
-Setup
------
-Currently this package is not available via pip, this provides a guide on installation from the git repository. Note that Python 3 is required, pytest is used for managing the built-in tests, and tox is used for automating the testing and documentation generation. It is recommended to use Anaconda and the Spyder IDE, but this is not necessary. The general process follows the following order with more details in the corresponding subsections.
 
-#. Install Anaconda and Spyder and update to the latest version *[Optional]*. See `Installing and Updating Spyder`_.
-#. Clone serums.
-#. Install serums to the base conda environment. See `Installing serums`_.
-
-    * Other virtual environments can be used for development/projects but it seems serums is needed in the base to get Spyder's variable explorer to work with its custom types.
-
-If using Anaconda and Spyder you should be able to run tests with tox, generate documentation with tox, and run tests as standalone scripts from within Spyder (See `Testing`_ and `Building Documentation`_). Also the Spyder IDE variable explorer should recognize serums data types for debugging. It is also possible to create conda environments and tell Spyder to use that as the interpreter for running code. Note that the proper version of :code:`spyder-kernels` must be installed in the environment but Spyder will tell you the command to run when it fails to start the interpreter. This can be useful if you need additional libraries for certain projects. Information on conda environments can be found `here <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_ and setting up Spyder with a custom interpreter can be done through Spyder's settings.
+Setup and Installation
+----------------------
+Currently this package is not available via pip, this provides a guide on installation from the git repository both for developing for the package and for using the package with other code. Note that Python 3 is required, pytest is used for managing the built-in tests, and tox is used for automating the testing and documentation generation.
 
 
-Installing and Updating Spyder
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#. Download and install `Anaconda <https://www.anaconda.com/>`_. This should also install Spyder, numpy, matplotlib, and some other common libraries to a base conda (virtual) environment.
-#. Open Spyder and check the version by going to about spyder from the help menu.
-
-    * If it is not version >= 5.1.5 and you want to update to the version 5.1.5 (recommended), close Spyder and run the following commands from a terminal (Anaconda prompt on windows) the second and third commands may give errors but they can be ignored. See here on `stackoverflow`_.
-
-        .. code-block:: bash
-
-            conda remove spyder
-            conda remove python-language-server
-            conda update anaconda
-            conda install spyder=5.1.5
+Installation for using the package
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To use this package when developing other software, simply clone the repository (or otherwise download the code). Then navigate in a terminal to the directory where the code was saved. Activate any python virtual environment if desired. Then :code:`pip install -e .` if pip maps to your Python 3 installation. The :code:`-e` option installs it as an editable package so if you do a git pull, you won't have to reinstall serums.
 
 
-Installing serums
-^^^^^^^^^^^^^^^^^
-#. Download/clone the `serums`_ repository and save it somewhere on your system (remember the location).
-#. Open the terminal that has the base Anaconda environment activated (normal terminal for linux, Anaconda prompt on windows).
-#. Navigate to the directory where you saved the repository.
+Installation for Developing for SERUMS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The fastest way to get started with development is to use VS Code with the dev container extension which uses docker. All you need to do is have VS Code and docker installed then click on the badge |Open in Dev Containers|. VS Code has instructions for getting started with dev containers `here <https://code.visualstudio.com/docs/devcontainers/containers>`_. If you are on windows you will need to enable WSL within windows and install the WSL extension within VS Code. 
 
-    * The directory structure should look like the following.
+Alternatively, the repository can be cloned locally, opened in VS Code, and then the container started with your local directory mounted within the container. This can make it easier to manage the files since they are controlled by your host OS instead of hidden within a docker volume. In this case, clone the repository like normal and open the root level folder within VS Code. If you have the dev container extension installed you will be prompted to reopen the folder in the container, select yes and the toolchain will automatically be installed for you. If you are on Windows you will first need to connect to the WSL session, then you can open the folder and will be prompted to reopen it in a container. Additionally, for Windows, it is recommended to keep the code within the home folder of the WSL system as this increases the performance when using containers and VS Code. To access the WSL directories from your file browser navigate to :code:`\\wsl$` and select your linux distribution.
 
-        ::
-
-            . (YOU ARE HERE)
-            └── serums/
-                ├── setup.py
-                └── serums
-
-
-#. Install serums.
-
-    * If using anaconda then install without dependencies to allow conda to manage dependencies. Note, :code:`PATH_TO_SERUMS` is :code:`./serums/` if following the recommended steps.
-
-        .. code-block:: bash
-
-            conda install numpy scipy matplotlib
-            pip install --no-dependencies -e PATH_TO_SERUMS
-
-    * If not using anaconda then serums can be installed with the dependencies. Note, :code:`PATH_TO_SERUMS` follows the format in the above bullet.
-
-        .. code-block:: bash
-
-            pip install -e PATH_TO_SERUMS
-
-#. If using Anaconda, then to run the built-in tests as standalone scripts, install the test dependencies *[Optional]*.
-
-    .. code-block:: bash
-
-        conda install pytest
-
-#. Install tox for automated testing and building the documentation *[Optional]*
-
-    * For Anaconda run
-
-    .. code-block:: bash
-
-        conda install -c conda-forge tox
-
-    * If not using Anaconda then run
-
-    .. code-block:: bash
-
-        pip install tox
+You can also skip VS Code and use the container directly if desired. Or download the repository and work with a local python installation in another IDE.
 
 
 Testing
 -------
 Unit and validation tests make use of **pytest** for the test runner, and tox for automation. The test scripts are located within the **test/** sub-directory.
-The tests can be run through a command line with python 3 and tox installed. If the Spyder setup instructions were followed then the tests can also be run as standalone scripts from within Spyder by uncommenting the appropriate line under the :code:`__main__` section.
+The tests can be run through a command line with python 3 and tox installed. The tests can also be run as standalone scripts from command line by uncommenting the appropriate line under the :code:`__main__` section.
 
 There are 3 different environments for running tests. One for unit tests, another for validation tests, and a general purpose one that accepts any arguments to pytest.
 The general purpose environment is executed by running
@@ -141,6 +88,12 @@ Then they can be viewed by opening **docs/build/html/index.html** with a web bro
 
 Notes about tox
 ---------------
+You can list the available environments within tox by running
+
+.. code-block:: bash
+
+    tox -av
+
 If tox is failing to install the dependencies due to an error in distutils, then it may be required to instal distutils seperately by
 
 .. code-block:: bash
