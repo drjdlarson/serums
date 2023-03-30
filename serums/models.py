@@ -5,7 +5,7 @@ import numpy.random as rnd
 import scipy.stats as stats
 from warnings import warn
 import matplotlib.pyplot as plt
-from scipy.stats import probplot, norm, halfnorm, genpareto
+from scipy.stats import norm, halfnorm, genpareto
 from copy import deepcopy
 import probscale
 
@@ -320,11 +320,12 @@ class Gaussian(BaseSingleModel):
         Parameters
         ----------
         alfa : float
-            significance level, i.e. confidence level = (1 - alfa)
+            significance level, i.e. confidence level = (1 - alfa). Must be
+            a positive real number which is less than 1
 
         Returns
         -------
-        2 x 1 numpy array
+        1 x 2 numpy array
             array containing upper and lower bound of confidence interval
         """
         low = stats.norm.ppf(alfa, loc=self.mean, scale=np.sqrt(self.scale))
@@ -464,11 +465,12 @@ class PairedGaussian(BaseSingleModel):
         Parameters
         ----------
         alfa : float
-            significance level, i.e. confidence level = (1 - alfa)
+            significance level, i.e. confidence level = (1 - alfa). Must be
+            a positive real number which is less than 1
 
         Returns
         -------
-        2 x 1 numpy array
+        1 x 2 numpy array
             array containing upper and lower bound of confidence interval
         """
         e = alfa / 2
@@ -1716,11 +1718,12 @@ class SymmetricGaussianPareto(BaseSingleModel):
         Parameters
         ----------
         alfa : float
-            significance level, i.e. confidence level = (1 - alfa)
+            significance level, i.e. confidence level = (1 - alfa). Must be
+            a positive real number which is less than 1
 
         Returns
         -------
-        2 x 1 numpy array
+        1 x 2 numpy array
             array containing upper and lower bound of confidence interval
         """
         q_u = halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale)
@@ -1862,7 +1865,7 @@ class SymmetricGaussianPareto(BaseSingleModel):
         plt.legend(
             ["ECDF", "DKW Lower Bound", "Symmetric Gaussian-Pareto Overbound"]
         )
-        plt.title("Probability Plot of Symmetric Gaussian Overbound")
+        plt.title("Probability Plot of Symmetric Gaussian-Pareto Overbound")
         plt.ylabel("CDF Percentiles")
         plt.xlabel("Error")
         plt.grid()
@@ -1914,26 +1917,26 @@ class PairedGaussianPareto(BaseSingleModel):
 
         Parameters
         ----------
-        left_tail_shape : 1 x 1 numpy array
-            GPD shape parameter (gamma) of the left tail. The default is None.
-        left_tail_scale : 1 x 1 numpy array
-            GPD scale parameter (beta) of the left tail. The default is None.
-        left_threshold : 1 x 1 numpy array
-            Location where the left tail meets the left Gaussian core region. The default is None.
-        left_mean : 1 x 1 numpy array
-            Mean of the left Gaussian core region. The default is None.
-        left_sigma : 1 x 1 numpy array
-            Standard deviation of the left Gaussian core region. The default is None.
-        right_tail_shape : 1 x 1 numpy array
-            GPD shape parameter (gamma) of the right tail. The default is None.
-        right_tail_scale : 1 x 1 numpy array
-            GPD scale parameter (beta) of the right tail. The default is None.
-        right_threshold : 1 x 1 numpy array
-            Location where the right tail meets the right Gaussian core region. The default is None.
-        right_mean : 1 x 1 numpy array
-            Mean of the right Gaussian core region. The default is None.
-        right_sigma : 1 x 1 numpy array
-            Standard deviation of the right Gaussian core region. The default is None.
+        left_tail_shape : float
+            Sets the class attribute of the same name
+        left_tail_scale : float
+            Sets the class attribute of the same name
+        left_threshold : float
+            Sets the class attribute of the same name
+        left_mean : float
+            Sets the class attribute of the same name
+        left_sigma : float
+            Sets the class attribute of the same name
+        right_tail_shape : float
+            Sets the class attribute of the same name
+        right_tail_scale : float
+            Sets the class attribute of the same name
+        right_threshold : float
+            Sets the class attribute of the same name
+        right_mean : float
+            Sets the class attribute of the same name
+        right_sigma : float
+            Sets the class attribute of the same name
 
         Returns
         -------
@@ -1962,7 +1965,47 @@ class PairedGaussianPareto(BaseSingleModel):
 
         p = rng.uniform(size=num_samples)
         p_sorted = np.sort(p)
-        pass
+
+        FuL = norm.cdf(
+            self.left_threshold, loc=self.left_mean, scale=self.left_sigma
+        )
+        FuR = norm.cdf(
+            self.right_threshold, loc=self.right_mean, scale=self.right_sigma
+        )
+
+        lt_ords = p_sorted[p_sorted < FuL]
+        lc_ords = p_sorted[p_sorted >= FuL]
+        lc_ords = lc_ords[lc_ords <= 0.5]
+        rc_ords = p_sorted[p_sorted > 0.5]
+        rc_ords = rc_ords[rc_ords <= FuR]
+        rt_ords = p_sorted[p_sorted > FuR]
+
+        lt_ords = np.divide(np.add(np.negative(lt_ords), FuL), FuL)
+        lt_samp = np.transpose(
+            genpareto.ppf(
+                lt_ords, self.left_tail_shape, scale=self.left_tail_scale
+            )
+        )
+        lt_samp = np.add(np.negative(lt_samp), self.left_threshold)
+
+        rt_ords = np.divide(np.subtract(rt_ords, FuR), (1 - FuR))
+        rt_samp = np.transpose(
+            genpareto.ppf(
+                rt_ords, self.right_tail_shape, scale=self.right_tail_scale
+            )
+        )
+        rt_samp = np.add(rt_samp, self.right_threshold)
+
+        lc_samp = np.transpose(
+            norm.ppf(lc_ords, loc=self.left_mean, scale=self.left_sigma)
+        )
+        rc_samp = np.transpose(
+            norm.ppf(rc_ords, loc=self.right_mean, scale=self.right_sigma)
+        )
+
+        samp = np.concatenate((lt_samp, lc_samp, rc_samp, rt_samp))
+
+        return samp
 
     def CI(self, alfa):
         """Return confidence interval of distribution given a significance level 'alfa'.
@@ -1970,14 +2013,44 @@ class PairedGaussianPareto(BaseSingleModel):
         Parameters
         ----------
         alfa : float
-            significance level, i.e. confidence level = (1 - alfa)
+            significance level, i.e. confidence level = (1 - alfa). Must be
+            a positive real number which is less than 1
 
         Returns
         -------
-        2 x 1 numpy array
+        1 x 2 numpy array
             array containing upper and lower bound of confidence interval
         """
-        pass
+        p = alfa / 2
+
+        FuL = norm.cdf(
+            self.left_threshold, loc=self.left_mean, scale=self.left_sigma
+        )
+        FuR = norm.cdf(
+            self.right_threshold, loc=self.right_mean, scale=self.right_sigma
+        )
+
+        if p > FuL:
+            left = norm.ppf(p, loc=self.left_mean, scale=self.left_sigma)
+        else:
+            p_Lt = (FuL - p) / (FuL)
+            temp = genpareto.ppf(
+                p_Lt, self.left_tail_shape, scale=self.left_tail_scale
+            )
+            left = -temp + self.left_threshold
+
+        if (1 - p) < FuR:
+            right = norm.ppf(
+                (1 - p), loc=self.right_mean, scale=self.right_sigma
+            )
+        else:
+            val = ((1 - p) - FuR) / (1 - FuR)
+            temp = genpareto.ppf(
+                val, self.right_tail_shape, scale=self.right_tail_scale
+            )
+            right = temp + self.right_threshold
+
+        return np.array([[left, right]])
 
     def CDFplot(self, data):
         """Plot Paired Gaussian-Pareto overbound and DKW bound against ECDF of input data.
@@ -2102,4 +2175,106 @@ class PairedGaussianPareto(BaseSingleModel):
         -------
         matplotlib figure
         """
+        n = data.size
+        data_sorted = np.sort(data)
+
+        ecdf_ords = np.zeros(n)
+
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+
+        dkw_high = np.add(ecdf_ords, epsilon)
+        dkw_low = np.subtract(ecdf_ords, epsilon)
+
+        x_ob_left_tail = np.linspace(
+            1.05 * data_sorted[0], self.left_threshold, num=1000
+        )
+        sub = np.flip(
+            np.negative(
+                np.subtract(x_ob_left_tail, self.left_threshold + 1e-14)
+            )
+        )
+        y_ob_left_tail = np.transpose(
+            genpareto.cdf(
+                sub,
+                self.left_tail_shape,
+                scale=self.left_tail_scale,
+            )
+        )
+
+        Fu = norm.cdf(
+            self.left_threshold, loc=self.left_mean, scale=self.left_sigma
+        )
+        y_ob_left_tail = np.flip(
+            np.add(np.negative(np.multiply(y_ob_left_tail, Fu)), Fu)
+        )
+
+        x_ob_core = np.linspace(
+            self.left_threshold, self.right_threshold, num=10000
+        )
+        y_ob_core = np.zeros(10000)
+
+        for i in range(10000):
+            if (
+                x_ob_core[i] >= self.left_threshold
+                and x_ob_core[i] < self.left_mean
+            ):
+                y_ob_core[i] = norm.cdf(
+                    x_ob_core[i], loc=self.left_mean, scale=self.left_sigma
+                )
+            elif (
+                x_ob_core[i] >= self.left_mean
+                and x_ob_core[i] <= self.right_mean
+            ):
+                y_ob_core[i] = 0.5
+            elif (
+                x_ob_core[i] > self.right_mean
+                and x_ob_core[i] <= self.right_threshold
+            ):
+                y_ob_core[i] = norm.cdf(
+                    x_ob_core[i], loc=self.right_mean, scale=self.right_sigma
+                )
+
+        x_ob_right_tail = np.linspace(
+            self.right_threshold, 1.05 * data_sorted[-1], num=1000
+        )
+        sub = np.subtract(x_ob_right_tail, self.right_threshold - 1e-14)
+        y_ob_right_tail = np.transpose(
+            genpareto.cdf(
+                sub, self.right_tail_shape, scale=self.right_tail_scale
+            )
+        )
+
+        Fu = norm.cdf(
+            self.right_threshold, loc=self.right_mean, scale=self.right_sigma
+        )
+        y_ob_right_tail = np.add(np.multiply(y_ob_right_tail, (1 - Fu)), Fu)
+
+        x_ob = np.concatenate((x_ob_left_tail, x_ob_core, x_ob_right_tail))
+        y_ob = np.concatenate((y_ob_left_tail, y_ob_core, y_ob_right_tail))
+
+        figure, ax = plt.subplots()
+        ax.set_ylim(bottom=0.001, top=99.999)
+        ax.set_yscale("prob")
+
+        plt.plot(data_sorted, 100 * ecdf_ords)
+        plt.plot(data_sorted, 100 * dkw_high)
+        plt.plot(data_sorted, 100 * dkw_low)
+        plt.plot(x_ob, 100 * y_ob)
+        plt.legend(
+            [
+                "ECDF",
+                "DKW Upper Bound",
+                "DKW Lower Bound",
+                "Paired Gaussian-Pareto Overbound",
+            ]
+        )
+        plt.title("Probability Plot of Paired Gaussian-Pareto Overbound")
+        plt.ylabel("CDF Percentiles")
+        plt.xlabel("Error")
+        plt.grid()
         pass

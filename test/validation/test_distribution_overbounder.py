@@ -171,7 +171,26 @@ def test_PairedGPO():
     out_dist = pairedGPOBer.overbound(data)
 
     if DEBUG:
+        test_sample = out_dist.sample(num_samples=10000)
+        sorted_sample = np.sort(test_sample)
+        ecdf_ords = np.zeros(sorted_sample.size)
+        for i in range(sorted_sample.size):
+            ecdf_ords[i] = (i + 1) / n
+        plt.figure("Paired GPO verify ().sample")
+        plt.title("ECDF of OB Model Sample Obtained through .sample Method")
+        plt.plot(sorted_sample, ecdf_ords, label="Computer Generated Sample")
+        plt.grid()
+        alfa = 1e-6
+        interval = out_dist.CI(alfa)
+        print(
+            "Confidence Interval for alfa = 1e-6 : (",
+            interval[0, 0],
+            ", ",
+            interval[0, 1],
+            ")",
+        )
         out_dist.CDFplot(data)
+        out_dist.Qplot(data)
 
     pass
 
