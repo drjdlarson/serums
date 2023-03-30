@@ -298,7 +298,7 @@ class SymmetricGPO(OverbounderBase):
         shape_max_covar = de.grimshaw_MLE(
             np.subtract(
                 sorted_abs_data[u_idxs[idx_shape_max[0]] + 1 :],
-                sorted_abs_data[u_idxs[idx_shape_max[0]]],
+                sorted_abs_data[u_idxs[idx_shape_max[0]]] - 1e-25,
             )
         )[2]
 
@@ -405,7 +405,7 @@ class PairedGaussianOverbounder(OverbounderBase):
     def __init__(self):
         super().__init__()
 
-    def cost_left(self, params, x_check, y_check):
+    def _cost_left(self, params, x_check, y_check):
         y_curve = norm.cdf(x_check, loc=params[0], scale=params[1])
         cost_vect = y_curve - y_check
         pos_indices = cost_vect >= 0
@@ -415,7 +415,7 @@ class PairedGaussianOverbounder(OverbounderBase):
         )
         return cost
 
-    def cost_right(self, params, x_check, y_check):
+    def _cost_right(self, params, x_check, y_check):
         y_curve = norm.cdf(x_check, loc=params[0], scale=params[1])
         cost_vect = y_check - y_curve
         pos_indices = cost_vect >= 0
@@ -460,7 +460,7 @@ class PairedGaussianOverbounder(OverbounderBase):
         y_check_left = DKW_high[left_usable_idxs]
 
         left_result = basinhopping(
-            self.cost_left,
+            self._cost_left,
             init_guess,
             niter=200,
             stepsize=np.array([init_mean / 2, init_sigma / 2]),
@@ -497,7 +497,7 @@ class PairedGaussianOverbounder(OverbounderBase):
         y_check_right = DKW_low[right_usable_idxs]
 
         right_result = basinhopping(
-            self.cost_right,
+            self._cost_right,
             init_guess,
             niter=200,
             stepsize=np.array([init_mean / 2, init_sigma / 2]),
@@ -547,6 +547,27 @@ class PairedGPO(OverbounderBase):
     def __init__(self):
         super().__init__()
         self.ThresholdReductionFactor = 1
+        self.StrictPairedEnforcement = False
+
+    def _cost_left(self, params, x_check, y_check):
+        y_curve = norm.cdf(x_check, loc=params[0], scale=params[1])
+        cost_vect = y_curve - y_check
+        pos_indices = cost_vect >= 0
+        cost = np.sum(cost_vect[pos_indices])
+        cost += np.sum(
+            -10000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
+        )
+        return cost
+
+    def _cost_right(self, params, x_check, y_check):
+        y_curve = norm.cdf(x_check, loc=params[0], scale=params[1])
+        cost_vect = y_check - y_curve
+        pos_indices = cost_vect >= 0
+        cost = np.sum(cost_vect[pos_indices])
+        cost += np.sum(
+            -10000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
+        )
+        return cost
 
     def overbound(self, data):
         """Produce Paired Gaussian-Pareto model object that overbounds input error data.
@@ -560,4 +581,234 @@ class PairedGPO(OverbounderBase):
         out_dist : :class:
             'PairedGaussianPareto' object from serums/models.py
         """
-        pass
+        n = data.size
+        data_sorted = np.sort(data)
+        idx_10p = int(np.ceil(0.1 * n))
+        idxs_cand_u_left = np.arange(250, idx_10p, 1)
+
+        max_shape_left = 0
+        idx_u_left = None
+        max_shape_covar_left = None
+        for i in idxs_cand_u_left:
+            try:
+                shape, scale, covar = de.grimshaw_MLE(
+                    np.add(
+                        np.abs(
+                            np.subtract(
+                                data_sorted[0:i],
+                                data_sorted[i],
+                            )
+                        ),
+                        1e-14,
+                    )
+                )
+                if shape > max_shape_left:
+                    max_shape_left = shape
+                    idx_u_left = i
+                    max_shape_covar_left = covar
+            except serums.errors.DistributionEstimatorFailed:
+                pass
+
+        if max_shape_left > 0:
+            gamma_left = max_shape_left
+            u_left = data_sorted[idx_u_left]
+        else:
+            raise serums.errors.OverboundingMethodFailed(
+                "MLE indicates exponential or finite left tail. Use the paired Gaussian Overbounder."
+            )
+
+        Nt_left = idx_u_left - 1
+        gamma_left = gamma_left + t.ppf(0.975, Nt_left) * np.sqrt(
+            max_shape_covar_left[1, 1]
+        )
+
+        idx_90p = int(np.floor(0.9 * n))
+        idxs_cand_u_right = np.arange(idx_90p, n - 250, 1)
+
+        max_shape_right = 0
+        idx_u_right = None
+        max_shape_covar_right = None
+        for i in idxs_cand_u_right:
+            try:
+                shape, scale, covar = de.grimshaw_MLE(
+                    np.add(
+                        np.abs(np.subtract(data_sorted[i:], data_sorted[i])),
+                        1e-14,
+                    )
+                )
+                if shape > max_shape_right:
+                    max_shape_right = shape
+                    idx_u_right = i
+                    max_shape_covar_right = covar
+            except serums.errors.DistributionEstimatorFailed:
+                pass
+
+        if max_shape_right > 0:
+            gamma_right = max_shape_right
+            u_right = data_sorted[idx_u_right]
+        else:
+            raise serums.errors.OverboundingMethodFailed(
+                "MLE indicates exponential or finite right tail. Use the paired Gaussian Overbounder."
+            )
+
+        Nt_right = n - idx_u_right - 1
+        gamma_right = gamma_right + t.ppf(0.975, Nt_right) * np.sqrt(
+            max_shape_covar_right[1, 1]
+        )
+
+        # Define initial guess for basin hopping algorithm
+        init_mean = np.mean(data)
+        init_sigma = np.std(data, ddof=1)
+        init_guess = np.array([init_mean, init_sigma])
+
+        # Generate sample ECDF ordinates
+        ecdf_ords = np.zeros(n)
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+
+        # Compute Upper and Lower 95% DKW Confidence Bounds
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+        DKW_low = np.subtract(ecdf_ords, epsilon)
+        DKW_high = np.add(ecdf_ords, epsilon)
+
+        if self.StrictPairedEnforcement is True:
+            left_usable_idxs = np.asarray(DKW_high < (1 - epsilon)).nonzero()[
+                0
+            ]
+            left_usable_idxs = left_usable_idxs[idx_u_left:]
+            x_check_left = data_sorted[left_usable_idxs]
+            y_check_left = DKW_high[left_usable_idxs]
+        else:
+            left_usable_idxs = np.asarray(
+                DKW_high < (0.5 + epsilon)
+            ).nonzero()[0]
+            left_usable_idxs = left_usable_idxs[idx_u_left:]
+            x_check_left = data_sorted[left_usable_idxs]
+            y_check_left = DKW_high[left_usable_idxs]
+
+        left_result = basinhopping(
+            self._cost_left,
+            init_guess,
+            niter=300,
+            stepsize=np.array([init_mean / 2, init_sigma / 2]),
+            minimizer_kwargs={
+                "args": (x_check_left, y_check_left),
+                "method": "Powell",
+                "options": {
+                    "xtol": 1e-14,
+                    "ftol": 1e-6,
+                    "maxfev": 10000,
+                    "maxiter": 10000,
+                },
+            },
+        )
+
+        left_mean = left_result.x[0]
+        left_sigma = left_result.x[1]
+
+        if self.StrictPairedEnforcement is True:
+            right_usable_idxs = np.asarray(DKW_low > epsilon).nonzero()[0]
+            right_usable_idxs = right_usable_idxs[0 : -(n - 1 - idx_u_right)]
+            x_check_right = data_sorted[right_usable_idxs]
+            y_check_right = DKW_low[right_usable_idxs]
+        else:
+            right_usable_idxs = np.asarray(
+                DKW_low > (0.5 - epsilon)
+            ).nonzero()[0]
+            right_usable_idxs = right_usable_idxs[0 : -(n - 1 - idx_u_right)]
+            x_check_right = data_sorted[right_usable_idxs]
+            y_check_right = DKW_low[right_usable_idxs]
+
+        right_result = basinhopping(
+            self._cost_right,
+            init_guess,
+            niter=300,
+            stepsize=np.array([init_mean / 2, init_sigma / 2]),
+            minimizer_kwargs={
+                "args": (x_check_right, y_check_right),
+                "method": "Powell",
+                "options": {
+                    "xtol": 1e-14,
+                    "ftol": 1e-6,
+                    "maxfev": 10000,
+                    "maxiter": 10000,
+                },
+            },
+        )
+
+        right_mean = right_result.x[0]
+        right_sigma = right_result.x[1]
+
+        Fu = norm.cdf(u_left, loc=left_mean, scale=left_sigma)
+        left_transformed_ords = np.divide(
+            np.negative(
+                np.subtract(
+                    DKW_high[0 : idx_u_left - 1],
+                    Fu,
+                )
+            ),
+            Fu,
+        )
+        left_transformed_ords = np.flip(left_transformed_ords)
+        shifted_left_tail = np.flip(
+            np.abs(np.subtract(data_sorted[0 : idx_u_left - 1], u_left))
+        )
+
+        max_beta_left = 0
+
+        for i in range(left_transformed_ords.size):
+            beta = self.get_pareto_scale(
+                shifted_left_tail[i], left_transformed_ords[i], gamma_left
+            )
+            if beta > max_beta_left:
+                max_beta_left = beta
+
+        if max_beta_left > 0:
+            beta_left = max_beta_left
+        else:
+            raise (
+                serums.errors.OverboundingMethodFailed(
+                    "GPD scale parameter not found for left tail. Use the paired gaussian overbounder."
+                )
+            )
+
+        Fu = norm.cdf(u_right, loc=right_mean, scale=right_sigma)
+        right_transformed_ords = np.divide(
+            np.abs(np.subtract(DKW_low[idx_u_right + 1 :], Fu)), (1 - Fu)
+        )
+        shifted_right_tail = np.abs(
+            np.subtract(data_sorted[idx_u_right + 1 :], u_right)
+        )
+
+        max_beta_right = 0
+
+        for i in range(right_transformed_ords.size):
+            beta = self.get_pareto_scale(
+                shifted_right_tail[i], right_transformed_ords[i], gamma_right
+            )
+            if beta > max_beta_right:
+                max_beta_right = beta
+
+        if max_beta_right > 0:
+            beta_right = max_beta_right
+        else:
+            raise (
+                serums.errors.OverboundingMethodFailed(
+                    "GPD scale parameter not found for right tail. Use the paired gaussian overbounder"
+                )
+            )
+
+        return smodels.PairedGaussianPareto(
+            left_tail_shape=gamma_left,
+            left_tail_scale=beta_left,
+            left_threshold=u_left,
+            left_mean=left_mean,
+            left_sigma=left_sigma,
+            right_tail_shape=gamma_right,
+            right_tail_scale=beta_right,
+            right_threshold=u_right,
+            right_mean=right_mean,
+            right_sigma=right_sigma,
+        )

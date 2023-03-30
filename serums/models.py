@@ -1618,19 +1618,19 @@ class StudentsTMixture(BaseMixtureModel):
 
 
 class SymmetricGaussianPareto(BaseSingleModel):
-    """Represents a Symmetric Guassian-Pareto Mixture Distribution object.
+    """Represents a Symmetric Gaussian-Pareto Mixture Distribution object.
 
     Attributes
     ----------
-    location : 1 x 1 numpy array
+    location : float
         Location (mean) of the distribution. By definition, it is always 0.
-    scale : 1 x 1 numpy array
+    scale : float
         Standard deviation of the core Gaussian region. The default is None.
-    threshold : 1 x 1 numpy array
+    threshold : float
         Location where the core Gaussian region meets the Pareto tail. The default is None.
-    tail_shape : 1 x 1 numpy array
+    tail_shape : float
         GPD shape parameter of the distribution's tail. The default is None
-    tail_scale : 1 x 1 numpy array
+    tail_scale : float
         GPD scale parameter of the distribution's tail. The default is None
 
     """
@@ -1647,15 +1647,15 @@ class SymmetricGaussianPareto(BaseSingleModel):
 
         Parameters
         ----------
-        location : 1x1 numpy array
+        location : float
             Location (mean) of the distribution. By definition, it is always 0.
-        scale : 1 x 1 numpy array, optional
+        scale : float, optional
             Sets the class attribute "scale".
-        threshold : 1 x 1 numpy array, optional
+        threshold : float, optional
             Sets the class attribute "threshold".
-        tail_shape : 1 x 1 numpy array, optional
+        tail_shape : float, optional
             Sets the class attribute "tail_shape".
-        tail_scale : 1 x 1 numpy array, optional
+        tail_scale : float, optional
             Sets the class attribute "tail_scale".
 
         Returns
@@ -1866,3 +1866,240 @@ class SymmetricGaussianPareto(BaseSingleModel):
         plt.ylabel("CDF Percentiles")
         plt.xlabel("Error")
         plt.grid()
+
+
+class PairedGaussianPareto(BaseSingleModel):
+    """Represents a Paired Gaussian-Pareto Mixture Distribution object.
+
+    Attributes
+    ----------
+    left_tail_shape : float
+        GPD shape parameter (gamma) of the left tail. The default is None.
+    left_tail_scale : float
+        GPD scale parameter (beta) of the left tail. The default is None.
+    left_threshold : float
+        Location where the left tail meets the left Gaussian core region. The default is None.
+    left_mean : float
+        Mean of the left Gaussian core region. The default is None.
+    left_sigma : float
+        Standard deviation of the left Gaussian core region. The default is None.
+    right_tail_shape : float
+        GPD shape parameter (gamma) of the right tail. The default is None.
+    right_tail_scale : float
+        GPD scale parameter (beta) of the right tail. The default is None.
+    right_threshold : float
+        Location where the right tail meets the right Gaussian core region. The default is None.
+    right_mean : float
+        Mean of the right Gaussian core region. The default is None.
+    right_sigma : float
+        Standard deviation of the right Gaussian core region. The default is None.
+    """
+
+    def __init__(
+        self,
+        location=None,
+        scale=None,
+        left_tail_shape=None,
+        left_tail_scale=None,
+        left_threshold=None,
+        left_mean=None,
+        left_sigma=None,
+        right_tail_shape=None,
+        right_tail_scale=None,
+        right_threshold=None,
+        right_mean=None,
+        right_sigma=None,
+    ):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        left_tail_shape : 1 x 1 numpy array
+            GPD shape parameter (gamma) of the left tail. The default is None.
+        left_tail_scale : 1 x 1 numpy array
+            GPD scale parameter (beta) of the left tail. The default is None.
+        left_threshold : 1 x 1 numpy array
+            Location where the left tail meets the left Gaussian core region. The default is None.
+        left_mean : 1 x 1 numpy array
+            Mean of the left Gaussian core region. The default is None.
+        left_sigma : 1 x 1 numpy array
+            Standard deviation of the left Gaussian core region. The default is None.
+        right_tail_shape : 1 x 1 numpy array
+            GPD shape parameter (gamma) of the right tail. The default is None.
+        right_tail_scale : 1 x 1 numpy array
+            GPD scale parameter (beta) of the right tail. The default is None.
+        right_threshold : 1 x 1 numpy array
+            Location where the right tail meets the right Gaussian core region. The default is None.
+        right_mean : 1 x 1 numpy array
+            Mean of the right Gaussian core region. The default is None.
+        right_sigma : 1 x 1 numpy array
+            Standard deviation of the right Gaussian core region. The default is None.
+
+        Returns
+        -------
+        None.
+        """
+        super().__init__(loc=np.zeros((1, 1)), scale=scale)
+        self.left_tail_shape = left_tail_shape
+        self.left_tail_scale = left_tail_scale
+        self.left_threshold = left_threshold
+        self.left_mean = left_mean
+        self.left_sigma = left_sigma
+        self.right_tail_shape = right_tail_shape
+        self.right_tail_scale = right_tail_scale
+        self.right_threshold = right_threshold
+        self.right_mean = right_mean
+        self.right_sigma = right_sigma
+
+    def sample(
+        self, rng: rnd._generator = None, num_samples: int = None
+    ) -> np.ndarray:
+        """Generate a random sample from the Paired Gaussian-Pareto Distribution."""
+        if rng is None:
+            rng = rnd.default_rng()
+        if num_samples is None:
+            num_samples = 1
+
+        p = rng.uniform(size=num_samples)
+        p_sorted = np.sort(p)
+        pass
+
+    def CI(self, alfa):
+        """Return confidence interval of distribution given a significance level 'alfa'.
+
+        Parameters
+        ----------
+        alfa : float
+            significance level, i.e. confidence level = (1 - alfa)
+
+        Returns
+        -------
+        2 x 1 numpy array
+            array containing upper and lower bound of confidence interval
+        """
+        pass
+
+    def CDFplot(self, data):
+        """Plot Paired Gaussian-Pareto overbound and DKW bound against ECDF of input data.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        matplotlib line plot
+            shows empirical distribution function of input error data, the
+            associated DKW Lower bound, and the computed symmetric GPO in the
+            CDF domain.
+        """
+        n = data.size
+        data_sorted = np.sort(data)
+
+        ecdf_ords = np.zeros(n)
+
+        for i in range(n):
+            ecdf_ords[i] = (i + 1) / n
+
+        confidence = 0.95
+        alfa = 1 - confidence
+        epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
+
+        dkw_high = np.add(ecdf_ords, epsilon)
+        dkw_low = np.subtract(ecdf_ords, epsilon)
+
+        x_ob_left_tail = np.linspace(
+            1.05 * data_sorted[0], self.left_threshold, num=1000
+        )
+        sub = np.flip(
+            np.negative(
+                np.subtract(x_ob_left_tail, self.left_threshold + 1e-14)
+            )
+        )
+        y_ob_left_tail = np.transpose(
+            genpareto.cdf(
+                sub,
+                self.left_tail_shape,
+                scale=self.left_tail_scale,
+            )
+        )
+
+        Fu = norm.cdf(
+            self.left_threshold, loc=self.left_mean, scale=self.left_sigma
+        )
+        y_ob_left_tail = np.flip(
+            np.add(np.negative(np.multiply(y_ob_left_tail, Fu)), Fu)
+        )
+
+        x_ob_core = np.linspace(
+            self.left_threshold, self.right_threshold, num=10000
+        )
+        y_ob_core = np.zeros(10000)
+
+        for i in range(10000):
+            if (
+                x_ob_core[i] >= self.left_threshold
+                and x_ob_core[i] < self.left_mean
+            ):
+                y_ob_core[i] = norm.cdf(
+                    x_ob_core[i], loc=self.left_mean, scale=self.left_sigma
+                )
+            elif (
+                x_ob_core[i] >= self.left_mean
+                and x_ob_core[i] <= self.right_mean
+            ):
+                y_ob_core[i] = 0.5
+            elif (
+                x_ob_core[i] > self.right_mean
+                and x_ob_core[i] <= self.right_threshold
+            ):
+                y_ob_core[i] = norm.cdf(
+                    x_ob_core[i], loc=self.right_mean, scale=self.right_sigma
+                )
+
+        x_ob_right_tail = np.linspace(
+            self.right_threshold, 1.05 * data_sorted[-1], num=1000
+        )
+        sub = np.subtract(x_ob_right_tail, self.right_threshold - 1e-14)
+        y_ob_right_tail = np.transpose(
+            genpareto.cdf(
+                sub, self.right_tail_shape, scale=self.right_tail_scale
+            )
+        )
+
+        Fu = norm.cdf(
+            self.right_threshold, loc=self.right_mean, scale=self.right_sigma
+        )
+        y_ob_right_tail = np.add(np.multiply(y_ob_right_tail, (1 - Fu)), Fu)
+
+        x_ob = np.concatenate((x_ob_left_tail, x_ob_core, x_ob_right_tail))
+        y_ob = np.concatenate((y_ob_left_tail, y_ob_core, y_ob_right_tail))
+
+        plt.figure("Paired GPO Plot in CDF Domain")
+        plt.plot(data_sorted, ecdf_ords, label="ECDF")
+        plt.plot(data_sorted, dkw_high, label="DKW Upper Bound")
+        plt.plot(data_sorted, dkw_low, label="DKW Lower Bound")
+        plt.plot(x_ob, y_ob, label="Paired Gaussian-Pareto Overbound")
+
+        left_edge = 1.1 * x_ob_left_tail[0]
+        right_edge = 1.1 * x_ob_right_tail[-1]
+        plt.xlim([left_edge, right_edge])
+        plt.legend()
+        plt.grid()
+        plt.title("Paired GPO Plot in CDF Domain")
+        pass
+
+    def Qplot(self, data):
+        """Generate probability plot for Paired Gaussian-Pareto Overbound.
+
+        Parameters
+        ----------
+        data : N numpy array
+            numpy array containing the error data used to calculate the
+            overbound
+
+        Returns
+        -------
+        matplotlib figure
+        """
+        pass

@@ -161,15 +161,27 @@ def test_PairedGaussianOverbound():
 
 
 def test_PairedGPO():
+    print("Testing Paired Gaussian-Pareto Overbounder:")
+    np.random.seed(seed=233423)
+    n = 10000
+    data = t.rvs(8, loc=0, scale=1, size=n)
+
+    pairedGPOBer = sdob.PairedGPO()
+
+    out_dist = pairedGPOBer.overbound(data)
+
+    if DEBUG:
+        out_dist.CDFplot(data)
+
     pass
 
 
 if __name__ == "__main__":
     DEBUG = True
     # test_FusionGaussian()
-    test_SymmetricGaussianOverbound()
-    test_SymmetricGPO()
-    test_PairedGaussianOverbound()
-    # test_PairedGPO()
+    # test_SymmetricGaussianOverbound()
+    # test_SymmetricGPO()
+    # test_PairedGaussianOverbound()
+    test_PairedGPO()
 
     # plt.show()
