@@ -15,9 +15,7 @@ def main():
 
     fig = plt.figure()
     fig.add_subplot(1, 1, 1)
-    fig.axes[0].hist(
-        z, density=True, cumulative=True, bins=1000, histtype="stepfilled"
-    )
+    fig.axes[0].hist(z, density=True, cumulative=True, bins=1000, histtype="stepfilled")
     fig.suptitle("Emperical CDF of Polynomial")
     fig.tight_layout()
 
