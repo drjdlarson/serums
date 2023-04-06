@@ -326,26 +326,28 @@ class Gaussian(BaseSingleModel):
         Returns
         -------
         1 x 2 numpy array
-            array containing upper and lower bound of confidence interval
+            Numpy array containing the upper and lower bound of the computed
+            confidence interval.
         """
-        low = stats.norm.ppf(alfa, loc=self.mean, scale=np.sqrt(self.scale))
-        high = stats.norm.ppf(
-            1 - alfa, loc=self.mean, scale=np.sqrt(self.scale)
-        )
+        p = alfa / 2
+        low = stats.norm.ppf(p, loc=self.mean, scale=np.sqrt(self.scale))
+        high = stats.norm.ppf(1 - p, loc=self.mean, scale=np.sqrt(self.scale))
         return np.array([[low[0, 0], high[0, 0]]])
 
     def CDFplot(self, data):
-        """Plot Gaussian overbound and DKW bound against ECDF of input data.
+        """Plot the overbound and DKW bound(s) against ECDF of input data.
 
         Parameters
         ----------
         data : N numpy array
-            numpy array containing the error data used to calculate the
-            overbound
+            Contains the error sample data for which the overbound was computed.
 
         Returns
         -------
-        matplotlib figure
+        matplotlib line plot
+            Shows empirical cumulative distribution function of input error
+            data, the associated DKW bound(s), and the computed overbound in the
+            CDF domain.
         """
         n = data.size
         ordered_abs_data = np.sort(np.abs(data))
@@ -372,9 +374,12 @@ class Gaussian(BaseSingleModel):
         plt.ylim(np.array([0, 1]))
         plt.legend()
         plt.grid()
+        plt.title("Symmetric Gaussian Overbound Plot in CDF Domain")
+        plt.ylabel("Accumulated Probability")
+        plt.xlabel("Error Magnitude")
 
-    def Qplot(self, data):
-        """Generate probability plot for Symmetric Gaussian Overbound.
+    def probscaleplot(self, data):
+        """Generate probability plot of the ECDF, overbound, and DKW bound(s).
 
         Parameters
         ----------
@@ -384,7 +389,11 @@ class Gaussian(BaseSingleModel):
 
         Returns
         -------
-        matplotlib figure
+        matplotlib line plot
+            Shows empirical cumulative distribution function of input error
+            data, the associated DKW bound(s), and the computed overbound
+            in the CDF domain where the probability axis is represented with
+            percentiles and is scaled such that a Gaussian CDF is linear.
         """
         sorted_abs_data = np.sort(np.abs(data))
         n = data.size
@@ -415,7 +424,7 @@ class Gaussian(BaseSingleModel):
         plt.legend(["ECDF", "DKW Lower Bound", "Symmetric Gaussian Overbound"])
         plt.title("Probability Plot of Symmetric Gaussian Overbound")
         plt.ylabel("CDF Percentiles")
-        plt.xlabel("Error")
+        plt.xlabel("Error Magnitude")
         plt.grid()
 
 
@@ -423,6 +432,21 @@ class PairedGaussian(BaseSingleModel):
     """Represents a Paired Gaussian Overbound Distribution Object."""
 
     def __init__(self, left: Gaussian, right: Gaussian):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        left : :class:'serums.models.Gaussian'
+            Gaussian model storing the parameters of the left component of the
+            paired overbound.
+        right : :class:'serums.models.Gaussian'
+            Gaussian model storing the parameters of the right component of the
+            paired overbound.
+
+        Returns
+        -------
+        None.
+        """
         super().__init__()
 
         self.left_gaussian = deepcopy(left)
@@ -431,6 +455,19 @@ class PairedGaussian(BaseSingleModel):
     def sample(
         self, rng: rnd._generator = None, num_samples: int = None
     ) -> np.ndarray:
+        """Generate a random sample from the distribution model.
+
+        Parameters
+        ----------
+        num_samples : int
+            Specify the size of the sample.
+
+        Returns
+        -------
+        N numpy array
+            Numpy array containing a random sample of the specified size from
+            the distribution.
+        """
         if rng is None:
             rng = rnd.default_rng()
         if num_samples is None:
@@ -471,7 +508,8 @@ class PairedGaussian(BaseSingleModel):
         Returns
         -------
         1 x 2 numpy array
-            array containing upper and lower bound of confidence interval
+            Numpy array containing the upper and lower bound of the computed
+            confidence interval.
         """
         e = alfa / 2
         left = norm.ppf(
@@ -487,17 +525,19 @@ class PairedGaussian(BaseSingleModel):
         return np.array([[left, right]])
 
     def CDFplot(self, data):
-        """Plot Paired Gaussian overbound and DKW bound against ECDF of input data.
+        """Plot the overbound and DKW bound(s) against ECDF of input data.
 
         Parameters
         ----------
         data : N numpy array
-            numpy array containing the error data used to calculate the
-            overbound
+            Contains the error sample data for which the overbound was computed.
 
         Returns
         -------
-        matplotlib figure
+        matplotlib line plot
+            Shows empirical cumulative distribution function of input error
+            data, the associated DKW bound(s), and the computed overbound in the
+            CDF domain.
         """
         data = np.sort(data)
         n = data.size
@@ -550,9 +590,12 @@ class PairedGaussian(BaseSingleModel):
         plt.plot(data, DKW_low, label="Lower DKW Bound")
         plt.legend()
         plt.grid()
+        plt.title("Paired Gaussian Overbound Plot in CDF Domain")
+        plt.ylabel("Accumulated Probability")
+        plt.xlabel("Error")
 
-    def Qplot(self, data):
-        """Generate probability plot for Paired Gaussian Overbound.
+    def probscaleplot(self, data):
+        """Generate probability plot of the ECDF, overbound, and DKW bound(s).
 
         Parameters
         ----------
@@ -562,7 +605,11 @@ class PairedGaussian(BaseSingleModel):
 
         Returns
         -------
-        matplotlib figure
+        matplotlib line plot
+            Shows empirical cumulative distribution function of input error
+            data, the associated DKW bound(s), and the computed overbound
+            in the CDF domain where the probability axis is represented with
+            percentiles and is scaled such that a Gaussian CDF is linear.
         """
         n = data.size
         ecdf_ords = np.zeros(n)
@@ -1672,7 +1719,19 @@ class SymmetricGaussianPareto(BaseSingleModel):
     def sample(
         self, rng: rnd._generator = None, num_samples: int = None
     ) -> np.ndarray:
-        """Generate a random sample from the Symmetric Gaussian-Pareto Distribution."""
+        """Generate a random sample from the distribution model.
+
+        Parameters
+        ----------
+        num_samples : int
+            Specify the size of the sample.
+
+        Returns
+        -------
+        N numpy array
+            Numpy array containing a random sample of the specified size from
+            the distribution.
+        """
         if rng is None:
             rng = rnd.default_rng()
         if num_samples is None:
@@ -1724,12 +1783,13 @@ class SymmetricGaussianPareto(BaseSingleModel):
         Returns
         -------
         1 x 2 numpy array
-            array containing upper and lower bound of confidence interval
+            Numpy array containing the upper and lower bound of the computed
+            confidence interval.
         """
         q_u = halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale)
         q_x = 1 - alfa
         if q_x <= q_u:
-            value = halfnorm.ppf(1 - alfa, loc=self.location, scale=self.scale)
+            value = halfnorm.ppf(q_x, loc=self.location, scale=self.scale)
         else:
             temp = (q_x - q_u) / (1 - q_u)
             value = self.threshold + genpareto.ppf(
@@ -1738,17 +1798,18 @@ class SymmetricGaussianPareto(BaseSingleModel):
         return np.array([[-value, value]])
 
     def CDFplot(self, data):
-        """Plot Symmetric Gaussian-Pareto overbound and DKW bound against ECDF of input data.
+        """Plot the overbound and DKW bound(s) against ECDF of input data.
 
         Parameters
         ----------
-        None.
+        data : N numpy array
+            Contains the error sample data for which the overbound was computed.
 
         Returns
         -------
         matplotlib line plot
-            shows empirical distribution function of input error data, the
-            associated DKW Lower bound, and the computed symmetric GPO in the
+            Shows empirical cumulative distribution function of input error
+            data, the associated DKW bound(s), and the computed overbound in the
             CDF domain.
         """
         pos = np.absolute(data)
@@ -1800,9 +1861,12 @@ class SymmetricGaussianPareto(BaseSingleModel):
         plt.xlim([0, 1.2 * max(sorted_abs_data)])
         plt.legend()
         plt.grid()
+        plt.title("Symmetric GPO Plot in CDF Domain")
+        plt.ylabel("Accumulated Probability")
+        plt.xlabel("Error Magnitude")
 
-    def Qplot(self, data):
-        """Generate probability plot for Symmetric Gaussian-Pareto Overbound.
+    def probscaleplot(self, data):
+        """Generate probability plot of the ECDF, overbound, and DKW bound(s).
 
         Parameters
         ----------
@@ -1812,7 +1876,11 @@ class SymmetricGaussianPareto(BaseSingleModel):
 
         Returns
         -------
-        matplotlib figure
+        matplotlib line plot
+            Shows empirical cumulative distribution function of input error
+            data, the associated DKW bound(s), and the computed overbound
+            in the CDF domain where the probability axis is represented with
+            percentiles and is scaled such that a Gaussian CDF is linear.
         """
         pos = np.absolute(data)
         sorted_abs_data = np.sort(pos)
@@ -1867,7 +1935,7 @@ class SymmetricGaussianPareto(BaseSingleModel):
         )
         plt.title("Probability Plot of Symmetric Gaussian-Pareto Overbound")
         plt.ylabel("CDF Percentiles")
-        plt.xlabel("Error")
+        plt.xlabel("Error Magnitude")
         plt.grid()
 
 
@@ -1957,7 +2025,19 @@ class PairedGaussianPareto(BaseSingleModel):
     def sample(
         self, rng: rnd._generator = None, num_samples: int = None
     ) -> np.ndarray:
-        """Generate a random sample from the Paired Gaussian-Pareto Distribution."""
+        """Generate a random sample from the distribution model.
+
+        Parameters
+        ----------
+        num_samples : int
+            Specify the size of the sample.
+
+        Returns
+        -------
+        N numpy array
+            Numpy array containing a random sample of the specified size from
+            the distribution.
+        """
         if rng is None:
             rng = rnd.default_rng()
         if num_samples is None:
@@ -2019,7 +2099,8 @@ class PairedGaussianPareto(BaseSingleModel):
         Returns
         -------
         1 x 2 numpy array
-            array containing upper and lower bound of confidence interval
+            Numpy array containing the upper and lower bound of the computed
+            confidence interval.
         """
         p = alfa / 2
 
@@ -2053,17 +2134,18 @@ class PairedGaussianPareto(BaseSingleModel):
         return np.array([[left, right]])
 
     def CDFplot(self, data):
-        """Plot Paired Gaussian-Pareto overbound and DKW bound against ECDF of input data.
+        """Plot the overbound and DKW bound(s) against ECDF of input data.
 
         Parameters
         ----------
-        None.
+        data : N numpy array
+            Contains the error sample data for which the overbound was computed.
 
         Returns
         -------
         matplotlib line plot
-            shows empirical distribution function of input error data, the
-            associated DKW Lower bound, and the computed symmetric GPO in the
+            Shows empirical cumulative distribution function of input error
+            data, the associated DKW bound(s), and the computed overbound in the
             CDF domain.
         """
         n = data.size
@@ -2160,10 +2242,11 @@ class PairedGaussianPareto(BaseSingleModel):
         plt.legend()
         plt.grid()
         plt.title("Paired GPO Plot in CDF Domain")
-        pass
+        plt.ylabel("Accumulated Probability")
+        plt.xlabel("Error")
 
-    def Qplot(self, data):
-        """Generate probability plot for Paired Gaussian-Pareto Overbound.
+    def probscaleplot(self, data):
+        """Generate probability plot of the ECDF, overbound, and DKW bound(s).
 
         Parameters
         ----------
@@ -2173,7 +2256,11 @@ class PairedGaussianPareto(BaseSingleModel):
 
         Returns
         -------
-        matplotlib figure
+        matplotlib line plot
+            Shows empirical cumulative distribution function of input error
+            data, the associated DKW bound(s), and the computed overbound
+            in the CDF domain where the probability axis is represented with
+            percentiles and is scaled such that a Gaussian CDF is linear.
         """
         n = data.size
         data_sorted = np.sort(data)
@@ -2277,4 +2364,3 @@ class PairedGaussianPareto(BaseSingleModel):
         plt.ylabel("CDF Percentiles")
         plt.xlabel("Error")
         plt.grid()
-        pass

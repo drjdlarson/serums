@@ -25,13 +25,12 @@ def fusion(
 
 
 class OverbounderBase(ABC):
-    """Represents base class for any overbound object."""
+    """Represents base class for any overbounder object."""
 
     def __init__(self):
         pass
 
-    def erf_gauss(self, X, mean, sigma):
-        """Obtain numerical approximation of erf inside Gaussian CDF equation."""
+    def _erf_gauss(self, X, mean, sigma):
         phi = (X - mean) / (2**0.5)
         n_terms = 55
         gain = 2 / (np.pi**0.5)
@@ -50,8 +49,7 @@ class OverbounderBase(ABC):
 
         return gain * sum(terms)
 
-    def dsig_erf_gauss(self, X, mean, sigma):
-        """Obtain numerical approximation of d/dsigma{erf} for Newtons method."""
+    def _dsig_erf_gauss(self, X, mean, sigma):
         phi = (X - mean) / (2**0.5)
         n_terms = 55
         gain = 2 / (np.pi**0.5)
@@ -70,94 +68,54 @@ class OverbounderBase(ABC):
 
         return gain * sum(terms)
 
-    def g_sigma(self, mean, Xi, Yi, sigma):
-        """Determine value of g(sigma) given Gauss mean and point on Gauss CDF."""
+    def _g_sigma(self, mean, Xi, Yi, sigma):
         sub = 1 - 2 * Yi
-        return sub + self.erf_gauss(Xi, mean, sigma)
+        return sub + self._erf_gauss(Xi, mean, sigma)
 
-    def g_prime_sigma(self, mean, Xi, Yi, sigma):
-        """Determine value of g'(sigma) given Gauss mean and point on Gauss CDF."""
-        return self.dsig_erf_gauss(Xi, mean, sigma)
+    def _g_prime_sigma(self, mean, Xi, Yi, sigma):
+        return self._dsig_erf_gauss(Xi, mean, sigma)
 
-    def h_sigma(self, Xi, Yi, sigma):
-        """Determine value of h(sigma) Given point on half-gaussian ECDF."""
-        return -Yi + self.erf_gauss(Xi, 0, sigma)
+    def _h_sigma(self, Xi, Yi, sigma):
+        return -Yi + self._erf_gauss(Xi, 0, sigma)
 
-    def h_prime_sigma(self, Xi, Yi, sigma):
-        """Determine value of h'(sigma) given point on half-gaussian ECDF."""
-        return self.dsig_erf_gauss(Xi, 0, sigma)
+    def _h_prime_sigma(self, Xi, Yi, sigma):
+        return self._dsig_erf_gauss(Xi, 0, sigma)
 
-    def find_sigma_g(self, mean, Xi, Yi):
-        """Find Gaussian st. dev. that intersects a certain mean and point on CDF."""
+    def _find_sigma_g(self, mean, Xi, Yi):
         sigma_0 = 0.75 * abs(Xi - mean)
         sigma_iter = sigma_0
         i = 1
 
-        while abs(self.g_sigma(mean, Xi, Yi, sigma_iter)) > 1e-14:
+        while abs(self._g_sigma(mean, Xi, Yi, sigma_iter)) > 1e-14:
             sigma_iter = sigma_iter - (
-                self.g_sigma(mean, Xi, Yi, sigma_iter)
-                / self.g_prime_sigma(mean, Xi, Yi, sigma_iter)
+                self._g_sigma(mean, Xi, Yi, sigma_iter)
+                / self._g_prime_sigma(mean, Xi, Yi, sigma_iter)
             )
             i = i + 1
 
         return sigma_iter
 
-    def find_sigma_h(self, Xi, Yi):
-        """Find half-Gauss sigma that intersects a certain point on CDF."""
+    def _find_sigma_h(self, Xi, Yi):
         sigma_0 = 0.75 * abs(Xi)
         sigma_iter = sigma_0
         i = 1
 
-        while abs(self.h_sigma(Xi, Yi, sigma_iter)) > 1e-14:
+        while abs(self._h_sigma(Xi, Yi, sigma_iter)) > 1e-14:
             sigma_iter = sigma_iter - (
-                self.h_sigma(Xi, Yi, sigma_iter)
-                / self.h_prime_sigma(Xi, Yi, sigma_iter)
+                self._h_sigma(Xi, Yi, sigma_iter)
+                / self._h_prime_sigma(Xi, Yi, sigma_iter)
             )
             i = i + 1
         return sigma_iter
 
-    def get_pareto_scale(self, Xi, Yi, shape):
-        """Find GPD scale given shape and point on CDF."""
+    def _get_pareto_scale(self, Xi, Yi, shape):
         return (shape * Xi) / (((1 - Yi) ** -shape) - 1)
 
-    def gauss_1pt_pierce_cost(self, sigma, pt):
-        """Cost function to be optimized when finding piercing half Gaussian.
-
-        Parameters
-        ----------
-        sigma : 1 numpy array
-            Half-Gaussian standard deviation to be searched over, i.e. the
-            independent variable which is iterated during the optimization
-            routine.
-        pt : 2x1 numpy array
-            Point to seek Half-Gaussian pierce with (0,0). Format is (x, y)
-
-        Returns
-        -------
-        error : float
-            Magnitude of the error in the dependent variable between the actual
-            point and the Half-Gaussian CDF value at the point.
-
-        """
+    def _gauss_1pt_pierce_cost(self, sigma, pt):
         error = np.abs(pt[1] - halfnorm.cdf(pt[0], loc=0, scale=sigma))
         return error
 
-    def gauss_2pt_pierce_cost(self, gauss_param_array, pts):
-        """Cost function for optimization of Gaussian pierce search.
-
-        Parameters
-        ----------
-        gauss_param_array : 2 numpy array
-            Gauss parameters to be searched over. Format is (mu, sigma).
-        pts : 2x2 numpy array
-            Points to seek pierce between. Row 1 is (x1, x2). Row 2 is (y1, y2).
-
-        Returns
-        -------
-        norm : float
-            L2 norm of vector containing errors in CDF function at points 1 & 2.
-
-        """
+    def _gauss_2pt_pierce_cost(self, gauss_param_array, pts):
         vect = -pts[1] + 0.5 * (
             1
             + special.erf(
@@ -178,17 +136,40 @@ class SymmetricGaussianOverbounder(OverbounderBase):
     """Represents a Symmetric Gaussian Overbounder object."""
 
     def __init__(self):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        pierce_locator : float
+            Determines the proportional factor on the sample standard deviation
+            for the lower bound on the overbound enforcement. The default is 1
+            and should not be changed unless for experimental purposes.
+
+        Returns
+        -------
+        None.
+        """
         super().__init__()
         self.pierce_locator = 1
 
     def overbound(self, data):
-        """Produce Gaussian model object that overbounds given error data."""
+        """Produce Gaussian model object that overbounds input error data.
+
+        Parameters
+        ----------
+        data : N numpy array
+            numpy array containing the error sample to be overbounded.
+
+        Returns
+        -------
+        :class:`serums.models.Gaussian`
+            Gaussian distribution object which overbounds the input data.
+        """
         n = data.size
         sample_sigma = np.std(data, ddof=1)
         threshold = self.pierce_locator * sample_sigma
         OB_mean = 0
 
-        # Determine points on Half-Gaussian ECDF
         ecdf_ords = np.zeros(n)
         for i in range(n):
             ecdf_ords[i] = (i + 1) / n
@@ -196,21 +177,18 @@ class SymmetricGaussianOverbounder(OverbounderBase):
         sub = np.absolute(data)
         abs_data = np.sort(sub)
 
-        # Determine points on lower DKW band
         confidence = 0.95
         alfa = 1 - confidence
         epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
         DKW_low = np.subtract(ecdf_ords, epsilon)
 
-        # Determine points for intersection check
         sub = np.array(np.where(abs_data > threshold))
         candidates = np.zeros(n)
 
-        # Determine list of candidate sigmas
         for i in sub[0, 0:]:
             pt = np.array([[abs_data[i]], [DKW_low[i]]])
             ans = minimize(
-                self.gauss_1pt_pierce_cost,
+                self._gauss_1pt_pierce_cost,
                 sample_sigma,
                 args=(pt,),
                 method="Powell",
@@ -221,8 +199,6 @@ class SymmetricGaussianOverbounder(OverbounderBase):
             else:
                 candidates[i] = 0
 
-        # Select maximum sigma with irrationality protection (likely unneccessary
-        # if disregarding inner core)
         rational_candidates = candidates[~np.isnan(candidates)]
         OB_sigma = np.max(rational_candidates)
 
@@ -235,23 +211,47 @@ class SymmetricGPO(OverbounderBase):
     """Represents a Symmetric Gaussian-Pareto Overbounder object."""
 
     def __init__(self):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        inside_pierce_locator : float
+            Determines the proportional factor on the sample standard deviation
+            for the lower bound on the overbound enforcement in the core
+            region. The default is 1 and should not be changed unless for
+            experimental purposes.
+        ThresholdReductionFactor : int
+            Dividing factor for reduction of the space over which the search
+            is conducted for a threshold. Currently, this feature is not
+            implemented so there is no purpose in altering it.
+
+        Returns
+        -------
+        None.
+        """
         super().__init__()
         self.inside_pierce_locator = 1
         self.ThresholdReductionFactor = 1
 
     def overbound(self, data):
-        """Produce symmetric Gaussian-Pareto mixture model object that overbounds input error data."""
+        """Produce Symmetric Gaussian-Pareto model object that overbounds input error data.
+
+        Parameters
+        ----------
+        data : N numpy array
+            numpy array containing the error sample to be overbounded.
+
+        Returns
+        -------
+        :class:`serums.models.SymmetricGaussianPareto`
+            Symmetric Gaussian-Pareto distribution object which overbounds the input data.
+        """
         n = data.size
         sigma = np.sqrt(np.var(data, ddof=1))
         print("\nComputing Symmetric Gaussian-Pareto Overbound...")
-        # print(
-        #     "Sample St. Dev. : ",
-        #     sigma,
-        # )
 
         pos = np.absolute(data)
         sorted_abs_data = np.sort(pos)
-        # print("Most Extreme Deviation in Sample: ", sorted_abs_data[-1])
 
         Nt_min = 250
         Nt_max = int(np.ceil(0.1 * n))
@@ -286,7 +286,6 @@ class SymmetricGPO(OverbounderBase):
                 MLE_used[i] = True
             except serums.errors.DistributionEstimatorFailed:
                 shapes[i] = 0
-            # print(shapes[i], "\n", MLE_used[i])
 
         shape_max = max(shapes)
         idx_shape_max = np.where(shapes == shape_max)[0]
@@ -306,27 +305,20 @@ class SymmetricGPO(OverbounderBase):
         tail_shape = shape_max + t.ppf(0.975, tail_size) * np.sqrt(
             shape_max_covar[1, 1]
         )
-        # print("Maximum Tail GPD Shape Parameter Estimate : ", tail_shape)
         u_idx = u_idxs[idx_shape_max[0]]
         u = sorted_abs_data[u_idx]
-        # print("Corresponding Error Threshold: ", u)
 
-        # Perform gaussian overbound on core region between inside locator and threshold
         print("\nComputing Gaussian Overbound for Core Region...")
 
-        # Determine points on Half-Gaussian ECDF
         ecdf_ords = np.zeros(n)
         for i in range(n):
             ecdf_ords[i] = (i + 1) / n
 
-        # Determine points on lower DKW band
-        # confidence = 1 - 1e-6
         confidence = 0.95
         alfa = 1 - confidence
         epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
         DKW_low = np.subtract(ecdf_ords, epsilon)
 
-        # Determine points for intersection check
         core_min = self.inside_pierce_locator * np.sqrt(
             np.var(sorted_abs_data[np.where(sorted_abs_data < u)[0]], ddof=1)
         )
@@ -336,30 +328,13 @@ class SymmetricGPO(OverbounderBase):
         end = sub[-1]
         candidates = np.zeros(n)
         subs = np.arange(start, end + 2, 1)
-        # print("Number of Points in Core Search Region: ", subs.size)
-        # print(
-        #     "Range of Errors Corresponding to Core Search Region: ",
-        #     sorted_abs_data[start],
-        #     "-",
-        #     sorted_abs_data[end + 1],
-        # )
 
-        # Determine list of candidate sigmas
         for i in subs:
-            candidates[i] = self.find_sigma_h(sorted_abs_data[i], DKW_low[i])
+            candidates[i] = self._find_sigma_h(sorted_abs_data[i], DKW_low[i])
 
-        # Select maximum sigma with NaN protection (likely unneccessary
-        # if disregarding inner core)
         real_candidates = candidates[~np.isnan(candidates)]
         core_sigma = np.max(real_candidates)
-        # print("St. Dev. of Gaussian Core Overbound:", core_sigma)
-        # print(
-        #     "Error Value Corresponding to Core CDF Pierce Condition: ",
-        #     sorted_abs_data[np.where(candidates == core_sigma)[0]][0],
-        # )
 
-        # Determine tail scale parameter by checking for maximum scale
-        # corresponding to pierce from threshold to end point in tail
         print("\nComputing Tail GPD Scale Parameter...")
 
         tail_idxs = np.arange(u_idx + 1, n, 1)
@@ -371,25 +346,20 @@ class SymmetricGPO(OverbounderBase):
         )
         scales = np.zeros(n)
 
-        # Transform lower DKW band to CEDF domain of the tail
-        Fu = self.erf_gauss(u, 0, core_sigma)
+        Fu = self._erf_gauss(u, 0, core_sigma)
         tail_DKW_ords_CEDF_domain = np.zeros(n)
         tail_DKW_ords_CEDF_domain[tail_idxs] = np.subtract(
             DKW_low[tail_idxs], Fu
         ) / (1 - Fu)
 
         for i in tail_idxs:
-            scales[i] = self.get_pareto_scale(
+            scales[i] = self._get_pareto_scale(
                 shifted_tail_pts[i], tail_DKW_ords_CEDF_domain[i], tail_shape
             )
 
-        # Select maximum scale with irrationality protection
         rational_scales = scales[~np.isnan(scales)]
         tail_scale = np.max(rational_scales)
-        # print(
-        #     "Required Tail GPD Scale Parameter to Enforce Overbound:",
-        #     tail_scale,
-        # )
+
         print("\nDone.")
         return smodels.SymmetricGaussianPareto(
             scale=core_sigma,
@@ -403,6 +373,16 @@ class PairedGaussianOverbounder(OverbounderBase):
     """Represents a Paired Gaussian Overbounder object."""
 
     def __init__(self):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
         super().__init__()
 
     def _cost_left(self, params, x_check, y_check):
@@ -434,8 +414,8 @@ class PairedGaussianOverbounder(OverbounderBase):
 
         Returns
         -------
-        out_dist : :class:
-            'PairedGaussian' object from serums/models.py
+        :class:`serums.models.PairedGaussian`
+            Paired Gaussian distribution object which overbounds the input data.
         """
         n = data.size
         sorted_data = np.sort(data)
@@ -443,12 +423,10 @@ class PairedGaussianOverbounder(OverbounderBase):
         init_sigma = np.std(data, ddof=1)
         init_guess = np.array([init_mean, init_sigma])
 
-        # Generate sample ECDF ordinates
         ecdf_ords = np.zeros(n)
         for i in range(n):
             ecdf_ords[i] = (i + 1) / n
 
-        # Compute Upper and Lower 95% DKW Confidence Bounds
         confidence = 0.95
         alfa = 1 - confidence
         epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
@@ -475,22 +453,6 @@ class PairedGaussianOverbounder(OverbounderBase):
                 },
             },
         )
-        # if debug_plots:
-        #     plt.figure("Test Plot Left")
-        #     plt.plot(
-        #         data[left_usable_idxs],
-        #         DKW_high[left_usable_idxs],
-        #         label="Allowable DKW High",
-        #     )
-        #     y_left_ob = norm.cdf(
-        #         data, loc=left_result.x[0], scale=left_result.x[1]
-        #     )
-        #     plt.plot(
-        #         data[left_usable_idxs],
-        #         y_left_ob[left_usable_idxs],
-        #         label="Left OB",
-        #     )
-        #     plt.legend()
 
         right_usable_idxs = np.asarray(DKW_low > epsilon).nonzero()[0]
         x_check_right = sorted_data[right_usable_idxs]
@@ -512,22 +474,6 @@ class PairedGaussianOverbounder(OverbounderBase):
                 },
             },
         )
-        # if debug_plots:
-        #     plt.figure("Test Plot Right")
-        #     plt.plot(
-        #         data[right_usable_idxs],
-        #         DKW_low[right_usable_idxs],
-        #         label="Allowable DKW Low",
-        #     )
-        #     y_left_ob = norm.cdf(
-        #         data, loc=right_result.x[0], scale=right_result.x[1]
-        #     )
-        #     plt.plot(
-        #         data[right_usable_idxs],
-        #         y_left_ob[right_usable_idxs],
-        #         label="Right OB",
-        #     )
-        #     plt.legend()
 
         left_ob = smodels.Gaussian(
             mean=left_result.x[0],
@@ -545,6 +491,25 @@ class PairedGPO(OverbounderBase):
     """Represents a Paired Gaussian-Pareto Overbounder Object."""
 
     def __init__(self):
+        """Initialize an object.
+
+        Parameters
+        ----------
+        ThresholdReductionFactor : int
+            Dividing factor for reduction of the space over which the search
+            is conducted for a threshold. Currently, this feature is not
+            implemented so there is no purpose in altering it.
+        StrictPairedEnforcement : bool
+            Logical property which determines how the paired overbounds are
+            enforced. The default is False and should not be altered unless
+            the overbound is to be used with an alternate fusion algorithm
+            based on analytical methods rather than Monte-Carlo output
+            simulation.
+
+        Returns
+        -------
+        None.
+        """
         super().__init__()
         self.ThresholdReductionFactor = 1
         self.StrictPairedEnforcement = False
@@ -578,8 +543,8 @@ class PairedGPO(OverbounderBase):
 
         Returns
         -------
-        out_dist : :class:
-            'PairedGaussianPareto' object from serums/models.py
+        :class:`serums.models.PairedGaussianPareto`
+            Paired Gaussian-Pareto distribution object which overbounds the input data.
         """
         n = data.size
         data_sorted = np.sort(data)
@@ -656,17 +621,14 @@ class PairedGPO(OverbounderBase):
             max_shape_covar_right[1, 1]
         )
 
-        # Define initial guess for basin hopping algorithm
         init_mean = np.mean(data)
         init_sigma = np.std(data, ddof=1)
         init_guess = np.array([init_mean, init_sigma])
 
-        # Generate sample ECDF ordinates
         ecdf_ords = np.zeros(n)
         for i in range(n):
             ecdf_ords[i] = (i + 1) / n
 
-        # Compute Upper and Lower 95% DKW Confidence Bounds
         confidence = 0.95
         alfa = 1 - confidence
         epsilon = np.sqrt(np.log(2 / alfa) / (2 * n))
@@ -759,7 +721,7 @@ class PairedGPO(OverbounderBase):
         max_beta_left = 0
 
         for i in range(left_transformed_ords.size):
-            beta = self.get_pareto_scale(
+            beta = self._get_pareto_scale(
                 shifted_left_tail[i], left_transformed_ords[i], gamma_left
             )
             if beta > max_beta_left:
@@ -785,7 +747,7 @@ class PairedGPO(OverbounderBase):
         max_beta_right = 0
 
         for i in range(right_transformed_ords.size):
-            beta = self.get_pareto_scale(
+            beta = self._get_pareto_scale(
                 shifted_right_tail[i], right_transformed_ords[i], gamma_right
             )
             if beta > max_beta_right:

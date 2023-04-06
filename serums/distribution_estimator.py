@@ -166,17 +166,20 @@ def grimshaw_MLE(dataset):
     Parameters
     ----------
     dataset : N numpy array
-        Contains positive error data above threshold
+        Contains positive error data above a threshold of 0.
 
     Returns
     -------
     shape_gamma : float
-        Shape parameter as defined by Larson dissertation
+        Shape parameter as defined in chapter 3.2 of
+        :cite:'LarsonThesis'
     scale_beta : float
-        Scale parameter as defined by Larson dissertation
-    gpd_covar : 2 x 2 numpy array
+        Scale parameter as defined in chapter 3.2 of
+        :cite:'LarsonThesis'
         Contains the estimated covariance matrix for shape, scale based on
-        observed Fisher information
+        observed Fisher information. For further information, see chapter 4.1
+        of
+        :cite:'LarsonThesis'
     """
     # Calculate sample size, mean, minimum, and maximum
     n = dataset.size

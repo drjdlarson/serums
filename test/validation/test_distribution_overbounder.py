@@ -26,7 +26,7 @@ def test_FusionGaussian():
         fig.axes[0].hist(
             z, density=True, cumulative=True, bins=1000, histtype="stepfilled"
         )
-        fig.suptitle("Emperical PDF of Polynomial")
+        fig.suptitle("Empirical CDF of Polynomial")
 
 
 def test_SymmetricGaussianOverbound():
@@ -64,7 +64,7 @@ def test_SymmetricGaussianOverbound():
             ")",
         )
         out_dist.CDFplot(data)
-        out_dist.Qplot(data)
+        out_dist.probscaleplot(data)
 
 
 def test_SymmetricGPO():
@@ -117,7 +117,7 @@ def test_SymmetricGPO():
             ")",
         )
         out_dist.CDFplot(data)
-        out_dist.Qplot(data)
+        out_dist.probscaleplot(data)
     pass
 
 
@@ -155,7 +155,7 @@ def test_PairedGaussianOverbound():
             ")",
         )
         out_dist.CDFplot(data)
-        out_dist.Qplot(data)
+        out_dist.probscaleplot(data)
 
     pass
 
@@ -190,17 +190,17 @@ def test_PairedGPO():
             ")",
         )
         out_dist.CDFplot(data)
-        out_dist.Qplot(data)
+        out_dist.probscaleplot(data)
 
     pass
 
 
 if __name__ == "__main__":
     DEBUG = True
-    # test_FusionGaussian()
-    # test_SymmetricGaussianOverbound()
-    # test_SymmetricGPO()
-    # test_PairedGaussianOverbound()
+    test_FusionGaussian()
+    test_SymmetricGaussianOverbound()
+    test_SymmetricGPO()
+    test_PairedGaussianOverbound()
     test_PairedGPO()
 
     # plt.show()
