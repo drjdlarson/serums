@@ -13,21 +13,32 @@
 import os
 import sys
 import sphinx_theme
-sys.path.append(os.path.abspath('../../serums'))
+
+sys.path.append(os.path.abspath("../../serums"))
 
 # run all example code to generate necesary figures
 sys.path.append(os.path.abspath("."))
 from example_runner import run_examples
+
 run_examples()
 
 # -- Project information -----------------------------------------------------
 
-project = 'SERUMS'
-copyright = '2022, Jordan D Larson'
+project = "SERUMS"
+copyright = "2022, Jordan D Larson"
 author = "Laboratory for Autonomy, GNC, and Estimation Research (LAGER)"
 
+
+def get_version() -> str:
+    with open(os.path.join(os.path.dirname(__file__), "..", "..", "setup.py")) as fin:
+        for line in fin:
+            if "version" in line:
+                return line.split("=")[1].strip().replace('"', "").replace("'", "")
+        raise RuntimeError("Failed to extract version from setup.py")
+
+
 # The full version, including alpha/beta/rc tags
-release = "0.0.0"
+release = get_version()
 
 
 # -- General configuration ---------------------------------------------------
@@ -43,6 +54,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinxcontrib.bibtex",
+    "sphinxcontrib.rsvgconverter",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
