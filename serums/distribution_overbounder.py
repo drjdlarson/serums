@@ -158,7 +158,7 @@ class SymmetricGaussianOverbounder(OverbounderBase):
         Parameters
         ----------
         data : N numpy array
-            numpy array containing the error sample to be overbounded.
+            Array containing sample of error data to be overbounded.
 
         Returns
         -------
@@ -239,7 +239,7 @@ class SymmetricGPO(OverbounderBase):
         Parameters
         ----------
         data : N numpy array
-            numpy array containing the error sample to be overbounded.
+            Array containing sample of error data to be overbounded.
 
         Returns
         -------
@@ -410,7 +410,8 @@ class PairedGaussianOverbounder(OverbounderBase):
 
         Parameters
         ----------
-        data : N numpy array of error data
+        data : N numpy array
+            Array containing sample of error data to be overbounded.
 
         Returns
         -------
@@ -539,7 +540,8 @@ class PairedGPO(OverbounderBase):
 
         Parameters
         ----------
-        data : N numpy array of error data
+        data : N numpy array
+            Array containing sample of error data to be overbounded.
 
         Returns
         -------

@@ -171,15 +171,13 @@ def grimshaw_MLE(dataset):
     Returns
     -------
     shape_gamma : float
-        Shape parameter as defined in chapter 3.2 of
-        :cite:'LarsonThesis'
+        Shape parameter as defined in chapter 3.2 of :cite:'LarsonThesis'
     scale_beta : float
-        Scale parameter as defined in chapter 3.2 of
-        :cite:'LarsonThesis'
+        Scale parameter as defined in chapter 3.2 of :cite:'LarsonThesis'
+    gpd_covar : 2x2 numpy array
         Contains the estimated covariance matrix for shape, scale based on
         observed Fisher information. For further information, see chapter 4.1
-        of
-        :cite:'LarsonThesis'
+        of :cite:'LarsonThesis'
     """
     # Calculate sample size, mean, minimum, and maximum
     n = dataset.size
