@@ -106,59 +106,94 @@ class BaseSingleModel:
             )
         return msg
 
-    def __sub__(self, other: BaseSingleModel) -> np.ndarray:
-        if self.location.size != other.location.size:
-            raise RuntimeError(
-                "Can not subtract distributions of different shapes ({:d} vs {:d})".format(
-                    self.location.size, other.location.size
+    def __sub__(self, other: BaseSingleModel | float | int) -> np.ndarray:
+        if isinstance(other, BaseSingleModel):
+            if self.location.size != other.location.size:
+                raise RuntimeError(
+                    "Can not subtract distributions of different shapes ({:d} vs {:d})".format(
+                        self.location.size, other.location.size
+                    )
                 )
+            n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(
+                int
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) - other.sample(num_samples=n_samps)
+            return self.sample(num_samples=n_samps) - other.sample(num_samples=n_samps)
+        else:
+            return self.sample(num_samples=self.monte_carlo_size) - other
 
     def __neg__(self) -> np.ndarray:
         """Should only be used to redefine order of operations for a subtraction operation (i.e. -g1 + g2 vs g2 - g1)"""
         return -self.sample(num_samples=int(self.monte_carlo_size))
 
-    def __add__(self, other: BaseSingleModel) -> np.ndarray:
-        if self.location.size != other.location.size:
-            raise RuntimeError(
-                "Can not add distributions of different shapes ({:d} vs {:d})".format(
-                    self.location.size, other.location.size
+    def __add__(self, other: BaseSingleModel | float | int) -> np.ndarray:
+        if isinstance(other, BaseSingleModel):
+            if self.location.size != other.location.size:
+                raise RuntimeError(
+                    "Can not add distributions of different shapes ({:d} vs {:d})".format(
+                        self.location.size, other.location.size
+                    )
                 )
+            n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(
+                int
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) + other.sample(num_samples=n_samps)
+            return self.sample(num_samples=n_samps) + other.sample(num_samples=n_samps)
+        else:
+            return self.sample(num_samples=self.monte_carlo_size) + other
 
-    def __mul__(self, other: BaseSingleModel) -> np.ndarray:
-        if self.location.size != other.location.size:
-            raise RuntimeError(
-                "Can not multiply distributions of different shapes ({:d} vs {:d})".format(
-                    self.location.size, other.location.size
-                )
-            )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) * other.sample(num_samples=n_samps)
+    # define right multiplication to be the same as normal multiplication (allow scalar * distribution)
+    def __rmul__(self, other: BaseSingleModel | float | int) -> np.ndarray:
+        return self.__mul__(other)
 
-    def __truediv__(self, other: BaseSingleModel) -> np.ndarray:
-        if self.location.size != other.location.size:
-            raise RuntimeError(
-                "Can not divide distributions of different shapes ({:d} vs {:d})".format(
-                    self.location.size, other.location.size
+    def __mul__(self, other: BaseSingleModel | float | int) -> np.ndarray:
+        if isinstance(other, BaseSingleModel):
+            if self.location.size != other.location.size:
+                raise RuntimeError(
+                    "Can not multiply distributions of different shapes ({:d} vs {:d})".format(
+                        self.location.size, other.location.size
+                    )
                 )
+            n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(
+                int
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) / other.sample(num_samples=n_samps)
+            return self.sample(num_samples=n_samps) * other.sample(num_samples=n_samps)
+        else:
+            return self.sample(num_samples=self.monte_carlo_size) * other
 
-    def __floordiv__(self, other: BaseSingleModel) -> np.ndarray:
-        if self.location.size != other.location.size:
-            raise RuntimeError(
-                "Can not floor divide distributions of different shapes ({:d} vs {:d})".format(
-                    self.location.size, other.location.size
+    def __truediv__(self, other: BaseSingleModel | float | int) -> np.ndarray:
+        if isinstance(other, BaseSingleModel):
+            if self.location.size != other.location.size:
+                raise RuntimeError(
+                    "Can not divide distributions of different shapes ({:d} vs {:d})".format(
+                        self.location.size, other.location.size
+                    )
                 )
+            n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(
+                int
             )
-        n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(int)
-        return self.sample(num_samples=n_samps) // other.sample(num_samples=n_samps)
+            return self.sample(num_samples=n_samps) / other.sample(num_samples=n_samps)
+        else:
+            return self.sample(num_samples=self.monte_carlo_size) / other
+
+    def __rtruediv__(self, other: float | int) -> np.ndarray:
+        return other / self.sample(num_samples=self.monte_carlo_size)
+
+    def __floordiv__(self, other: BaseSingleModel | float | int) -> np.ndarray:
+        if isinstance(other, BaseSingleModel):
+            if self.location.size != other.location.size:
+                raise RuntimeError(
+                    "Can not floor divide distributions of different shapes ({:d} vs {:d})".format(
+                        self.location.size, other.location.size
+                    )
+                )
+            n_samps = np.max([self.monte_carlo_size, other.monte_carlo_size]).astype(
+                int
+            )
+            return self.sample(num_samples=n_samps) // other.sample(num_samples=n_samps)
+        else:
+            return self.sample(num_samples=self.monte_carlo_size) // other
+
+    def __rfloordiv__(self, other: float | int) -> np.ndarray:
+        return other // self.sample(num_samples=self.monte_carlo_size)
 
     def __pow__(self, power: int) -> np.ndarray:
         return self.sample(num_samples=int(self.monte_carlo_size)) ** power

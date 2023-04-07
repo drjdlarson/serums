@@ -43,3 +43,17 @@ The above script gives this as output.
 
 .. image:: /example_scripts/distribution_overbounder/fusion_gaussian.png
    :align: center
+
+
+GPS Examples
+------------
+An example of a real world application is GPS pseudorange measurements. Here it is assumed the reciever and satellite positions are known but the measured pseudoranges follow a Gaussian distribution. Note, a Gaussian is used for simplicity but any child of :class:`serums.models.BaseSingleModel` may be used. The following script shows how to get samples from the fused distribution for output position and time delay. These outputs are often what is of interest instead of the measured pseudoranges. A linearized transformation from pseudoranges to positions is used.
+
+.. literalinclude:: /example_scripts/distribution_overbounder/fusion_gps.py
+   :linenos:
+   :pyobject: main
+
+The above script gives this as output.
+
+.. image:: /example_scripts/distribution_overbounder/fusion_gps.png
+   :align: center

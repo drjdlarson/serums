@@ -68,7 +68,7 @@ def multiplication():
 def run():
     import os
 
-    print("Generating Gaussian Fusion example")
+    print("Generating Gaussian Fusion examples")
 
     fout = os.path.join(
         os.path.dirname(__file__), "{}.png".format(os.path.basename(__file__)[:-3])
