@@ -3,4 +3,5 @@
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnSave": true
     },
+    "esbonio.sphinx.confDir": "docs/source",
 }

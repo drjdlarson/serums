@@ -17,9 +17,7 @@ def _edparams_cost_factory(dist):
             x_samples = x[1] * rng.standard_t(1, size=samples.size) + x[0]
 
         elif isinstance(dist, serums.models.StudentsT):
-            x_samples = (
-                x[1] * rng.standard_t(np.abs(x[2]), size=samples.size) + x[0]
-            )
+            x_samples = x[1] * rng.standard_t(np.abs(x[2]), size=samples.size) + x[0]
         else:
             fmt = "Invalid distribution choice: {}"
             raise RuntimeError(fmt.format(type(dist).__name__))
@@ -40,9 +38,7 @@ def _edparams_cost_factory(dist):
     return cost_function
 
 
-def estimate_distribution_params(
-    dist, method, samples, maxiter=100, disp=False
-):
+def estimate_distribution_params(dist, method, samples, maxiter=100, disp=False):
     """Estimate distribution parameters from data.
 
     Parameters
@@ -171,13 +167,13 @@ def grimshaw_MLE(dataset):
     Returns
     -------
     shape_gamma : float
-        Shape parameter as defined in chapter 3.2 of :cite:'LarsonThesis'
+        Shape parameter as defined in chapter 3.2 of :cite:'Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems'
     scale_beta : float
-        Scale parameter as defined in chapter 3.2 of :cite:'LarsonThesis'
+        Scale parameter as defined in chapter 3.2 of :cite:'Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems'
     gpd_covar : 2x2 numpy array
         Contains the estimated covariance matrix for shape, scale based on
         observed Fisher information. For further information, see chapter 4.1
-        of :cite:'LarsonThesis'
+        of :cite:'Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems'
     """
     # Calculate sample size, mean, minimum, and maximum
     n = dataset.size
@@ -288,9 +284,7 @@ def grimshaw_MLE(dataset):
         if lfs_test < 0:
             throots[1] = mm_root_search(theta_L, throots[0] - epsilon, dataset)
         if rts_test < 0:
-            throots[1] = mm_root_search(
-                throots[0] + epsilon, -epsilon, dataset
-            )
+            throots[1] = mm_root_search(throots[0] + epsilon, -epsilon, dataset)
         else:
             throots[1] = -epsilon
     else:
@@ -371,21 +365,14 @@ def grimshaw_MLE(dataset):
         (2 / (shape_gamma**3))
         * np.sum(np.log(1 + (shape_gamma / scale_beta) * dataset))
         - (2 / (shape_gamma**2))
-        * np.sum(
-            (dataset / scale_beta) / (1 + (shape_gamma / scale_beta) * dataset)
-        )
+        * np.sum((dataset / scale_beta) / (1 + (shape_gamma / scale_beta) * dataset))
         - (1 + (1 / shape_gamma))
         * np.sum(
-            (
-                (dataset / scale_beta)
-                / (1 + (shape_gamma / scale_beta) * dataset)
-            )
-            ** 2
+            ((dataset / scale_beta) / (1 + (shape_gamma / scale_beta) * dataset)) ** 2
         )
     )
     eye_12 = -np.sum(
-        (dataset / scale_beta**2)
-        / (1 + (shape_gamma / scale_beta) * dataset)
+        (dataset / scale_beta**2) / (1 + (shape_gamma / scale_beta) * dataset)
     ) + (1 + shape_gamma) * np.sum(
         (dataset**2 / scale_beta**3)
         / (1 + (shape_gamma / scale_beta) * dataset) ** 2
@@ -396,8 +383,7 @@ def grimshaw_MLE(dataset):
         + 2
         * (shape_gamma + 1)
         * np.sum(
-            (dataset / scale_beta**3)
-            / (1 + (shape_gamma / scale_beta) * dataset)
+            (dataset / scale_beta**3) / (1 + (shape_gamma / scale_beta) * dataset)
         )
         - shape_gamma
         * (shape_gamma + 1)
@@ -423,7 +409,7 @@ def genpareto_MOM_est(dataset):
     Notes
     -----
     This method is taken from
-    :cite:`HoskingWallis1987_ParameterEstimationforGeneralizedParetoDistribution`
+    :cite:`Hosking1987_ParameterEstimationforGeneralizedParetoDistribution`
 
     Parameters
     ----------
@@ -474,7 +460,7 @@ def genpareto_PWM_est(dataset):
     Notes
     -----
     This method is taken from
-    :cite:`HoskingWallis1987_ParameterEstimationforGeneralizedParetoDistribution`
+    :cite:`Hosking1987_ParameterEstimationforGeneralizedParetoDistribution`
 
     Parameters
     ----------
