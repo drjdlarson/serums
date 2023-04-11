@@ -18,6 +18,19 @@ def fusion(
         [List[smodels.BaseSingleModel | smodels.BaseMixtureModel]], np.ndarray
     ],
 ) -> np.ndarray:
+    """Calculate emperical output distribution as the fusion of inputs through a function.
+
+    This passes the input distributions through the provided function and gives an emperical sampling
+    from the resulting distribution. It can be used to calculate how the input distributions change through
+    the provided transformation. It is recommended to use a polynomial for the function but any function will
+    work as long as standard arithmetic operators are performed on the distribution objects before any other
+    complex operations (due to the operator overloading within the distribution objects to provide samples).
+
+    Returns
+    -------
+    np.ndarray
+        Samples from the resulting distribution in an N x 1 array
+    """
     max_size = max([x.monte_carlo_size for x in varList])
     for x in varList:
         x.monte_carlo_size = int(max_size)
@@ -119,8 +132,7 @@ class OverbounderBase(ABC):
         vect = -pts[1] + 0.5 * (
             1
             + special.erf(
-                (pts[0] - gauss_param_array[0])
-                / (np.sqrt(2) * gauss_param_array[1])
+                (pts[0] - gauss_param_array[0]) / (np.sqrt(2) * gauss_param_array[1])
             )
         )
 
@@ -348,9 +360,9 @@ class SymmetricGPO(OverbounderBase):
 
         Fu = self._erf_gauss(u, 0, core_sigma)
         tail_DKW_ords_CEDF_domain = np.zeros(n)
-        tail_DKW_ords_CEDF_domain[tail_idxs] = np.subtract(
-            DKW_low[tail_idxs], Fu
-        ) / (1 - Fu)
+        tail_DKW_ords_CEDF_domain[tail_idxs] = np.subtract(DKW_low[tail_idxs], Fu) / (
+            1 - Fu
+        )
 
         for i in tail_idxs:
             scales[i] = self._get_pareto_scale(
@@ -390,9 +402,7 @@ class PairedGaussianOverbounder(OverbounderBase):
         cost_vect = y_curve - y_check
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(
-            -1000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
-        )
+        cost += np.sum(-1000 * y_check.size * cost_vect[np.logical_not(pos_indices)])
         return cost
 
     def _cost_right(self, params, x_check, y_check):
@@ -400,9 +410,7 @@ class PairedGaussianOverbounder(OverbounderBase):
         cost_vect = y_check - y_curve
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(
-            -1000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
-        )
+        cost += np.sum(-1000 * y_check.size * cost_vect[np.logical_not(pos_indices)])
         return cost
 
     def overbound(self, data, debug_plots=False):
@@ -520,9 +528,7 @@ class PairedGPO(OverbounderBase):
         cost_vect = y_curve - y_check
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(
-            -10000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
-        )
+        cost += np.sum(-10000 * y_check.size * cost_vect[np.logical_not(pos_indices)])
         return cost
 
     def _cost_right(self, params, x_check, y_check):
@@ -530,9 +536,7 @@ class PairedGPO(OverbounderBase):
         cost_vect = y_check - y_curve
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(
-            -10000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
-        )
+        cost += np.sum(-10000 * y_check.size * cost_vect[np.logical_not(pos_indices)])
         return cost
 
     def overbound(self, data):
@@ -638,16 +642,12 @@ class PairedGPO(OverbounderBase):
         DKW_high = np.add(ecdf_ords, epsilon)
 
         if self.StrictPairedEnforcement is True:
-            left_usable_idxs = np.asarray(DKW_high < (1 - epsilon)).nonzero()[
-                0
-            ]
+            left_usable_idxs = np.asarray(DKW_high < (1 - epsilon)).nonzero()[0]
             left_usable_idxs = left_usable_idxs[idx_u_left:]
             x_check_left = data_sorted[left_usable_idxs]
             y_check_left = DKW_high[left_usable_idxs]
         else:
-            left_usable_idxs = np.asarray(
-                DKW_high < (0.5 + epsilon)
-            ).nonzero()[0]
+            left_usable_idxs = np.asarray(DKW_high < (0.5 + epsilon)).nonzero()[0]
             left_usable_idxs = left_usable_idxs[idx_u_left:]
             x_check_left = data_sorted[left_usable_idxs]
             y_check_left = DKW_high[left_usable_idxs]
@@ -678,9 +678,7 @@ class PairedGPO(OverbounderBase):
             x_check_right = data_sorted[right_usable_idxs]
             y_check_right = DKW_low[right_usable_idxs]
         else:
-            right_usable_idxs = np.asarray(
-                DKW_low > (0.5 - epsilon)
-            ).nonzero()[0]
+            right_usable_idxs = np.asarray(DKW_low > (0.5 - epsilon)).nonzero()[0]
             right_usable_idxs = right_usable_idxs[0 : -(n - 1 - idx_u_right)]
             x_check_right = data_sorted[right_usable_idxs]
             y_check_right = DKW_low[right_usable_idxs]

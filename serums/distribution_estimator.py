@@ -167,13 +167,13 @@ def grimshaw_MLE(dataset):
     Returns
     -------
     shape_gamma : float
-        Shape parameter as defined in chapter 3.2 of :cite:'Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems'
+        Shape parameter as defined in chapter 3.2 of :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`
     scale_beta : float
-        Scale parameter as defined in chapter 3.2 of :cite:'Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems'
+        Scale parameter as defined in chapter 3.2 of :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`
     gpd_covar : 2x2 numpy array
         Contains the estimated covariance matrix for shape, scale based on
         observed Fisher information. For further information, see chapter 4.1
-        of :cite:'Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems'
+        of :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`
     """
     # Calculate sample size, mean, minimum, and maximum
     n = dataset.size
@@ -359,7 +359,7 @@ def grimshaw_MLE(dataset):
         raise serums.errors.DistributionEstimatorFailed("Grimshaw MLE failed")
 
     # Calculate covariance of shape, scale parameters using CRLB based on
-    # observed Fisher information (eq. 4.2 in Larson dissertation)
+    # observed Fisher information (eq. 4.2 in :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`)
 
     eye_11 = (
         (2 / (shape_gamma**3))
@@ -419,9 +419,9 @@ def genpareto_MOM_est(dataset):
     Returns
     -------
     shape_gamma : float
-        Shape parameter as defined by Larson dissertation
+        Shape parameter as defined by :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`
     scale_beta : float
-        Scale parameter as defined by Larson dissertation
+        Scale parameter as defined by :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`
     gpd_covar : 2 x 2 numpy array
         Contains the estimated asymptotic covariance matrix for shape, scale
         given in Hosking and Wallis
@@ -470,9 +470,9 @@ def genpareto_PWM_est(dataset):
     Returns
     -------
     shape_gamma : float
-        Shape parameter as defined by Larson dissertation
+        Shape parameter as defined by :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`
     scale_beta : float
-        Scale parameter as defined by Larson dissertation
+        Scale parameter as defined by :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`
     gpd_covar : 2 x 2 numpy array
         Contains the estimated asymptotic covariance matrix for shape, scale
         given in Hosking and Wallis
