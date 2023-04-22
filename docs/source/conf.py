@@ -14,7 +14,7 @@ import os
 import sys
 import re
 
-sys.path.append(os.path.abspath("../../serums"))
+sys.path.append(os.path.abspath("../../src/serums"))
 
 # run all example code to generate necesary figures
 sys.path.append(os.path.abspath("."))

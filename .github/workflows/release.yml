@@ -133,9 +133,11 @@ jobs:
           if-no-files-found: error
 
       - name: Build Documentation
+        env:
+          SERUMS_VERSION: "$( cat pyproject.toml | grep -Eo 'version\s*=\s*"[0-9]+.[0-9]+.[0-9]+"' | sed 's/^version\s*=\s*"//' | sed 's/"//' )"
         run: |
-          tox -e docs -- html
-          tox -e docs -- latexpdf
+          tox -e docs_html -- -Dversion=${{ env.SERUMS_VERSION }}
+          tox -e docs_pdf -- -Dversion=${{ env.SERUMS_VERSION }}
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -149,4 +151,4 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            docs/build/latex/serums.pdf
+            docs/build/pdf/serums.pdf
