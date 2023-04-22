@@ -125,7 +125,7 @@ jobs:
         run: |
           tox -e coverage_report
           genbadge tests -i docs/build/html/reports/coverage/coverage.xml -o docs/build/html/reports/coverage/coverage-badge.svg
-      
+
       - uses: actions/upload-artifact@v3
         with:
           name: test-reports-artifact
@@ -133,7 +133,9 @@ jobs:
           if-no-files-found: error
 
       - name: Build Documentation
-        run: tox -e docs
+        run: |
+          tox -e docs -- html
+          tox -e docs -- latexpdf
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -146,3 +148,5 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
+          files: |
+            docs/build/latex/serums.pdf
