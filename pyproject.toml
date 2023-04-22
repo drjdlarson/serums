@@ -1,0 +1,51 @@
+[project]
+name = "serums"
+version = "0.0.0"
+description = "A Python package for Statistical Error and Risk Utility for Multi-sensor Systems (SERUMS)."
+readme = "README.rst"
+requires-python = ">=3.7"
+license = {file = "LICENSE"}
+keywords = [
+    "Statistical error",
+    "overbounding",
+    "Gaussian distributions",
+    "multi-sensor systems"
+]
+authors = [
+    { name = "Laboratory for Autonomy GNC and Estimation Research (LAGER)" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "probscale",
+    "pandas",
+]
+
+[project.urls]
+homepage = "http://lager.ua.edu/"
+documentation = "https://drjdlarson.github.io/serums/"
+repository = "https://github.com/drjdlarson/serums"
+# changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+junit_suite_name = "serums"
+junit_log_passing_tests = true
+junit_duration_report = "call"
+junit_logging = "all"

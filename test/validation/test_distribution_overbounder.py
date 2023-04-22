@@ -6,6 +6,7 @@ import serums.distribution_overbounder as sdob
 import serums.models as smodels
 from scipy.stats import norm, genpareto, t, halfnorm, probplot, chi2
 import time
+import pytest
 
 
 DEBUG = False
@@ -29,6 +30,7 @@ def test_FusionGaussian():
         fig.suptitle("Empirical CDF of Polynomial")
 
 
+@pytest.mark.slow
 def test_SymmetricGaussianOverbound():
     print("Testing Symmetric Gaussian Overbounder: \n")
     np.random.seed(seed=233423)
@@ -67,6 +69,7 @@ def test_SymmetricGaussianOverbound():
         out_dist.probscaleplot(data)
 
 
+@pytest.mark.slow
 def test_SymmetricGPO():
     print("Testing Symmetric Gaussian-Pareto Overbounder:")
     np.random.seed(seed=233423)
@@ -83,9 +86,7 @@ def test_SymmetricGPO():
     end = time.time()
 
     print("\n------")
-    print(
-        "Runtime for n = 10,000: ", round((end - start) / 60, 2), " minutes\n"
-    )
+    print("Runtime for n = 10,000: ", round((end - start) / 60, 2), " minutes\n")
 
     fmt = "\tExpected Output Gamma : {}, Expected Output Beta : {}, Expected Output u : {}, Expected Output Core Sigma : {}, \n\tActual Output Gamma : {}, Actual Output Beta : {}, Actual Output u : {}, Actual Output Core Sigma : {}\n"
     print(
@@ -121,6 +122,7 @@ def test_SymmetricGPO():
     pass
 
 
+@pytest.mark.slow
 def test_PairedGaussianOverbound():
     print("Testing Paired Gaussian Overbounder:")
     np.random.seed(seed=233423)
@@ -160,6 +162,7 @@ def test_PairedGaussianOverbound():
     pass
 
 
+@pytest.mark.slow
 def test_PairedGPO():
     print("Testing Paired Gaussian-Pareto Overbounder:")
     np.random.seed(seed=233423)

@@ -15,7 +15,7 @@ A Python package for Statistical Error and Risk Utility for Multi-sensor Systems
 .. _STACKOVERFLOW: https://stackoverflow.com/questions/69704561/cannot-update-spyder-5-1-5-on-new-anaconda-install
 .. _SUBMODULE: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 .. |Open in Dev Containers| image:: https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode
-   :target: https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/drjdlarson/gncpy.git
+   :target: https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/drjdlarson/serums.git
 
 
 
@@ -112,7 +112,7 @@ Please cite the framework as follows
 .. code-block:: bibtex
 
     @Misc{serums,
-    author       = {Jordan D. Larson and Adam Hallmark and Ryan W. Thomas and Vaughn Weirens},
+    author       = {Jordan D. Larson, et al.},
     howpublished = {Web page},
     title        = {{SERUMS}: A Python library for Statistical Error and Risk Utility for Multi-sensor Systems},
     year         = {2022},
