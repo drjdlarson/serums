@@ -98,13 +98,13 @@ if __name__ == "__main__":
     print("Current version: {:d}.{:d}.{:d}".format(major, minor, patch))
 
     cur_branch = get_active_branch_name()
-    if cur_branch.lower() != "master":
-        print(
-            "WARN: Not on master branch ({:s}), checkout to master branch for release".format(
-                cur_branch
-            )
-        )
-        sys.exit(-1)
+    # if cur_branch.lower() != "master":
+    #     print(
+    #         "WARN: Not on master branch ({:s}), checkout to master branch for release".format(
+    #             cur_branch
+    #         )
+    #     )
+    #     sys.exit(-1)
 
     if not args.skip_increment:
         if args.type == "major":
