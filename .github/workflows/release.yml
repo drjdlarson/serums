@@ -140,7 +140,7 @@ jobs:
       - name: Build Documentation
         run: |
           tox -e docs_html -- -Dversion=${{ env.SERUMS_VERSION }}
-          tox -e docs_pdf -- -Dversion=${{ env.SERUMS_VERSION }}
+          tox -e docs_pdf -- -Drelease=${{ env.SERUMS_VERSION }}
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

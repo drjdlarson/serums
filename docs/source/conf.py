@@ -26,7 +26,7 @@ run_examples()
 
 project = "SERUMS"
 copyright = "2022, Jordan D Larson"
-author = "Laboratory for Autonomy, GNC, and Estimation Research (LAGER)"
+author = "LAGER"
 
 
 # -- General configuration ---------------------------------------------------
