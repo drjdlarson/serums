@@ -116,7 +116,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      - name: Generage Test Coverage Report
+      - name: Generage Test Summary Report
         run: |
           tox -e test_report
           genbadge tests -i docs/build/html/reports/junit/junit.xml -o docs/build/html/reports/junit/tests-badge.svg
@@ -124,7 +124,7 @@ jobs:
       - name: Generage Test Coverage Report
         run: |
           tox -e coverage_report
-          genbadge tests -i docs/build/html/reports/coverage/coverage.xml -o docs/build/html/reports/coverage/coverage-badge.svg
+          genbadge coverage -i docs/build/html/reports/coverage/coverage.xml -o docs/build/html/reports/coverage/coverage-badge.svg
 
       - uses: actions/upload-artifact@v3
         with:
