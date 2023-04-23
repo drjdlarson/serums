@@ -115,41 +115,39 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
-      - name: Set serums version envrionment variable
-        run: echo "SERUMS_VERSION=$(cat pyproject.toml | grep -Eo 'version\s*=\s*"[0-9]+.[0-9]+.[0-9]+"' | sed 's/^version\s*=\s*"//' | sed 's/"//')" >> $GITHUB_ENV
 
-      # - name: Generage Test Summary Report
-      #   run: |
-      #     tox -e test_report
-      #     genbadge tests -i docs/build/html/reports/junit/junit.xml -o docs/build/html/reports/junit/tests-badge.svg
-      
-      # - name: Generage Test Coverage Report
-      #   run: |
-      #     tox -e coverage_report
-      #     genbadge coverage -i docs/build/html/reports/coverage/coverage.xml -o docs/build/html/reports/coverage/coverage-badge.svg
-
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: test-reports-artifact
-      #     path: ${{ github.workspace }}/docs/build/html/reports
-      #     if-no-files-found: error
-        
-      - name: Build Documentation
       # see https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
       # for details on setting env variable from bash command
+      - name: Set SERUMS version envrionment variable
+        run: echo "SERUMS_VERSION=$(cat pyproject.toml | grep -Eo 'version\s*=\s*"[0-9]+.[0-9]+.[0-9]+"' | sed 's/^version\s*=\s*"//' | sed 's/"//')" >> $GITHUB_ENV
+
+      - name: Generage Test Summary Report
         run: |
-          echo ${{ env.SERUMS_VERSION }}
-          echo "$SERUMS_VERSION"
-        # tox -e docs_html -- -Dversion=${SERUMS_VERSION}
-        # tox -e docs_pdf -- -Dversion=${SERUMS_VERSION}
+          tox -e test_report
+          genbadge tests -i docs/build/html/reports/junit/junit.xml -o docs/build/html/reports/junit/tests-badge.svg
       
-      # - name: Deploy to GitHub Pages
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./docs/build/html
-      #     keep_files: true
+      - name: Generage Test Coverage Report
+        run: |
+          tox -e coverage_report
+          genbadge coverage -i docs/build/html/reports/coverage/coverage.xml -o docs/build/html/reports/coverage/coverage-badge.svg
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-reports-artifact
+          path: ${{ github.workspace }}/docs/build/html/reports
+          if-no-files-found: error
+        
+      - name: Build Documentation
+        run: |
+          tox -e docs_html -- -Dversion=${{ env.SERUMS_VERSION }}
+          tox -e docs_pdf -- -Dversion=${{ env.SERUMS_VERSION }}
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/build/html
+          keep_files: true
 
       # - uses: "marvinpinto/action-automatic-releases@latest"
       #   with:
