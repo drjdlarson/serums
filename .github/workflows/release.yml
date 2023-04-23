@@ -137,7 +137,7 @@ jobs:
       # for details on setting env variable from bash command
         run: |
           echo "SERUMS_VERSION=$(cat pyproject.toml | grep -Eo 'version\s*=\s*"[0-9]+.[0-9]+.[0-9]+"' | sed 's/^version\s*=\s*"//' | sed 's/"//')" >> $GITHUB_ENV
-          echo ${SERUMS_VERSION}
+          echo ${{ env.SERUMS_VERSION }}
           echo "$SERUMS_VERSION"
         # tox -e docs_html -- -Dversion=${SERUMS_VERSION}
         # tox -e docs_pdf -- -Dversion=${SERUMS_VERSION}
