@@ -113,32 +113,34 @@ jobs:
         - ${{ github.workspace }}:/workspace
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      # - name: Checkout repository
+      #   uses: actions/checkout@v3
       
-      - name: Generage Test Summary Report
-        run: |
-          tox -e test_report
-          genbadge tests -i docs/build/html/reports/junit/junit.xml -o docs/build/html/reports/junit/tests-badge.svg
+      # - name: Generage Test Summary Report
+      #   run: |
+      #     tox -e test_report
+      #     genbadge tests -i docs/build/html/reports/junit/junit.xml -o docs/build/html/reports/junit/tests-badge.svg
       
-      - name: Generage Test Coverage Report
-        run: |
-          tox -e coverage_report
-          genbadge coverage -i docs/build/html/reports/coverage/coverage.xml -o docs/build/html/reports/coverage/coverage-badge.svg
+      # - name: Generage Test Coverage Report
+      #   run: |
+      #     tox -e coverage_report
+      #     genbadge coverage -i docs/build/html/reports/coverage/coverage.xml -o docs/build/html/reports/coverage/coverage-badge.svg
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: test-reports-artifact
-          path: ${{ github.workspace }}/docs/build/html/reports
-          if-no-files-found: error
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: test-reports-artifact
+      #     path: ${{ github.workspace }}/docs/build/html/reports
+      #     if-no-files-found: error
 
       - name: Build Documentation
       # see https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
       # for details on setting env variable from bash command
         run: |
           echo "SERUMS_VERSION=$(cat pyproject.toml | grep -Eo 'version\s*=\s*"[0-9]+.[0-9]+.[0-9]+"' | sed 's/^version\s*=\s*"//' | sed 's/"//')" >> $GITHUB_ENV
-          tox -e docs_html -- -Dversion=${SERUMS_VERSION}
-          tox -e docs_pdf -- -Dversion=${SERUMS_VERSION}
+          echo ${SERUMS_VERSION}
+          echo "$SERUMS_VERSION"
+        # tox -e docs_html -- -Dversion=${SERUMS_VERSION}
+        # tox -e docs_pdf -- -Dversion=${SERUMS_VERSION}
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
