@@ -113,8 +113,8 @@ jobs:
         - ${{ github.workspace }}:/workspace
     
     steps:
-      # - name: Checkout repository
-      #   uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
       
       # - name: Generage Test Summary Report
       #   run: |
@@ -142,12 +142,12 @@ jobs:
         # tox -e docs_html -- -Dversion=${SERUMS_VERSION}
         # tox -e docs_pdf -- -Dversion=${SERUMS_VERSION}
       
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/build/html
-          keep_files: true
+      # - name: Deploy to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./docs/build/html
+      #     keep_files: true
 
       # - uses: "marvinpinto/action-automatic-releases@latest"
       #   with:
