@@ -1,0 +1,6 @@
+serums.distances.calculate\_ospa
+================================
+
+.. currentmodule:: serums.distances
+
+.. autofunction:: calculate_ospa

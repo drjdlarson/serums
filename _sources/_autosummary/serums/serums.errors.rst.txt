@@ -1,0 +1,31 @@
+errors
+======
+
+.. automodule:: serums.errors
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree: errors
+   
+      DistributionEstimatorFailed
+      OverboundingMethodFailed
+   
+   
+
+
+

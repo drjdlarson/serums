@@ -1,0 +1,40 @@
+StudentsTMixture
+================
+
+.. currentmodule:: serums.models
+
+.. autoclass:: StudentsTMixture
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~StudentsTMixture.__init__
+      ~StudentsTMixture.add_components
+      ~StudentsTMixture.pdf
+      ~StudentsTMixture.remove_components
+      ~StudentsTMixture.sample
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~StudentsTMixture.covariances
+      ~StudentsTMixture.degrees_of_freedom
+      ~StudentsTMixture.dof
+      ~StudentsTMixture.means
+      ~StudentsTMixture.scalings
+   
+   

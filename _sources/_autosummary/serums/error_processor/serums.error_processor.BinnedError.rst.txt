@@ -1,0 +1,30 @@
+BinnedError
+===========
+
+.. currentmodule:: serums.error_processor
+
+.. autoclass:: BinnedError
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~BinnedError.__init__
+      ~BinnedError.autobin
+      ~BinnedError.bisect
+      ~BinnedError.normalize
+      ~BinnedError.remove_outliers
+   
+   
+
+   
+   
+   

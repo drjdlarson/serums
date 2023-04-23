@@ -1,0 +1,6 @@
+serums.distribution\_estimator.genpareto\_MOM\_est
+==================================================
+
+.. currentmodule:: serums.distribution_estimator
+
+.. autofunction:: genpareto_MOM_est

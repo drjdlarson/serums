@@ -1,0 +1,26 @@
+BaseMixtureModelIterator
+========================
+
+.. currentmodule:: serums.models
+
+.. autoclass:: BaseMixtureModelIterator
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~BaseMixtureModelIterator.__init__
+   
+   
+
+   
+   
+   

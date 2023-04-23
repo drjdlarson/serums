@@ -1,0 +1,34 @@
+distances
+=========
+
+.. automodule:: serums.distances
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: distances
+      :nosignatures:
+   
+      calculate_hellinger
+      calculate_mahalanobis
+      calculate_ospa
+      calculate_ospa2
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

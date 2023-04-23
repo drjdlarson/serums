@@ -1,0 +1,27 @@
+PairedGaussianOverbounder
+=========================
+
+.. currentmodule:: serums.distribution_overbounder
+
+.. autoclass:: PairedGaussianOverbounder
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~PairedGaussianOverbounder.__init__
+      ~PairedGaussianOverbounder.overbound
+   
+   
+
+   
+   
+   

@@ -1,0 +1,27 @@
+OverbounderBase
+===============
+
+.. currentmodule:: serums.distribution_overbounder
+
+.. autoclass:: OverbounderBase
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~OverbounderBase.__init__
+      ~OverbounderBase.overbound
+   
+   
+
+   
+   
+   

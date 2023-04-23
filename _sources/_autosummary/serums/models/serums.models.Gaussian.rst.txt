@@ -1,0 +1,38 @@
+Gaussian
+========
+
+.. currentmodule:: serums.models
+
+.. autoclass:: Gaussian
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~Gaussian.CDFplot
+      ~Gaussian.CI
+      ~Gaussian.__init__
+      ~Gaussian.pdf
+      ~Gaussian.probscaleplot
+      ~Gaussian.sample
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Gaussian.covariance
+      ~Gaussian.mean
+   
+   

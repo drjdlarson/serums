@@ -1,0 +1,6 @@
+serums.errors.OverboundingMethodFailed
+======================================
+
+.. currentmodule:: serums.errors
+
+.. autoexception:: OverboundingMethodFailed

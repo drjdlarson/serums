@@ -1,0 +1,31 @@
+SymmetricGaussianPareto
+=======================
+
+.. currentmodule:: serums.models
+
+.. autoclass:: SymmetricGaussianPareto
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~SymmetricGaussianPareto.CDFplot
+      ~SymmetricGaussianPareto.CI
+      ~SymmetricGaussianPareto.__init__
+      ~SymmetricGaussianPareto.pdf
+      ~SymmetricGaussianPareto.probscaleplot
+      ~SymmetricGaussianPareto.sample
+   
+   
+
+   
+   
+   

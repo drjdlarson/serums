@@ -1,0 +1,6 @@
+serums.distances.calculate\_hellinger
+=====================================
+
+.. currentmodule:: serums.distances
+
+.. autofunction:: calculate_hellinger

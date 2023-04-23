@@ -1,0 +1,34 @@
+distribution\_estimator
+=======================
+
+.. automodule:: serums.distribution_estimator
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: distribution_estimator
+      :nosignatures:
+   
+      estimate_distribution_params
+      genpareto_MOM_est
+      genpareto_PWM_est
+      grimshaw_MLE
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

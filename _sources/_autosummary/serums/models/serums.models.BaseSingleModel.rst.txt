@@ -1,0 +1,28 @@
+BaseSingleModel
+===============
+
+.. currentmodule:: serums.models
+
+.. autoclass:: BaseSingleModel
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~BaseSingleModel.__init__
+      ~BaseSingleModel.pdf
+      ~BaseSingleModel.sample
+   
+   
+
+   
+   
+   

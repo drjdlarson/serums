@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Fusion Examples &mdash; SERUMS  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+    <link rel="canonical" href="https://drjdlarson.github.io/serums/usage/distribution_overbounder/fusion.html" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Toolchain Setup" href="../../toolchain.html" />
+    <link rel="prev" title="Usage" href="../../usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #9E1B32" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SERUMS
+              <img src="../../_static/logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/serums.html">serums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distances.html">distances</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_hellinger.html">serums.distances.calculate_hellinger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_mahalanobis.html">serums.distances.calculate_mahalanobis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_ospa.html">serums.distances.calculate_ospa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_ospa2.html">serums.distances.calculate_ospa2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distribution_estimator.html">distribution_estimator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.estimate_distribution_params.html">serums.distribution_estimator.estimate_distribution_params</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_MOM_est.html">serums.distribution_estimator.genpareto_MOM_est</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_PWM_est.html">serums.distribution_estimator.genpareto_PWM_est</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.grimshaw_MLE.html">serums.distribution_estimator.grimshaw_MLE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distribution_overbounder.html">distribution_overbounder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.fusion.html">serums.distribution_overbounder.fusion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.OverbounderBase.html">OverbounderBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.PairedGPO.html">PairedGPO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.PairedGaussianOverbounder.html">PairedGaussianOverbounder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.SymmetricGPO.html">SymmetricGPO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.SymmetricGaussianOverbounder.html">SymmetricGaussianOverbounder</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.enums.html">enums</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.DistEstimatorMethod.html">DistEstimatorMethod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.GSMTypes.html">GSMTypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.MultiObjectDistance.html">MultiObjectDistance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.SingleObjectDistance.html">SingleObjectDistance</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.error_processor.html">error_processor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/error_processor/serums.error_processor.BinnedError.html">BinnedError</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.errors.html">errors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/errors/serums.errors.DistributionEstimatorFailed.html">serums.errors.DistributionEstimatorFailed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/errors/serums.errors.OverboundingMethodFailed.html">serums.errors.OverboundingMethodFailed</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.models.html">models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModel.html">BaseMixtureModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModelIterator.html">BaseMixtureModelIterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseSingleModel.html">BaseSingleModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Cauchy.html">Cauchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.ChiSquared.html">ChiSquared</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Gaussian.html">Gaussian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianMixture.html">GaussianMixture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianScaleMixture.html">GaussianScaleMixture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GeneralizedPareto.html">GeneralizedPareto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussian.html">PairedGaussian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussianPareto.html">PairedGaussianPareto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.StudentsT.html">StudentsT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.StudentsTMixture.html">StudentsTMixture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.SymmetricGaussianPareto.html">SymmetricGaussianPareto</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../usage.html">Usage</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data Fusion Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gaussian-multiplication">Gaussian Multiplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#general-polynomial">General Polynomial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gps-examples">GPS Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../toolchain.html">Toolchain Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../toolchain.html#development-environment-setup">Development Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../toolchain.html#example-workflow">Example Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../toolchain.html#notes-on-tox">Notes on tox</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cicd.html">CI/CD Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cicd.html#github-actions-quick-guide">Github Actions Quick Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="./reports/coverage/index.html#http://">Test Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference external" href="./reports/junit/junit.html#http://">Test Results Report</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://lager.ua.edu/">LAGER Homepage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../References.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #9E1B32" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SERUMS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../usage.html">Usage</a></li>
+      <li class="breadcrumb-item active">Data Fusion Examples</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-fusion-examples">
+<h1>Data Fusion Examples<a class="headerlink" href="#data-fusion-examples" title="Permalink to this heading"></a></h1>
+<nav class="contents local" id="examples">
+<p class="topic-title">Examples</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#gaussian-multiplication" id="id2">Gaussian Multiplication</a></p></li>
+<li><p><a class="reference internal" href="#general-polynomial" id="id3">General Polynomial</a></p></li>
+<li><p><a class="reference internal" href="#gps-examples" id="id4">GPS Examples</a></p></li>
+</ul>
+</nav>
+<section id="gaussian-multiplication">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Gaussian Multiplication</a><a class="headerlink" href="#gaussian-multiplication" title="Permalink to this heading"></a></h2>
+<p>The PDF of the multiplication of two zero mean normal PDFs follows a Normal Product distribution
+see <a class="reference external" href="https://mathworld.wolfram.com/NormalProductDistribution.html">here</a>.
+For random variables <span class="math notranslate nohighlight">\(X, Y\)</span> with zero mean and standard deviations <span class="math notranslate nohighlight">\(\sigma_X, \sigma_Y\)</span> the
+product of their PDF follows the PDF given by</p>
+<div class="math notranslate nohighlight">
+\[P_{X,Y}(u) = \frac{K_0(\frac{\vert u \vert}{\sigma_X\sigma_Y})}{\pi\sigma_X\sigma_Y}\]</div>
+<p>where <span class="math notranslate nohighlight">\(K_0(z)\)</span> is the modified Bessel function of the second kind.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span> <span class="nf">multiplication</span><span class="p">():</span>
+<span class="linenos"> 2</span>    <span class="kn">import</span> <span class="nn">scipy.special</span>
+<span class="linenos"> 3</span>    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 4</span>    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>    <span class="kn">from</span> <span class="nn">serums.distribution_overbounder</span> <span class="kn">import</span> <span class="n">fusion</span>
+<span class="linenos"> 7</span>    <span class="kn">from</span> <span class="nn">serums.models</span> <span class="kn">import</span> <span class="n">Gaussian</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>    <span class="n">std_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="linenos">10</span>    <span class="n">std_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>    <span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="n">covariance</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">std_x</span><span class="o">**</span><span class="mi">2</span><span class="p">]]))</span>
+<span class="linenos">13</span>    <span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">]]),</span> <span class="n">covariance</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">std_y</span><span class="o">**</span><span class="mi">2</span><span class="p">]]))</span>
+<span class="linenos">14</span>    <span class="n">x</span><span class="o">.</span><span class="n">monte_carlo_size</span> <span class="o">=</span> <span class="mf">1e6</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span>    <span class="n">poly</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">:</span> <span class="n">x_</span> <span class="o">*</span> <span class="n">y_</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span>    <span class="n">z</span> <span class="o">=</span> <span class="n">fusion</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">poly</span><span class="p">)</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span>    <span class="n">plt_x_bnds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">21</span>    <span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">*</span><span class="n">plt_x_bnds</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="linenos">22</span>    <span class="n">true_pdf</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">kn</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">std_x</span> <span class="o">*</span> <span class="n">std_y</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span>
+<span class="linenos">23</span>        <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">std_x</span> <span class="o">*</span> <span class="n">std_y</span>
+<span class="linenos">24</span>    <span class="p">)</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span>    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="linenos">27</span>    <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="linenos">28</span>    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
+<span class="linenos">29</span>        <span class="n">z</span><span class="p">,</span>
+<span class="linenos">30</span>        <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">31</span>        <span class="n">bins</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mf">1e4</span><span class="p">),</span>
+<span class="linenos">32</span>        <span class="n">histtype</span><span class="o">=</span><span class="s2">&quot;stepfilled&quot;</span><span class="p">,</span>
+<span class="linenos">33</span>        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Emperical&quot;</span><span class="p">,</span>
+<span class="linenos">34</span>    <span class="p">)</span>
+<span class="linenos">35</span>    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">true_pdf</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="linenos">36</span>    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+<span class="linenos">37</span>    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;PDF of Polynomial&quot;</span><span class="p">)</span>
+<span class="linenos">38</span>    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">plt_x_bnds</span><span class="p">)</span>
+<span class="linenos">39</span>    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="linenos">40</span>
+<span class="linenos">41</span>    <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+</div>
+<p>The above script gives this as output.</p>
+<img alt="../../_images/fusion_gaussian_multiplication.png" class="align-center" src="../../_images/fusion_gaussian_multiplication.png" />
+</section>
+<section id="general-polynomial">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">General Polynomial</a><a class="headerlink" href="#general-polynomial" title="Permalink to this heading"></a></h2>
+<p>Data fusion for a generic polynomial function can be performed as shown in the following script. Note Gaussians are used here
+as an example however, any child of <a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseSingleModel.html#serums.models.BaseSingleModel" title="serums.models.BaseSingleModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">serums.models.BaseSingleModel</span></code></a> can be used.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="linenos"> 2</span>    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 3</span>    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>    <span class="kn">from</span> <span class="nn">serums.distribution_overbounder</span> <span class="kn">import</span> <span class="n">fusion</span>
+<span class="linenos"> 6</span>    <span class="kn">from</span> <span class="nn">serums.models</span> <span class="kn">import</span> <span class="n">Gaussian</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>    <span class="n">x</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">]]),</span> <span class="n">covariance</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">4</span><span class="p">]]))</span>
+<span class="linenos"> 9</span>    <span class="n">y</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">3</span><span class="p">]]),</span> <span class="n">covariance</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">6</span><span class="p">]]))</span>
+<span class="linenos">10</span>    <span class="n">x</span><span class="o">.</span><span class="n">monte_carlo_size</span> <span class="o">=</span> <span class="mf">1e5</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>    <span class="n">poly</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">:</span> <span class="n">x_</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">+</span> <span class="n">x_</span><span class="o">**</span><span class="mi">2</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>    <span class="n">z</span> <span class="o">=</span> <span class="n">fusion</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">poly</span><span class="p">)</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span>    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="linenos">17</span>    <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="linenos">18</span>    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">&quot;stepfilled&quot;</span><span class="p">)</span>
+<span class="linenos">19</span>    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Emperical CDF of Polynomial&quot;</span><span class="p">)</span>
+<span class="linenos">20</span>    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>    <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+</div>
+<p>The above script gives this as output.</p>
+<img alt="../../_images/fusion_gaussian.png" class="align-center" src="../../_images/fusion_gaussian.png" />
+</section>
+<section id="gps-examples">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">GPS Examples</a><a class="headerlink" href="#gps-examples" title="Permalink to this heading"></a></h2>
+<p>An example of a real world application is GPS pseudorange measurements. Here it is assumed the reciever and satellite positions are known but the measured pseudoranges follow a Gaussian distribution. This is based on <span id="id1">[<a class="reference internal" href="../../References.html#id13" title="Jordan D Larson, Demoz Gebre-Egziabher, and Jason H Rife. Improving navigation system availability using gaussian-pareto overbounding. In Proceedings of the 32nd International Technical Meeting of the Satellite Division of The Institute of Navigation (ION GNSS+ 2019), 3153–3161. 2019.">7</a>]</span>. Note, a Gaussian is used for simplicity but any child of <a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseSingleModel.html#serums.models.BaseSingleModel" title="serums.models.BaseSingleModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">serums.models.BaseSingleModel</span></code></a> may be used. The following script shows how to get samples from the fused distribution for output position and time delay. These outputs are often what is of interest instead of the measured pseudoranges. A linearized transformation from pseudoranges to positions is used.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="linenos"> 2</span>    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 3</span>    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="linenos"> 4</span>    <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">inv</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>    <span class="kn">from</span> <span class="nn">serums.distribution_overbounder</span> <span class="kn">import</span> <span class="n">fusion</span>
+<span class="linenos"> 7</span>    <span class="kn">from</span> <span class="nn">serums.models</span> <span class="kn">import</span> <span class="n">Gaussian</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>    <span class="c1"># assume that user position and gps SV positions are known</span>
+<span class="linenos">10</span>    <span class="n">user_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">41.772709</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.789194</span><span class="p">,</span> <span class="mf">6370.059559</span><span class="p">,</span> <span class="mf">999.76252931</span><span class="p">])</span>
+<span class="linenos">11</span>    <span class="n">gps_pos_lst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="linenos">12</span>        <span class="p">[</span>
+<span class="linenos">13</span>            <span class="p">[</span><span class="mi">15600</span><span class="p">,</span> <span class="mi">7540</span><span class="p">,</span> <span class="mi">20140</span><span class="p">],</span>
+<span class="linenos">14</span>            <span class="p">[</span><span class="mi">18760</span><span class="p">,</span> <span class="mi">2750</span><span class="p">,</span> <span class="mi">18610</span><span class="p">],</span>
+<span class="linenos">15</span>            <span class="p">[</span><span class="mi">17610</span><span class="p">,</span> <span class="mi">14630</span><span class="p">,</span> <span class="mi">13480</span><span class="p">],</span>
+<span class="linenos">16</span>            <span class="p">[</span><span class="mi">19170</span><span class="p">,</span> <span class="mi">610</span><span class="p">,</span> <span class="mi">18390</span><span class="p">],</span>
+<span class="linenos">17</span>        <span class="p">],</span>
+<span class="linenos">18</span>        <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+<span class="linenos">19</span>    <span class="p">)</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span>    <span class="c1"># define the noise on each pseudorange as a Gaussian (assume the same covariance for simplicity)</span>
+<span class="linenos">22</span>    <span class="n">std_pr</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">23</span>    <span class="n">pr_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">gps_pos_lst</span> <span class="o">-</span> <span class="n">user_pos</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="linenos">24</span>    <span class="n">prs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">25</span>    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">pr_means</span><span class="p">:</span>
+<span class="linenos">26</span>        <span class="n">prs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+<span class="linenos">27</span>            <span class="n">Gaussian</span><span class="p">(</span>
+<span class="linenos">28</span>                <span class="n">mean</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">covariance</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">std_pr</span><span class="o">**</span><span class="mi">2</span><span class="p">]])</span>
+<span class="linenos">29</span>            <span class="p">)</span>
+<span class="linenos">30</span>        <span class="p">)</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span>    <span class="c1"># define the uncertainty matrix</span>
+<span class="linenos">33</span>    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">std_pr</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">prs</span><span class="p">)))</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span>    <span class="c1"># create the linearized GPS measurement matrix with a function</span>
+<span class="linenos">36</span>    <span class="k">def</span> <span class="nf">make_G</span><span class="p">(</span><span class="n">user_pos_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="linenos">37</span>        <span class="n">G</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">38</span>        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">sv_pos</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gps_pos_lst</span><span class="p">):</span>
+<span class="linenos">39</span>            <span class="n">diff</span> <span class="o">=</span> <span class="n">user_pos_</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">sv_pos</span>
+<span class="linenos">40</span>            <span class="n">row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">diff</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">diff</span><span class="o">**</span><span class="mi">2</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])))</span>
+<span class="linenos">41</span>            <span class="k">if</span> <span class="n">G</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">42</span>                <span class="n">G</span> <span class="o">=</span> <span class="n">row</span>
+<span class="linenos">43</span>            <span class="k">else</span><span class="p">:</span>
+<span class="linenos">44</span>                <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">G</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span>
+<span class="linenos">45</span>        <span class="k">return</span> <span class="n">G</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span>    <span class="c1"># define the mapping matrix (this will be used in the polynomial)</span>
+<span class="linenos">48</span>    <span class="n">G</span> <span class="o">=</span> <span class="n">make_G</span><span class="p">(</span><span class="n">user_pos</span><span class="p">)</span>
+<span class="linenos">49</span>    <span class="n">S</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">R</span> <span class="o">@</span> <span class="n">G</span><span class="p">)</span> <span class="o">@</span> <span class="n">G</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">inv</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+<span class="linenos">50</span>
+<span class="linenos">51</span>    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="linenos">52</span>    <span class="p">[</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+<span class="linenos">53</span>    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Emperical CDF of GPS Outputs&quot;</span><span class="p">)</span>
+<span class="linenos">54</span>    <span class="n">ttl_lst</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X Pos&quot;</span><span class="p">,</span> <span class="s2">&quot;Y Pos&quot;</span><span class="p">,</span> <span class="s2">&quot;Z Pos&quot;</span><span class="p">,</span> <span class="s2">&quot;Time Delay&quot;</span><span class="p">]</span>
+<span class="linenos">55</span>
+<span class="linenos">56</span>    <span class="c1"># define the fusion polynomial for each output variable (ie x/y/z pos and time delay)</span>
+<span class="linenos">57</span>    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">ttl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ttl_lst</span><span class="p">):</span>
+<span class="linenos">58</span>        <span class="n">poly</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos">59</span>            <span class="k">lambda</span> <span class="n">pr0</span><span class="p">,</span> <span class="n">pr1</span><span class="p">,</span> <span class="n">pr2</span><span class="p">,</span> <span class="n">pr3</span><span class="p">:</span> <span class="n">S</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">pr0</span>
+<span class="linenos">60</span>            <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">pr1</span>
+<span class="linenos">61</span>            <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">pr2</span>
+<span class="linenos">62</span>            <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">pr3</span>
+<span class="linenos">63</span>        <span class="p">)</span>
+<span class="linenos">64</span>        <span class="c1"># these samples could then be run through an overbounding routine</span>
+<span class="linenos">65</span>        <span class="n">samples</span> <span class="o">=</span> <span class="n">fusion</span><span class="p">(</span><span class="n">prs</span><span class="p">,</span> <span class="n">poly</span><span class="p">)</span>
+<span class="linenos">66</span>
+<span class="linenos">67</span>        <span class="c1"># plot the emperical CDF to view results</span>
+<span class="linenos">68</span>        <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
+<span class="linenos">69</span>            <span class="n">samples</span><span class="p">,</span>
+<span class="linenos">70</span>            <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">71</span>            <span class="n">cumulative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">72</span>            <span class="n">bins</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mf">1e3</span><span class="p">),</span>
+<span class="linenos">73</span>            <span class="n">histtype</span><span class="o">=</span><span class="s2">&quot;stepfilled&quot;</span><span class="p">,</span>
+<span class="linenos">74</span>        <span class="p">)</span>
+<span class="linenos">75</span>        <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">ttl</span><span class="p">)</span>
+<span class="linenos">76</span>        <span class="k">if</span> <span class="n">ii</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">ii</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+<span class="linenos">77</span>            <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;meters&quot;</span><span class="p">)</span>
+<span class="linenos">78</span>
+<span class="linenos">79</span>    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="linenos">80</span>
+<span class="linenos">81</span>    <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+</div>
+<p>The above script gives this as output.</p>
+<img alt="../../_images/fusion_gps.png" class="align-center" src="../../_images/fusion_gps.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../toolchain.html" class="btn btn-neutral float-right" title="Toolchain Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Jordan D Larson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

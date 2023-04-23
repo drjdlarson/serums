@@ -1,0 +1,31 @@
+PairedGaussian
+==============
+
+.. currentmodule:: serums.models
+
+.. autoclass:: PairedGaussian
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~PairedGaussian.CDFplot
+      ~PairedGaussian.CI
+      ~PairedGaussian.__init__
+      ~PairedGaussian.pdf
+      ~PairedGaussian.probscaleplot
+      ~PairedGaussian.sample
+   
+   
+
+   
+   
+   

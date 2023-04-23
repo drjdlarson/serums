@@ -1,0 +1,6 @@
+serums.distances.calculate\_mahalanobis
+=======================================
+
+.. currentmodule:: serums.distances
+
+.. autofunction:: calculate_mahalanobis

@@ -1,0 +1,37 @@
+GaussianMixture
+===============
+
+.. currentmodule:: serums.models
+
+.. autoclass:: GaussianMixture
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~GaussianMixture.__init__
+      ~GaussianMixture.add_components
+      ~GaussianMixture.pdf
+      ~GaussianMixture.remove_components
+      ~GaussianMixture.sample
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GaussianMixture.covariances
+      ~GaussianMixture.means
+   
+   

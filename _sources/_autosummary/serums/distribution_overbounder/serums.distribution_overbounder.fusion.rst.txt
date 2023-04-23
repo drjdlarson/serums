@@ -1,0 +1,6 @@
+serums.distribution\_overbounder.fusion
+=======================================
+
+.. currentmodule:: serums.distribution_overbounder
+
+.. autofunction:: fusion

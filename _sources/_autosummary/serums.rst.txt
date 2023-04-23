@@ -1,0 +1,38 @@
+﻿serums
+======
+
+.. automodule:: serums
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree: serums
+   :template: module.rst_t
+   :recursive:
+
+   ~serums.distances
+   ~serums.distribution_estimator
+   ~serums.distribution_overbounder
+   ~serums.enums
+   ~serums.error_processor
+   ~serums.errors
+   ~serums.models
+

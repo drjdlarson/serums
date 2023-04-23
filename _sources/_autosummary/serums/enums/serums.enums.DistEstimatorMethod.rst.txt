@@ -1,0 +1,30 @@
+DistEstimatorMethod
+===================
+
+.. currentmodule:: serums.enums
+
+.. autoclass:: DistEstimatorMethod
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DistEstimatorMethod.CRAMER_VON_MISES
+      ~DistEstimatorMethod.KOLMOGOROV_SMIRNOV
+      ~DistEstimatorMethod.ANDERSON_DARLING
+      ~DistEstimatorMethod.GRIMSHAW_MLE
+      ~DistEstimatorMethod.METHOD_OF_MOMENTS
+      ~DistEstimatorMethod.PROBABILITY_WEIGHTED_MOMENTS
+   
+   

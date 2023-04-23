@@ -1,0 +1,27 @@
+GSMTypes
+========
+
+.. currentmodule:: serums.enums
+
+.. autoclass:: GSMTypes
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GSMTypes.STUDENTS_T
+      ~GSMTypes.CAUCHY
+      ~GSMTypes.SYMMETRIC_A_STABLE
+   
+   

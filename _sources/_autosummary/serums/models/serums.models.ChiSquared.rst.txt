@@ -1,0 +1,36 @@
+ChiSquared
+==========
+
+.. currentmodule:: serums.models
+
+.. autoclass:: ChiSquared
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~ChiSquared.__init__
+      ~ChiSquared.pdf
+      ~ChiSquared.sample
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ChiSquared.covariance
+      ~ChiSquared.degrees_of_freedom
+      ~ChiSquared.mean
+   
+   

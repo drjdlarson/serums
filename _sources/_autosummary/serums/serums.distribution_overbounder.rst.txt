@@ -1,0 +1,44 @@
+distribution\_overbounder
+=========================
+
+.. automodule:: serums.distribution_overbounder
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: distribution_overbounder
+      :nosignatures:
+   
+      fusion
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: distribution_overbounder
+      :nosignatures:
+      :template: class.rst_t
+   
+      OverbounderBase
+      PairedGPO
+      PairedGaussianOverbounder
+      SymmetricGPO
+      SymmetricGaussianOverbounder
+   
+   
+
+   
+   
+   
+
+
+

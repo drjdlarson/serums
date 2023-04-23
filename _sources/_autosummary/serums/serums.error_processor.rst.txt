@@ -1,0 +1,32 @@
+error\_processor
+================
+
+.. automodule:: serums.error_processor
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: error_processor
+      :nosignatures:
+      :template: class.rst_t
+   
+      BinnedError
+   
+   
+
+   
+   
+   
+
+
+

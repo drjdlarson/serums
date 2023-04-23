@@ -1,0 +1,6 @@
+serums.errors.DistributionEstimatorFailed
+=========================================
+
+.. currentmodule:: serums.errors
+
+.. autoexception:: DistributionEstimatorFailed

@@ -1,0 +1,6 @@
+serums.distribution\_estimator.estimate\_distribution\_params
+=============================================================
+
+.. currentmodule:: serums.distribution_estimator
+
+.. autofunction:: estimate_distribution_params

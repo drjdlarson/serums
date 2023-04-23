@@ -1,0 +1,45 @@
+models
+======
+
+.. automodule:: serums.models
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: models
+      :nosignatures:
+      :template: class.rst_t
+   
+      BaseMixtureModel
+      BaseMixtureModelIterator
+      BaseSingleModel
+      Cauchy
+      ChiSquared
+      Gaussian
+      GaussianMixture
+      GaussianScaleMixture
+      GeneralizedPareto
+      PairedGaussian
+      PairedGaussianPareto
+      StudentsT
+      StudentsTMixture
+      SymmetricGaussianPareto
+   
+   
+
+   
+   
+   
+
+
+

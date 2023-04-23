@@ -1,0 +1,6 @@
+serums.distribution\_estimator.grimshaw\_MLE
+============================================
+
+.. currentmodule:: serums.distribution_estimator
+
+.. autofunction:: grimshaw_MLE

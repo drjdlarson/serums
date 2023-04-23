@@ -1,0 +1,36 @@
+StudentsT
+=========
+
+.. currentmodule:: serums.models
+
+.. autoclass:: StudentsT
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~StudentsT.__init__
+      ~StudentsT.pdf
+      ~StudentsT.sample
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~StudentsT.covariance
+      ~StudentsT.degrees_of_freedom
+      ~StudentsT.mean
+   
+   

@@ -1,0 +1,30 @@
+BaseMixtureModel
+================
+
+.. currentmodule:: serums.models
+
+.. autoclass:: BaseMixtureModel
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~BaseMixtureModel.__init__
+      ~BaseMixtureModel.add_components
+      ~BaseMixtureModel.pdf
+      ~BaseMixtureModel.remove_components
+      ~BaseMixtureModel.sample
+   
+   
+
+   
+   
+   

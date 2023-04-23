@@ -1,0 +1,35 @@
+enums
+=====
+
+.. automodule:: serums.enums
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: enums
+      :nosignatures:
+      :template: class.rst_t
+   
+      DistEstimatorMethod
+      GSMTypes
+      MultiObjectDistance
+      SingleObjectDistance
+   
+   
+
+   
+   
+   
+
+
+

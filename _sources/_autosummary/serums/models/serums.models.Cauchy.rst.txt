@@ -1,0 +1,36 @@
+Cauchy
+======
+
+.. currentmodule:: serums.models
+
+.. autoclass:: Cauchy
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~Cauchy.__init__
+      ~Cauchy.pdf
+      ~Cauchy.sample
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Cauchy.covariance
+      ~Cauchy.degrees_of_freedom
+      ~Cauchy.mean
+   
+   

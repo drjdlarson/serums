@@ -1,0 +1,27 @@
+SymmetricGaussianOverbounder
+============================
+
+.. currentmodule:: serums.distribution_overbounder
+
+.. autoclass:: SymmetricGaussianOverbounder
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~SymmetricGaussianOverbounder.__init__
+      ~SymmetricGaussianOverbounder.overbound
+   
+   
+
+   
+   
+   

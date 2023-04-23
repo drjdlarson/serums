@@ -1,0 +1,6 @@
+serums.distribution\_estimator.genpareto\_PWM\_est
+==================================================
+
+.. currentmodule:: serums.distribution_estimator
+
+.. autofunction:: genpareto_PWM_est

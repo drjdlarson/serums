@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>serums.error_processor &mdash; SERUMS  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+    <link rel="canonical" href="https://drjdlarson.github.io/serums/_modules/serums/error_processor.html" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #9E1B32" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SERUMS
+              <img src="../../_static/logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/serums.html">serums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distances.html">distances</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_hellinger.html">serums.distances.calculate_hellinger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_mahalanobis.html">serums.distances.calculate_mahalanobis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_ospa.html">serums.distances.calculate_ospa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_ospa2.html">serums.distances.calculate_ospa2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distribution_estimator.html">distribution_estimator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.estimate_distribution_params.html">serums.distribution_estimator.estimate_distribution_params</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_MOM_est.html">serums.distribution_estimator.genpareto_MOM_est</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_PWM_est.html">serums.distribution_estimator.genpareto_PWM_est</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.grimshaw_MLE.html">serums.distribution_estimator.grimshaw_MLE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distribution_overbounder.html">distribution_overbounder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.fusion.html">serums.distribution_overbounder.fusion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.OverbounderBase.html">OverbounderBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.PairedGPO.html">PairedGPO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.PairedGaussianOverbounder.html">PairedGaussianOverbounder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.SymmetricGPO.html">SymmetricGPO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.SymmetricGaussianOverbounder.html">SymmetricGaussianOverbounder</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.enums.html">enums</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.DistEstimatorMethod.html">DistEstimatorMethod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.GSMTypes.html">GSMTypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.MultiObjectDistance.html">MultiObjectDistance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.SingleObjectDistance.html">SingleObjectDistance</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.error_processor.html">error_processor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/error_processor/serums.error_processor.BinnedError.html">BinnedError</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.errors.html">errors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/errors/serums.errors.DistributionEstimatorFailed.html">serums.errors.DistributionEstimatorFailed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/errors/serums.errors.OverboundingMethodFailed.html">serums.errors.OverboundingMethodFailed</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.models.html">models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModel.html">BaseMixtureModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModelIterator.html">BaseMixtureModelIterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseSingleModel.html">BaseSingleModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Cauchy.html">Cauchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.ChiSquared.html">ChiSquared</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Gaussian.html">Gaussian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianMixture.html">GaussianMixture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianScaleMixture.html">GaussianScaleMixture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GeneralizedPareto.html">GeneralizedPareto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussian.html">PairedGaussian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussianPareto.html">PairedGaussianPareto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.StudentsT.html">StudentsT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.StudentsTMixture.html">StudentsTMixture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.SymmetricGaussianPareto.html">SymmetricGaussianPareto</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../usage/distribution_overbounder/fusion.html">Data Fusion Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../usage/distribution_overbounder/fusion.html#gaussian-multiplication">Gaussian Multiplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../usage/distribution_overbounder/fusion.html#general-polynomial">General Polynomial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../usage/distribution_overbounder/fusion.html#gps-examples">GPS Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../toolchain.html">Toolchain Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../toolchain.html#development-environment-setup">Development Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../toolchain.html#example-workflow">Example Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../toolchain.html#notes-on-tox">Notes on tox</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cicd.html">CI/CD Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cicd.html#github-actions-quick-guide">Github Actions Quick Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="./reports/coverage/index.html#http://">Test Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference external" href="./reports/junit/junit.html#http://">Test Results Report</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://lager.ua.edu/">LAGER Homepage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../References.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #9E1B32" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SERUMS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">serums.error_processor</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for serums.error_processor</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;For preprocessing errors.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">ks_2samp</span><span class="p">,</span> <span class="n">cramervonmises_2samp</span><span class="p">,</span> <span class="n">anderson_ksamp</span>
+<span class="kn">import</span> <span class="nn">serums.models</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+
+<div class="viewcode-block" id="BinnedError"><a class="viewcode-back" href="../../_autosummary/serums/error_processor/serums.error_processor.BinnedError.html#serums.error_processor.BinnedError">[docs]</a><span class="k">class</span> <span class="nc">BinnedError</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent binned error distribution.</span>
+<span class="sd">    This class must be given truth data, measured data, dependency arrays, an I/O mapping function, and preferences.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    truth : array_like</span>
+<span class="sd">        Truth data.</span>
+<span class="sd">    measured : array_like</span>
+<span class="sd">        Measured data.</span>
+<span class="sd">    dependencies : array_like</span>
+<span class="sd">        Dependency arrays.</span>
+<span class="sd">    io_map : function</span>
+<span class="sd">        I/O mapping function.</span>
+<span class="sd">    preferences : dict</span>
+<span class="sd">        Preferences. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize binned error distribution</span>
+<div class="viewcode-block" id="BinnedError.__init__"><a class="viewcode-back" href="../../_autosummary/serums/error_processor/serums.error_processor.BinnedError.html#serums.error_processor.BinnedError.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">truth</span><span class="p">,</span> <span class="n">measured</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">io_map</span><span class="p">,</span> <span class="n">preferences</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">truth</span> <span class="o">=</span> <span class="n">truth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">measured</span> <span class="o">=</span> <span class="n">measured</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span> <span class="o">=</span> <span class="n">dependencies</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io_map</span> <span class="o">=</span> <span class="n">io_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preferences</span> <span class="o">=</span> <span class="n">preferences</span></div>
+
+    <span class="c1"># Function to normalize error distribution by subtracting the truth from the measured data</span>
+    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measured</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">truth</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span>
+
+    <span class="c1"># Function to remove obvious outliers from error distribution by removing errors more than 10 standard deviations from the mean</span>
+    <span class="k">def</span> <span class="nf">remove_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span>
+
+    <span class="c1"># Function to recursively bin error distribution by checking for autocorrelation in the error distribution with the dependency array, and bisecting the error distribution if there is autocorrelation</span>
+    <span class="k">def</span> <span class="nf">autobin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># Check for autocorrelation in error distribution</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">):</span>
+            <span class="c1"># Bisect error distribution, and recursively call autobin on each bin</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bisect</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="n">bins</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">autobin</span><span class="p">(</span><span class="nb">bin</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Store error distribution as a list of bins</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="p">[</span><span class="n">error</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span>
+
+    <span class="c1"># Function to bisect error distribution into 2 bins at its midpoint and store the result as a list of bins</span>
+    <span class="k">def</span> <span class="nf">bisect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
+        <span class="n">midpoint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="p">[</span><span class="n">error</span><span class="p">[:</span><span class="n">midpoint</span><span class="p">],</span> <span class="n">error</span><span class="p">[</span><span class="n">midpoint</span><span class="p">:]]</span>
+        <span class="k">return</span> <span class="n">bins</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Jordan D Larson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

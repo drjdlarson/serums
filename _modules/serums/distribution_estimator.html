@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>serums.distribution_estimator &mdash; SERUMS  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+    <link rel="canonical" href="https://drjdlarson.github.io/serums/_modules/serums/distribution_estimator.html" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #9E1B32" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SERUMS
+              <img src="../../_static/logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/serums.html">serums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distances.html">distances</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_hellinger.html">serums.distances.calculate_hellinger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_mahalanobis.html">serums.distances.calculate_mahalanobis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_ospa.html">serums.distances.calculate_ospa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_ospa2.html">serums.distances.calculate_ospa2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distribution_estimator.html">distribution_estimator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.estimate_distribution_params.html">serums.distribution_estimator.estimate_distribution_params</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_MOM_est.html">serums.distribution_estimator.genpareto_MOM_est</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_PWM_est.html">serums.distribution_estimator.genpareto_PWM_est</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.grimshaw_MLE.html">serums.distribution_estimator.grimshaw_MLE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distribution_overbounder.html">distribution_overbounder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.fusion.html">serums.distribution_overbounder.fusion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.OverbounderBase.html">OverbounderBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.PairedGPO.html">PairedGPO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.PairedGaussianOverbounder.html">PairedGaussianOverbounder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.SymmetricGPO.html">SymmetricGPO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distribution_overbounder/serums.distribution_overbounder.SymmetricGaussianOverbounder.html">SymmetricGaussianOverbounder</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.enums.html">enums</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.DistEstimatorMethod.html">DistEstimatorMethod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.GSMTypes.html">GSMTypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.MultiObjectDistance.html">MultiObjectDistance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/enums/serums.enums.SingleObjectDistance.html">SingleObjectDistance</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.error_processor.html">error_processor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/error_processor/serums.error_processor.BinnedError.html">BinnedError</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.errors.html">errors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/errors/serums.errors.DistributionEstimatorFailed.html">serums.errors.DistributionEstimatorFailed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/errors/serums.errors.OverboundingMethodFailed.html">serums.errors.OverboundingMethodFailed</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.models.html">models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModel.html">BaseMixtureModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModelIterator.html">BaseMixtureModelIterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseSingleModel.html">BaseSingleModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Cauchy.html">Cauchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.ChiSquared.html">ChiSquared</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Gaussian.html">Gaussian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianMixture.html">GaussianMixture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianScaleMixture.html">GaussianScaleMixture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GeneralizedPareto.html">GeneralizedPareto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussian.html">PairedGaussian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussianPareto.html">PairedGaussianPareto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.StudentsT.html">StudentsT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.StudentsTMixture.html">StudentsTMixture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.SymmetricGaussianPareto.html">SymmetricGaussianPareto</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../usage/distribution_overbounder/fusion.html">Data Fusion Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../usage/distribution_overbounder/fusion.html#gaussian-multiplication">Gaussian Multiplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../usage/distribution_overbounder/fusion.html#general-polynomial">General Polynomial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../usage/distribution_overbounder/fusion.html#gps-examples">GPS Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../toolchain.html">Toolchain Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../toolchain.html#development-environment-setup">Development Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../toolchain.html#example-workflow">Example Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../toolchain.html#notes-on-tox">Notes on tox</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cicd.html">CI/CD Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cicd.html#github-actions-quick-guide">Github Actions Quick Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="./reports/coverage/index.html#http://">Test Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference external" href="./reports/junit/junit.html#http://">Test Results Report</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://lager.ua.edu/">LAGER Homepage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../References.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #9E1B32" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SERUMS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">serums.distribution_estimator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for serums.distribution_estimator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Estimates Parameters of Various Distributions.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">ks_2samp</span><span class="p">,</span> <span class="n">cramervonmises_2samp</span><span class="p">,</span> <span class="n">anderson_ksamp</span>
+<span class="kn">import</span> <span class="nn">serums.models</span>
+<span class="kn">import</span> <span class="nn">serums.enums</span> <span class="k">as</span> <span class="nn">senums</span>
+<span class="kn">import</span> <span class="nn">serums.errors</span>
+
+
+<span class="k">def</span> <span class="nf">_edparams_cost_factory</span><span class="p">(</span><span class="n">dist</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cost_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="c1"># sample from distribution given by params in x</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">):</span>
+            <span class="n">x_samples</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Cauchy</span><span class="p">):</span>
+            <span class="n">x_samples</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_t</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">StudentsT</span><span class="p">):</span>
+            <span class="n">x_samples</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_t</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">size</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;Invalid distribution choice: </span><span class="si">{}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+        <span class="c1"># Kolmogorov-Smirnov test to get Chi2</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">KOLMOGOROV_SMIRNOV</span><span class="p">:</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="n">ks_2samp</span><span class="p">(</span><span class="n">x_samples</span><span class="p">,</span> <span class="n">samples</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="ow">is</span> <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">CRAMER_VON_MISES</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">cramervonmises_2samp</span><span class="p">(</span><span class="n">x_samples</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">statistic</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="ow">is</span> <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">ANDERSON_DARLING</span><span class="p">:</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="n">anderson_ksamp</span><span class="p">([</span><span class="n">x_samples</span><span class="p">,</span> <span class="n">samples</span><span class="p">])</span><span class="o">.</span><span class="n">statistic</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;Invalid method choice: </span><span class="si">{}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cost</span>
+
+    <span class="k">return</span> <span class="n">cost_function</span>
+
+
+<div class="viewcode-block" id="estimate_distribution_params"><a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.estimate_distribution_params.html#serums.distribution_estimator.estimate_distribution_params">[docs]</a><span class="k">def</span> <span class="nf">estimate_distribution_params</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate distribution parameters from data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dist : :class:`serums.models.BaseSingleModel`</span>
+<span class="sd">        Desired target distribution to fit samples.</span>
+<span class="sd">    method : :class:`serums.enums.DistEstimatorMethod`</span>
+<span class="sd">        Selection of goodness of fit test to compare samples to target distribution.</span>
+<span class="sd">    samples : N numpy array</span>
+<span class="sd">        Samples to be fitted to the input distribution.</span>
+<span class="sd">    maxiter : int, optional</span>
+<span class="sd">        Maximum number of iterations to run the estimator. The default is 100.</span>
+<span class="sd">    disp : bool, optional</span>
+<span class="sd">        Flag for displaying extra information. The default is False.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        Raised if the estimator fails.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    output : :class:`serums.models.BaseSingleModel`</span>
+<span class="sd">        Estimated output distribution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set outputs</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">dist</span><span class="p">)()</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">ANDERSON_DARLING</span><span class="p">,</span>
+        <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">CRAMER_VON_MISES</span><span class="p">,</span>
+        <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">KOLMOGOROV_SMIRNOV</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="c1"># Select cost function</span>
+        <span class="n">costfun</span> <span class="o">=</span> <span class="n">_edparams_cost_factory</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="p">(</span><span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Cauchy</span><span class="p">)):</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dist</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">dist</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">item</span><span class="p">()])</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">StudentsT</span><span class="p">):</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">dist</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+                    <span class="n">dist</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+                    <span class="n">dist</span><span class="o">.</span><span class="n">degrees_of_freedom</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;Invalid distribution choice: </span><span class="si">{}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+        <span class="c1"># optimize distribution parameters</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+            <span class="n">costfun</span><span class="p">,</span>
+            <span class="n">x0</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">method</span><span class="p">),</span>
+            <span class="n">method</span><span class="o">=</span><span class="s2">&quot;Powell&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="n">maxiter</span><span class="p">,</span> <span class="s2">&quot;disp&quot;</span><span class="p">:</span> <span class="n">disp</span><span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;Parameter estimation failed with:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
+
+        <span class="n">output</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">location</span><span class="p">))</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">scale</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="p">(</span><span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Cauchy</span><span class="p">)):</span>
+            <span class="k">pass</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">StudentsT</span><span class="p">):</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">degrees_of_freedom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;Invalid distribution choice: </span><span class="si">{}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="n">method</span> <span class="ow">is</span> <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">GRIMSHAW_MLE</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">GeneralizedPareto</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Invalid distribution for Grimshaws MLE&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">shape</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="n">grimshaw_MLE</span><span class="p">(</span><span class="n">samples</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">shape</span><span class="p">]])</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">scale</span><span class="p">]])</span>
+        <span class="k">except</span> <span class="n">serums</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">DistributionEstimatorFailed</span><span class="p">:</span>
+            <span class="n">estimate_distribution_params</span><span class="p">(</span>
+                <span class="n">dist</span><span class="p">,</span>
+                <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">METHOD_OF_MOMENTS</span><span class="p">,</span>
+                <span class="n">samples</span><span class="p">,</span>
+                <span class="n">maxiter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">,</span>
+                <span class="n">disp</span><span class="o">=</span><span class="n">disp</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">method</span> <span class="ow">is</span> <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">METHOD_OF_MOMENTS</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">GeneralizedPareto</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Method of Moments only implemented for GPD&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shape</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="n">genpareto_MOM_est</span><span class="p">(</span><span class="n">samples</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">shape</span><span class="p">]])</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">scale</span><span class="p">]])</span>
+
+    <span class="k">elif</span> <span class="n">method</span> <span class="ow">is</span> <span class="n">senums</span><span class="o">.</span><span class="n">DistEstimatorMethod</span><span class="o">.</span><span class="n">PROBABILITY_WEIGHTED_MOMENTS</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">serums</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">GeneralizedPareto</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PWM only implemented for GPD&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shape</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="n">genpareto_PWM_est</span><span class="p">(</span><span class="n">samples</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">shape</span><span class="p">]])</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">scale</span><span class="p">]])</span>
+
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="grimshaw_MLE"><a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.grimshaw_MLE.html#serums.distribution_estimator.grimshaw_MLE">[docs]</a><span class="k">def</span> <span class="nf">grimshaw_MLE</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds estimates for GPD shape and scale using Grimshaw&#39;s MLE Procedure.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This method is taken from</span>
+<span class="sd">    :cite:`Grimshaw1993_ComputingMLEforGeneralizedParetoDistribution`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset : N numpy array</span>
+<span class="sd">        Contains positive error data above a threshold of 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    shape_gamma : float</span>
+<span class="sd">        Shape parameter as defined in chapter 3.2 of :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`</span>
+<span class="sd">    scale_beta : float</span>
+<span class="sd">        Scale parameter as defined in chapter 3.2 of :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`</span>
+<span class="sd">    gpd_covar : 2x2 numpy array</span>
+<span class="sd">        Contains the estimated covariance matrix for shape, scale based on</span>
+<span class="sd">        observed Fisher information. For further information, see chapter 4.1</span>
+<span class="sd">        of :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate sample size, mean, minimum, and maximum</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">x_bar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="n">x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="c1"># GM Step 1: Choose epsilon</span>
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">/</span> <span class="n">x_bar</span>
+
+    <span class="c1"># GM Step 2: Compute lower and upper bounds for zeros of h(theta)</span>
+    <span class="n">theta_L</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x_min</span> <span class="o">-</span> <span class="n">x_bar</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_min</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">theta_U</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">x_max</span><span class="p">)</span> <span class="o">-</span> <span class="n">epsilon</span>
+
+    <span class="c1"># Bypass GM Step 3: Search for zeros on both intervals regardless of h&#39;&#39;(t)</span>
+
+    <span class="c1"># GM Steps 4 and 5 (Find zeros of h(theta) if possible)</span>
+
+    <span class="k">def</span> <span class="nf">h</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns value of h(theta) function for given theta and dataset.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">data</span><span class="p">)))</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">data</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">h_prime</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns value of h&#39;(theta) for a given theta and dataset.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">data</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="o">-</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">data</span><span class="p">)))</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="o">-</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">data</span><span class="p">)))</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">data</span><span class="p">)))</span>
+                <span class="o">-</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">data</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">mod_NR_root_search</span><span class="p">(</span><span class="n">init_guess_theta</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Searches for a root using MNRM and returns the root if converged.&quot;&quot;&quot;</span>
+        <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-15</span>
+
+        <span class="k">def</span> <span class="nf">mid</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">t1</span> <span class="o">+</span> <span class="n">t2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">t_old</span> <span class="o">=</span> <span class="n">init_guess_theta</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">low</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">high</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+            <span class="n">t_sub</span> <span class="o">=</span> <span class="n">t_old</span> <span class="o">-</span> <span class="n">h</span><span class="p">(</span><span class="n">t_old</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="n">h_prime</span><span class="p">(</span><span class="n">t_old</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">t_sub</span> <span class="o">&gt;</span> <span class="n">bottom</span> <span class="ow">and</span> <span class="n">t_sub</span> <span class="o">&lt;</span> <span class="n">top</span><span class="p">:</span>
+                <span class="n">t_old</span> <span class="o">=</span> <span class="n">t_sub</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">t_old</span> <span class="o">=</span> <span class="n">mid</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">bottom</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">h</span><span class="p">(</span><span class="n">bottom</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">(</span><span class="n">t_old</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">top</span> <span class="o">=</span> <span class="n">t_old</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bottom</span> <span class="o">=</span> <span class="n">t_old</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="p">(</span><span class="n">t_old</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>  <span class="c1"># changed condition</span>
+                <span class="n">conv</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="n">t_old</span> <span class="o">==</span> <span class="n">low</span> <span class="ow">or</span> <span class="n">t_old</span> <span class="o">==</span> <span class="n">high</span><span class="p">:</span>
+                <span class="n">conv</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">conv</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">conv</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t_old</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t_old</span>
+
+    <span class="k">def</span> <span class="nf">mm_root_search</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finds a root of h(theta) using the midpoint method on given interval.&quot;&quot;&quot;</span>
+        <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-15</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">low</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">high</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+            <span class="n">t_old</span> <span class="o">=</span> <span class="n">bottom</span> <span class="o">+</span> <span class="n">top</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="n">h</span><span class="p">(</span><span class="n">bottom</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">(</span><span class="n">t_old</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">top</span> <span class="o">=</span> <span class="n">t_old</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bottom</span> <span class="o">=</span> <span class="n">t_old</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="p">(</span><span class="n">t_old</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+                <span class="n">conv</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">conv</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">conv</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t_old</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t_old</span>
+
+    <span class="n">throots</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># Search for zeros of h(theta) on low interval</span>
+    <span class="n">throots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod_NR_root_search</span><span class="p">(</span><span class="n">theta_L</span><span class="p">,</span> <span class="n">theta_L</span><span class="p">,</span> <span class="o">-</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">throots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">theta_L</span> <span class="o">+</span> <span class="n">epsilon</span> <span class="ow">and</span> <span class="n">throots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">epsilon</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">root_conv1</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">lfs_test</span> <span class="o">=</span> <span class="n">h</span><span class="p">(</span><span class="n">theta_L</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="n">rts_test</span> <span class="o">=</span> <span class="n">h</span><span class="p">(</span><span class="o">-</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lfs_test</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">throots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mm_root_search</span><span class="p">(</span><span class="n">theta_L</span><span class="p">,</span> <span class="n">throots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rts_test</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">throots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mm_root_search</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">,</span> <span class="o">-</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">throots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">epsilon</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">root_conv1</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Search for zeros of h(theta) on high interval</span>
+    <span class="n">throots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod_NR_root_search</span><span class="p">(</span><span class="n">theta_U</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">theta_U</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">throots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">epsilon</span> <span class="ow">and</span> <span class="n">throots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">theta_U</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">:</span>
+        <span class="n">root_conv2</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">lfs_test</span> <span class="o">=</span> <span class="n">h</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="n">rts_test</span> <span class="o">=</span> <span class="n">h</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">(</span><span class="n">theta_U</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lfs_test</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">throots</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">mm_root_search</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">throots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rts_test</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">throots</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">mm_root_search</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">theta_U</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">throots</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta_U</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">root_conv2</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># GM Step 6: Compute candidate shape and scale parameters and</span>
+    <span class="c1"># evaluate GPD log-likelihood</span>
+    <span class="k">def</span> <span class="nf">get_GPD_parameters</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates shape, scale of GPD from given Theta.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+            <span class="n">val1</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">val2</span> <span class="o">=</span> <span class="mi">100000000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val1</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">dataset</span><span class="p">))</span>
+            <span class="n">val2</span> <span class="o">=</span> <span class="n">val1</span> <span class="o">/</span> <span class="n">theta</span>
+
+        <span class="n">tup</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">tup</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">GPD_log_likelihood</span><span class="p">(</span><span class="n">shape_gamma</span><span class="p">,</span> <span class="n">scale_beta</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates the GPD log-likelihood given shape and scale.&quot;&quot;&quot;</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="o">-</span><span class="n">shape_gamma</span>
+        <span class="n">alfa</span> <span class="o">=</span> <span class="n">scale_beta</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">alfa</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="n">alfa</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="n">param_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">8</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">param_list</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_GPD_parameters</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+    <span class="n">param_list</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_GPD_parameters</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+    <span class="n">param_list</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_GPD_parameters</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+    <span class="n">param_list</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_GPD_parameters</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+
+    <span class="n">odds_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">odds_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">GPD_log_likelihood</span><span class="p">(</span><span class="n">param_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">param_list</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+    <span class="n">odds_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">GPD_log_likelihood</span><span class="p">(</span><span class="n">param_list</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">param_list</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+    <span class="n">odds_list</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">GPD_log_likelihood</span><span class="p">(</span><span class="n">param_list</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">param_list</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+    <span class="n">odds_list</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">GPD_log_likelihood</span><span class="p">(</span><span class="n">param_list</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">param_list</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">odds_list</span><span class="p">)</span>
+    <span class="n">crit</span> <span class="o">=</span> <span class="n">get_GPD_parameters</span><span class="p">(</span><span class="n">throots</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+
+    <span class="c1"># GM Step 7 and 8: Choose best parameter estimates</span>
+    <span class="k">if</span> <span class="n">root_conv1</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="n">root_conv2</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">odds_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x_max</span><span class="p">):</span>
+            <span class="n">shape_gamma</span> <span class="o">=</span> <span class="n">crit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">scale_beta</span> <span class="o">=</span> <span class="n">crit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shape_gamma</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">scale_beta</span> <span class="o">=</span> <span class="n">x_max</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">serums</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">DistributionEstimatorFailed</span><span class="p">(</span><span class="s2">&quot;Grimshaw MLE failed&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Calculate covariance of shape, scale parameters using CRLB based on</span>
+    <span class="c1"># observed Fisher information (eq. 4.2 in :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`)</span>
+
+    <span class="n">eye_11</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">shape_gamma</span><span class="o">**</span><span class="mi">3</span><span class="p">))</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">shape_gamma</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">dataset</span><span class="p">))</span>
+        <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">shape_gamma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">dataset</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">shape_gamma</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">dataset</span><span class="p">))</span>
+        <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">shape_gamma</span><span class="p">))</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="p">((</span><span class="n">dataset</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">shape_gamma</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">dataset</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">eye_12</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">dataset</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">shape_gamma</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">dataset</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">shape_gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">dataset</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+        <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">shape_gamma</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="p">)</span>
+    <span class="n">eye_21</span> <span class="o">=</span> <span class="n">eye_12</span>
+    <span class="n">eye_22</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="o">-</span><span class="n">n</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="o">+</span> <span class="mi">2</span>
+        <span class="o">*</span> <span class="p">(</span><span class="n">shape_gamma</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">dataset</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">shape_gamma</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">-</span> <span class="n">shape_gamma</span>
+        <span class="o">*</span> <span class="p">(</span><span class="n">shape_gamma</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">dataset</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+            <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">shape_gamma</span> <span class="o">/</span> <span class="n">scale_beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">eye_11</span><span class="p">,</span> <span class="n">eye_12</span><span class="p">],</span> <span class="p">[</span><span class="n">eye_21</span><span class="p">,</span> <span class="n">eye_22</span><span class="p">]])</span>
+    <span class="n">gpd_covar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">shape_gamma</span><span class="p">,</span> <span class="n">scale_beta</span><span class="p">,</span> <span class="n">gpd_covar</span></div>
+
+
+<div class="viewcode-block" id="genpareto_MOM_est"><a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_MOM_est.html#serums.distribution_estimator.genpareto_MOM_est">[docs]</a><span class="k">def</span> <span class="nf">genpareto_MOM_est</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds estimates for GPD shape and scale using the method of moments.</span>
+
+<span class="sd">    Important: The covariance of these estimators is only shown to be</span>
+<span class="sd">    asymptotically normally distributed and given by the formula below if</span>
+<span class="sd">    (shape_gamma &lt; 1/4) is true</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This method is taken from</span>
+<span class="sd">    :cite:`Hosking1987_ParameterEstimationforGeneralizedParetoDistribution`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset : N x 1 numpy array</span>
+<span class="sd">        Contains positive error data above threshold</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    shape_gamma : float</span>
+<span class="sd">        Shape parameter as defined by :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`</span>
+<span class="sd">    scale_beta : float</span>
+<span class="sd">        Scale parameter as defined by :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`</span>
+<span class="sd">    gpd_covar : 2 x 2 numpy array</span>
+<span class="sd">        Contains the estimated asymptotic covariance matrix for shape, scale</span>
+<span class="sd">        given in Hosking and Wallis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_bar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="n">svar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">alfahat</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x_bar</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_bar</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">svar</span><span class="p">)</span>
+    <span class="n">khat</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_bar</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">svar</span><span class="p">)</span>
+
+    <span class="n">shape_gamma</span> <span class="o">=</span> <span class="o">-</span><span class="n">khat</span>
+    <span class="n">scale_beta</span> <span class="o">=</span> <span class="n">alfahat</span>
+
+    <span class="c1"># Calculate estimated asymptotic covariance matrix</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">khat</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">khat</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">khat</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">khat</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="n">mat11</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">alfahat</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">khat</span> <span class="o">+</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">khat</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">mat12</span> <span class="o">=</span> <span class="n">alfahat</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">khat</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">khat</span> <span class="o">+</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">khat</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">mat21</span> <span class="o">=</span> <span class="n">mat12</span>
+    <span class="n">mat22</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">khat</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">khat</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">khat</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">gpd_covar</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">mat11</span><span class="p">,</span> <span class="n">mat12</span><span class="p">],</span> <span class="p">[</span><span class="n">mat21</span><span class="p">,</span> <span class="n">mat22</span><span class="p">]])</span>
+
+    <span class="k">return</span> <span class="n">shape_gamma</span><span class="p">,</span> <span class="n">scale_beta</span><span class="p">,</span> <span class="n">gpd_covar</span></div>
+
+
+<div class="viewcode-block" id="genpareto_PWM_est"><a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_PWM_est.html#serums.distribution_estimator.genpareto_PWM_est">[docs]</a><span class="k">def</span> <span class="nf">genpareto_PWM_est</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds estimates for GPD shape and scale using the PWM method.</span>
+
+<span class="sd">    Important: The covariance matrix calculated below is only valid if the</span>
+<span class="sd">    shape parameter gamma is less than 0.5</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This method is taken from</span>
+<span class="sd">    :cite:`Hosking1987_ParameterEstimationforGeneralizedParetoDistribution`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset : N x 1 numpy array</span>
+<span class="sd">        Contains positive error data above threshold</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    shape_gamma : float</span>
+<span class="sd">        Shape parameter as defined by :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`</span>
+<span class="sd">    scale_beta : float</span>
+<span class="sd">        Scale parameter as defined by :cite:`Larson2018_GaussianParetoOverboundingAMethodForManagingRiskInSafetyCriticalNavigationSystems`</span>
+<span class="sd">    gpd_covar : 2 x 2 numpy array</span>
+<span class="sd">        Contains the estimated asymptotic covariance matrix for shape, scale</span>
+<span class="sd">        given in Hosking and Wallis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">ordered_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="n">gam0bar</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="n">summate</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="p">(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">ordered_list</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+        <span class="n">summate</span> <span class="o">=</span> <span class="n">summate</span> <span class="o">+</span> <span class="n">temp</span>
+
+    <span class="n">gam1bar</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">summate</span>
+
+    <span class="n">scale_beta</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">gam0bar</span> <span class="o">*</span> <span class="n">gam1bar</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">gam0bar</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gam1bar</span><span class="p">)</span>
+    <span class="n">shape_gamma</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">gam0bar</span> <span class="o">/</span> <span class="p">(</span><span class="n">gam0bar</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gam1bar</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Calculate estimated asymptotic covariance matrix</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="o">-</span><span class="n">shape_gamma</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">scale_beta</span>
+
+    <span class="n">gain</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">)))</span>
+
+    <span class="n">mat11</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">7</span> <span class="o">+</span> <span class="mi">18</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">11</span> <span class="o">*</span> <span class="n">k</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">mat12</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">*</span> <span class="n">k</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">mat21</span> <span class="o">=</span> <span class="n">mat12</span>
+    <span class="n">mat22</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="mi">2</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">gpd_covar</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">mat11</span><span class="p">,</span> <span class="n">mat12</span><span class="p">],</span> <span class="p">[</span><span class="n">mat21</span><span class="p">,</span> <span class="n">mat22</span><span class="p">]])</span>
+
+    <span class="k">return</span> <span class="n">shape_gamma</span><span class="p">,</span> <span class="n">scale_beta</span><span class="p">,</span> <span class="n">gpd_covar</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Jordan D Larson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
