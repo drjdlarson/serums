@@ -136,7 +136,7 @@ jobs:
       # see https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
       # for details on setting env variable from bash command
         run: |
-          cat pyproject.toml | grep -Eo 'version\s*=\s*"[0-9]+.[0-9]+.[0-9]+"' | sed 's/^version\s*=\s*"//' | sed 's/"//' >> $SERUMS_VERSION
+          echo "SERUMS_VERSION=$(cat pyproject.toml | grep -Eo 'version\s*=\s*"[0-9]+.[0-9]+.[0-9]+"' | sed 's/^version\s*=\s*"//' | sed 's/"//')" >> $GITHUB_ENV
           tox -e docs_html -- -Dversion=${$SERUMS_VERSION}
           tox -e docs_pdf -- -Dversion=${SERUMS_VERSION}
       
