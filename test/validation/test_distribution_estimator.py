@@ -1,16 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  8 11:07:45 2022
-
-@author: Vaughn Weirens
-"""
-
 import numpy as np
 import serums.models as smodels
 from serums.enums import DistEstimatorMethod
 import serums.distribution_estimator as de
 from scipy.stats import genpareto
 import matplotlib.pyplot as plt
+
+
+DEBUG = False
 
 
 def test_Gaussian_KS(num_samples=1000):
@@ -25,11 +21,7 @@ def test_Gaussian_KS(num_samples=1000):
         dist, DistEstimatorMethod.KOLMOGOROV_SMIRNOV, samples
     )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(
-        fmt.format(
-            dist.location, dist.scale, out_dist.location, out_dist.scale
-        )
-    )
+    print(fmt.format(dist.location, dist.scale, out_dist.location, out_dist.scale))
 
 
 def test_Gaussian_CVM(num_samples=1000):
@@ -44,11 +36,7 @@ def test_Gaussian_CVM(num_samples=1000):
         dist, DistEstimatorMethod.CRAMER_VON_MISES, samples
     )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(
-        fmt.format(
-            dist.location, dist.scale, out_dist.location, out_dist.scale
-        )
-    )
+    print(fmt.format(dist.location, dist.scale, out_dist.location, out_dist.scale))
 
 
 def test_Gaussian_AD(num_samples=1000):
@@ -63,11 +51,7 @@ def test_Gaussian_AD(num_samples=1000):
         dist, DistEstimatorMethod.ANDERSON_DARLING, samples
     )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(
-        fmt.format(
-            dist.location, dist.scale, out_dist.location, out_dist.scale
-        )
-    )
+    print(fmt.format(dist.location, dist.scale, out_dist.location, out_dist.scale))
 
 
 def test_StudentsT_KS(num_samples=5000):
@@ -160,11 +144,7 @@ def test_Cauchy_KS(num_samples=10000):
         dist, DistEstimatorMethod.KOLMOGOROV_SMIRNOV, samples
     )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(
-        fmt.format(
-            dist.location, dist.scale, out_dist.location, out_dist.scale
-        )
-    )
+    print(fmt.format(dist.location, dist.scale, out_dist.location, out_dist.scale))
 
 
 def test_Cauchy_CVM(num_samples=10000):
@@ -179,11 +159,7 @@ def test_Cauchy_CVM(num_samples=10000):
         dist, DistEstimatorMethod.CRAMER_VON_MISES, samples
     )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(
-        fmt.format(
-            dist.location, dist.scale, out_dist.location, out_dist.scale
-        )
-    )
+    print(fmt.format(dist.location, dist.scale, out_dist.location, out_dist.scale))
 
 
 def test_Cauchy_AD(num_samples=10000):
@@ -198,11 +174,7 @@ def test_Cauchy_AD(num_samples=10000):
         dist, DistEstimatorMethod.ANDERSON_DARLING, samples
     )
     fmt = "\tInput location : {}, Input Scale : {}\n\tOutput location : {}, Output Scale : {}\n"
-    print(
-        fmt.format(
-            dist.location, dist.scale, out_dist.location, out_dist.scale
-        )
-    )
+    print(fmt.format(dist.location, dist.scale, out_dist.location, out_dist.scale))
 
 
 def test_GPD_Grimshaw_MLE(num_samples=1000):
@@ -239,17 +211,17 @@ def test_GPD_Grimshaw_MLE(num_samples=1000):
     domain = np.linspace(0, 100, 1000)
     TEST_PDF = genpareto.pdf(domain, shape_gamma, 0, scale=scale_beta)
 
-    fig, ax = plt.subplots(1, 1)
-    ax.plot(domain, TEST_PDF)
-    ax.hist(
-        random_set,
-        density=True,
-        bins=np.linspace(0, 30, 150),
-        histtype="stepfilled",
-    )
+    if DEBUG:
+        fig, ax = plt.subplots(1, 1)
+        ax.plot(domain, TEST_PDF)
+        ax.hist(
+            random_set,
+            density=True,
+            bins=np.linspace(0, 30, 150),
+            histtype="stepfilled",
+        )
 
-    plt.xlim([0, 30])
-    plt.show()
+        plt.xlim([0, 30])
 
 
 def test_GPD_MOM(num_samples=1000):
@@ -319,6 +291,9 @@ def test_GPD_PWM(num_samples=1000):
 
 
 if __name__ == "__main__":
+    plt.close("all")
+    DEBUG = True
+
     # test_Gaussian_KS()
     # test_Gaussian_CVM()
     # test_Gaussian_AD()
@@ -331,3 +306,5 @@ if __name__ == "__main__":
     test_GPD_Grimshaw_MLE()
     test_GPD_MOM()
     test_GPD_PWM()
+
+    plt.show()
