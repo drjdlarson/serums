@@ -133,11 +133,12 @@ jobs:
           if-no-files-found: error
 
       - name: Build Documentation
-        env:
-          SERUMS_VERSION: "$( cat pyproject.toml | grep -Eo 'version\s*=\s*"[0-9]+.[0-9]+.[0-9]+"' | sed 's/^version\s*=\s*"//' | sed 's/"//' )"
+      # see https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
+      # for details on setting env variable from bash command
         run: |
-          tox -e docs_html -- -Dversion=${{ env.SERUMS_VERSION }}
-          tox -e docs_pdf -- -Dversion=${{ env.SERUMS_VERSION }}
+          cat pyproject.toml | grep -Eo 'version\s*=\s*"[0-9]+.[0-9]+.[0-9]+"' | sed 's/^version\s*=\s*"//' | sed 's/"//' >> $SERUMS_VERSION
+          tox -e docs_html -- -Dversion=${$SERUMS_VERSION}
+          tox -e docs_pdf -- -Dversion=${SERUMS_VERSION}
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -146,9 +147,9 @@ jobs:
           publish_dir: ./docs/build/html
           keep_files: true
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: |
-            docs/build/pdf/serums.pdf
+      # - uses: "marvinpinto/action-automatic-releases@latest"
+      #   with:
+      #     repo_token: "${{ secrets.GITHUB_TOKEN }}"
+      #     prerelease: false
+      #     files: |
+      #       docs/build/pdf/serums.pdf
