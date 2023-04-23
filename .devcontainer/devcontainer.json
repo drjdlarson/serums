@@ -2,9 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/cpp
 {
 	"name": "serums-dev",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
+	"image": "ghcr.io/drjdlarson/serums-dev:latest",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -14,7 +12,8 @@
 				"ms-python.black-formatter",
 				// sphinx/restructured text
 				"lextudio.restructuredtext",
-				"trond-snekvik.simple-rst"
+				"trond-snekvik.simple-rst",
+				"swyddfa.esbonio"
 			]
 		}
 	}
