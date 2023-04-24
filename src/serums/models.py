@@ -1067,7 +1067,7 @@ class GaussianScaleMixture(BaseSingleModel):
     def _sample_student_t(self, rng, num_samples=None):
         return stats.t.rvs(
             self.degrees_of_freedom,
-            scale=self.scale,
+            scale=np.diag(self.scale),
             random_state=rng,
             size=num_samples,
         )
@@ -1262,8 +1262,10 @@ class BaseMixtureModel:
             rng = rnd.default_rng()
         if num_samples is None:
             num_samples = 1
+        weights = np.array(self.weights, dtype=float)
+        weights /= np.sum(weights).astype(float)
         if num_samples == 1:
-            mix_ind = rng.choice(np.arange(len(self), dtype=int), p=self.weights)
+            mix_ind = rng.choice(np.arange(len(self), dtype=int), p=weights)
             x = self._distributions[mix_ind].sample(rng=rng)
             return x.reshape((x.size, 1))
         else:
@@ -1271,7 +1273,7 @@ class BaseMixtureModel:
                 (int(num_samples), self._distributions[0].location.size())
             )
             for ii in range(int(num_samples)):
-                mix_ind = rng.choice(np.arange(len(self), dtype=int), p=self.weights)
+                mix_ind = rng.choice(np.arange(len(self), dtype=int), p=weights)
                 x[ii, :] = self._distributions[mix_ind].sample(rng=rng).ravel()
             return x
 

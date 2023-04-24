@@ -256,7 +256,7 @@ def calculate_ospa(est_mat, true_mat, c, p, use_empty=True, core_method=None,
             cardinality[tt] = c
             continue
 
-        cont_sub = distances[0:m.astype(int), 0:n.astype(int), tt]**p
+        cont_sub = distances[e_exists[:, tt], :, tt][:, t_exists[:, tt]]**p
         row_ind, col_ind = linear_sum_assignment(cont_sub)
         cost = cont_sub[row_ind, col_ind].sum()
 
