@@ -85,9 +85,28 @@ class MultiObjectDistance(enum.Enum):
         return self.name
 
 
+# @enum.unique
+# class GoodnessOfFitTest(enum.Enum):
+#     """Enumeration of Goodness of Fit Tests for distribution parameter estimation."""
+
+#     CRAMER_VON_MISES = enum.auto()
+#     """Cramer von Mises criterion for goodness of fit of a distribution to a set of samples."""
+
+#     KOLMOGOROV_SMIRNOV = enum.auto()
+#     """Kolmogorov Smirnov test for goodness of fit of a distribution to a set of samples."""
+
+#     ANDERSON_DARLING = enum.auto()
+#     """Anderson-Darling test for goodness of fit of two sets of samples.
+#     This test puts higher emphasis on the tails of the distribution."""
+
+#     def __str__(self):
+#         """Return the enum name for strings."""
+#         return self.name
+
+
 @enum.unique
-class GoodnessOfFitTest(enum.Enum):
-    """Enumeration of Goodness of Fit Tests for distribution parameter estimation."""
+class DistEstimatorMethod(enum.Enum):
+    """Enumeration of distribution estimator methods."""
 
     CRAMER_VON_MISES = enum.auto()
     """Cramer von Mises criterion for goodness of fit of a distribution to a set of samples."""
@@ -96,8 +115,16 @@ class GoodnessOfFitTest(enum.Enum):
     """Kolmogorov Smirnov test for goodness of fit of a distribution to a set of samples."""
 
     ANDERSON_DARLING = enum.auto()
-    """Anderson=Darling test for goodness of fit of two sets of samples.
-    This test puts higher emphasis on the tails of the distribution."""
+    """Anderson-Darling test for goodness of fit of two sets of samples. This test puts higher emphasis on the tails of the distribution."""
+
+    GRIMSHAW_MLE = enum.auto()
+    """Grimshaw's MLE method for GPD parameter estimation."""
+
+    METHOD_OF_MOMENTS = enum.auto()
+    """Estimate distribution parameters using the Method of Moments."""
+
+    PROBABILITY_WEIGHTED_MOMENTS = enum.auto()
+    """Estimate distribution parameters using the method of Probability-Weighted Moments."""
 
     def __str__(self):
         """Return the enum name for strings."""
