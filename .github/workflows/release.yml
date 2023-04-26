@@ -142,8 +142,8 @@ jobs:
           path: docs/build
           if-no-files-found: error
     
-  build-documentation:
-    name: Build documentation
+  publish:
+    name: Publish release and documentation
     runs-on: ubuntu-latest
     needs: build-documentation
     permissions: write-all
