@@ -15,7 +15,6 @@ authors = [
     { name = "Laboratory for Autonomy GNC and Estimation Research (LAGER)" },
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
     "Intended Audience :: Science/Research",

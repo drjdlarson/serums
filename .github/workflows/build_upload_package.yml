@@ -29,7 +29,7 @@ jobs:
       
       # Since this is a pure python wheel we can just do this
       - name: Build wheel
-        run: python -m pip wheel --no-binary ":serums:" -w wheelhouse --no-deps .
+        run: python -m pip wheel --no-binary ":serums:" -w dist --no-deps .
 
       # if not a pure python wheel we need this
       # - name: Build wheels
@@ -37,7 +37,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          path: ./wheelhouse/*.whl
+          path: dist/*.whl
 
   build_sdist:
     name: Build source distribution
@@ -51,6 +51,23 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
+    
+  upload_test_pypi:
+    name: Upload to Test PyPI
+    runs-on: ubuntu-latest
+    needs: [build_wheels, build_sdist]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          # unpacks default artifact into dist/
+          # if `name: artifact` is omitted, the action will create extra parent dir
+          name: artifact
+          path: dist
+      - name: Publish distribution package to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository-url: https://test.pypi.org/legacy/
 
   upload_pypi:
     needs: [build_wheels, build_sdist]
@@ -67,5 +84,4 @@ jobs:
 
       - uses: pypa/gh-action-pypi-publish@v1.5.0
         with:
-          user: __token__
-          password: ${{ secrets.pypi_password }}
+          password: ${{ secrets.PYPI_API_TOKEN }}
