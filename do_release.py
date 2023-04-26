@@ -109,8 +109,11 @@ if __name__ == "__main__":
     if not args.skip_increment:
         if args.type == "major":
             major += 1
+            minor = 0
+            patch = 0
         elif args.type == "minor":
             minor += 1
+            patch = 0
         elif args.type == "patch":
             patch += 1
         else:
