@@ -130,17 +130,20 @@ jobs:
         run: |
           tox -e coverage_report
           genbadge coverage -i docs/build/html/reports/coverage/coverage.xml -o docs/build/html/reports/coverage/coverage-badge.svg
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: test-reports-artifact
-          path: ${{ github.workspace }}/docs/build/html/reports
-          if-no-files-found: error
         
       - name: Build Documentation
         run: |
           tox -e docs_html -- -Dversion=${{ env.SERUMS_VERSION }}
           tox -e docs_pdf -- -Drelease=${{ env.SERUMS_VERSION }}
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-reports-artifact
+          path: docs/build/html/reports
+          if-no-files-found: error
+      
+      - run: |
+          ls /workspace/docs/build/html/reports
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
