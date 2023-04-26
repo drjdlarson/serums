@@ -1,12 +1,9 @@
 name: Build and upload to PyPI
 
-# Build on every branch push, tag push, pull request change, and published release:
+# Build on every branch push, tag push, and pull request change:
 on:
   push:
   pull_request:
-  release:
-    types:
-      - published
 
 jobs:
   build_wheels:
@@ -21,13 +18,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      # add || true to continue when no tags are found
-      # see https://stackoverflow.com/questions/69862590/git-fetch-depth-1-origin-refs-tags-refs-tags-fails-if-no-tags-exist
-      - name: Get history and tags for SCM versioning to work
-        run: |
-          git fetch --prune --unshallow
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/* || true
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v3
@@ -56,10 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get history and tags for SCM versioning to work
-        run: |
-          git fetch --prune --unshallow
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/* || true
+        with:
+            fetch-depth: 0
 
       - name: Build sdist
         run: pipx run build --sdist
@@ -85,21 +75,3 @@ jobs:
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
-
-  upload_pypi:
-    name: Upload to PyPI
-    needs: [build_wheels, build_sdist]
-    runs-on: ubuntu-latest
-    # publish when a GitHub Release is created, use the following rule:
-    if: github.event_name == 'release' && github.event.action == 'published'
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          # unpacks default artifact into dist/
-          # if `name: artifact` is omitted, the action will create extra parent dir
-          name: artifact
-          path: dist
-
-      - uses: pypa/gh-action-pypi-publish@v1.5.0
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
