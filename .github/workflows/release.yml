@@ -130,6 +130,7 @@ jobs:
         run: |
           tox -e coverage_report
           genbadge coverage -i docs/build/html/reports/coverage/coverage.xml -o docs/build/html/reports/coverage/coverage-badge.svg
+          rm docs/build/html/reports/coverage/.gitignore
         
       - name: Build Documentation
         run: |

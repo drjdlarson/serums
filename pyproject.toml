@@ -51,3 +51,4 @@ junit_logging = "all"
 
 # activates the extension
 [tool.setuptools_scm]
+version_scheme = "no-guess-dev"
