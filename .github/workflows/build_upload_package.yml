@@ -16,10 +16,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      # add || true to continue when no tags are found
+      # see https://stackoverflow.com/questions/69862590/git-fetch-depth-1-origin-refs-tags-refs-tags-fails-if-no-tags-exist
       - name: Get history and tags for SCM versioning to work
         run: |
           git fetch --prune --unshallow
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/* || true
 
       - name: Set up Python
         uses: actions/setup-python@v3
@@ -51,7 +54,7 @@ jobs:
       - name: Get history and tags for SCM versioning to work
         run: |
           git fetch --prune --unshallow
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/* || true
 
       - name: Build sdist
         run: pipx run build --sdist
