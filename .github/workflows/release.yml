@@ -100,10 +100,10 @@ jobs:
   #         # Change this to point to your image name
   #         imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_BASE_NAME }}-devcontainer
 
-  release:
+  build-documentation:
+    name: Build documentation
     runs-on: ubuntu-latest
     # needs: build-dev-image
-    permissions: write-all
     container:
       credentials:
         username: ${{ github.actor }}
@@ -133,23 +133,33 @@ jobs:
         
       - name: Build Documentation
         run: |
-          tox -e docs_html -- -Dversion=${{ env.SERUMS_VERSION }}
-          tox -e docs_pdf -- -Drelease=${{ env.SERUMS_VERSION }}
+          tox -e docs_html
+          tox -e docs_pdf
       
       - uses: actions/upload-artifact@v3
         with:
-          name: test-reports-artifact
-          path: docs/build/html/reports
+          name: documentation-artifact
+          path: docs/build
           if-no-files-found: error
-      
-      - run: |
-          ls /workspace/docs/build/html/reports
+    
+  build-documentation:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    needs: build-documentation
+    permissions: write-all
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          # unpacks into documentation-artifact/
+          # if `name: documentation-artifact` is omitted, the action will create extra parent dir
+          name: documentation-artifact
+          path: docs/build
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}/docs/build/html
+          publish_dir: docs/build/html
           keep_files: true
 
       # - uses: "marvinpinto/action-automatic-releases@latest"

@@ -14,6 +14,8 @@ import os
 import sys
 import re
 
+from importlib.metadata import version as get_version
+
 sys.path.append(os.path.abspath("../../src/serums"))
 
 # run all example code to generate necesary figures
@@ -27,6 +29,8 @@ run_examples()
 project = "SERUMS"
 copyright = "2022, Jordan D Larson"
 author = "LAGER"
+version = get_version("serums")
+release = get_version("serums")
 
 
 # -- General configuration ---------------------------------------------------
