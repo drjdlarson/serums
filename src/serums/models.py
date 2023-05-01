@@ -87,11 +87,11 @@ class BaseSingleModel:
                 fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "\u2309"
             elif ii == (dim - 1) and dim != 1:
                 fmt = (
-                    "\u230A{:.4e}\u230B\t"
-                    + "{:8s}\u230A".format("")
-                    + "{:.4e}, " * (dim - 1)
-                    + "{:.4e}"
-                    + "\u230B"
+                        "\u230A{:.4e}\u230B\t"
+                        + "{:8s}\u230A".format("")
+                        + "{:.4e}, " * (dim - 1)
+                        + "{:.4e}"
+                        + "\u230B"
                 )
             else:
                 fmt = "|{:.4e}|\t"
@@ -101,8 +101,8 @@ class BaseSingleModel:
                     fmt += "{:8s}|".format("")
                 fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "|"
             msg += (
-                fmt.format(self.mean.ravel()[ii], *self.covariance[ii, :].tolist())
-                + "\n"
+                    fmt.format(self.mean.ravel()[ii], *self.covariance[ii, :].tolist())
+                    + "\n"
             )
         return msg
 
@@ -237,11 +237,11 @@ class Gaussian(BaseSingleModel):
                 fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "\u2309"
             elif ii == (dim - 1) and dim != 1:
                 fmt = (
-                    "\u230A{:.4e}\u230B\t"
-                    + "{:13s}\u230A".format("")
-                    + "{:.4e}, " * (dim - 1)
-                    + "{:.4e}"
-                    + "\u230B"
+                        "\u230A{:.4e}\u230B\t"
+                        + "{:13s}\u230A".format("")
+                        + "{:.4e}, " * (dim - 1)
+                        + "{:.4e}"
+                        + "\u230B"
                 )
             else:
                 fmt = "|{:.4e}|\t"
@@ -251,8 +251,8 @@ class Gaussian(BaseSingleModel):
                     fmt += "{:13s}|".format("")
                 fmt += "{:.4e}, " * (dim - 1) + "{:.4e}" + "|"
             msg += (
-                fmt.format(self.mean.ravel()[ii], *self.covariance[ii, :].tolist())
-                + "\n"
+                    fmt.format(self.mean.ravel()[ii], *self.covariance[ii, :].tolist())
+                    + "\n"
             )
         return msg
 
@@ -484,13 +484,13 @@ class PairedGaussian(BaseSingleModel):
         if rcount > 0:
             rsamp = self.right_gaussian.sample(rng=rng, num_samples=int(rcount))
             samp[0:rcount] = (
-                np.abs(rsamp - self.right_gaussian.mean) + self.right_gaussian.mean
+                    np.abs(rsamp - self.right_gaussian.mean) + self.right_gaussian.mean
             )
 
         if lcount > 0:
             lsamp = self.left_gaussian.sample(rng=rng, num_samples=int(lcount))
             samp[rcount:] = (
-                -np.abs(lsamp - self.left_gaussian.mean) + self.left_gaussian.mean
+                    -np.abs(lsamp - self.left_gaussian.mean) + self.left_gaussian.mean
             )
 
         return samp
@@ -808,7 +808,7 @@ class ChiSquared(BaseSingleModel):
         if self._dof < 0:
             msg = "Degrees of freedom is {} and must be > 0"
             raise RuntimeError(msg.format(self._dof))
-        return (self._dof * 2) * (self.scale**2)
+        return (self._dof * 2) * (self.scale ** 2)
 
     @covariance.setter
     def covariance(self, val):
@@ -948,14 +948,14 @@ class GaussianScaleMixture(BaseSingleModel):
     __df_types = (enums.GSMTypes.STUDENTS_T, enums.GSMTypes.CAUCHY)
 
     def __init__(
-        self,
-        gsm_type,
-        location=None,
-        location_range=None,
-        scale=None,
-        scale_range=None,
-        degrees_of_freedom=None,
-        df_range=None,
+            self,
+            gsm_type,
+            location=None,
+            location_range=None,
+            scale=None,
+            scale_range=None,
+            degrees_of_freedom=None,
+            df_range=None,
     ):
         """Initialize a GSM Object.
 
@@ -1032,7 +1032,7 @@ class GaussianScaleMixture(BaseSingleModel):
             self._df = val
         else:
             msg = (
-                "GSM type {:s} does not have a degree of freedom. " + "Skipping"
+                    "GSM type {:s} does not have a degree of freedom. " + "Skipping"
             ).format(self.type)
             warn(msg)
 
@@ -1120,8 +1120,8 @@ class GeneralizedPareto(BaseSingleModel):
         rv = stats.genpareto
         rv.random_state = rng
         x = (
-            self.scale * rv.rvs(self.shape, size=int(num_samples))
-        ) + self.location.ravel()
+                    self.scale * rv.rvs(self.shape, size=int(num_samples))
+            ) + self.location.ravel()
         if num_samples == 1:
             return x.reshape((-1, 1))
         else:
@@ -1137,12 +1137,57 @@ class GeneralizedPareto(BaseSingleModel):
         """
         rv = stats.genpareto
         return (
-            rv.pdf(
-                (x.flatten() - self.location) / self.scale,
-                shape=self.shape.flatten(),
-            )
-            / self.scale
+                rv.pdf(
+                    (x.flatten() - self.location) / self.scale,
+                    shape=self.shape.flatten(),
+                )
+                / self.scale
         )
+
+
+class Bernoulli(BaseSingleModel):
+    """Represents a Bernoulli distribution object"""
+    def __init__(self, prob=None, density=None, **kwargs):
+        """Initialize an object.
+
+                Parameters
+                ----------
+                prob : float, optional
+                    Existence probability of the distribution. The default is None.
+                density : smodels.BaseSingleModel, optional
+                    Probability density of the distribution. The default is None. If None, sample will return 1 or 0.
+
+                Returns
+                -------
+                None.
+                """
+        super().__init__(**kwargs)
+        self.prob = prob
+        self.density = density
+
+    def sample(self, rng=None, num_samples=1):
+        """Draw a sample from the current model.
+
+        Parameters
+        ----------
+        rng : numpy random generator, optional
+            Random number generator to use. If none is given then the numpy
+            default is used. The default is None.
+
+        Returns
+        -------
+        numpy array
+            randomly sampled numpy array of the same shape as the mean.
+        """
+        if num_samples != 1:
+            num_samples = 1
+            warn("Bernoulli distribution only accepts a single sample.")
+        if rng is None:
+            rng = rnd.default_rng()
+        if self.density is None:
+            return rng.binomial(num_samples, self.prob)
+        else:
+            return rng.binomial(num_samples, self.prob) * self.density.sample(rng, 1)
 
 
 class BaseMixtureModelIterator:
@@ -1629,6 +1674,78 @@ class StudentsTMixture(BaseMixtureModel):
         self.weights.extend(weights)
 
 
+class MultiBernoulliMixture(BaseMixtureModel):
+    def __init__(self, probs=None, densities=None, **kwargs):
+        if probs is not None and densities is not None:
+            kwargs["distributions"] = [
+                Bernoulli(prob=p, density=d) for p, d in zip(probs, densities)
+            ]
+        super().__init__(**kwargs)
+
+    @property
+    def probs(self):
+        """List of Bernoulli existance probabilities, each is a float between 0 and 1. Read only"""
+        return _DistListWrapper(self._distributions, "prob")
+
+    @probs.setter
+    def probs(self, val):
+        if not isinstance(val, list):
+            warn("Must set probs to a list")
+            return
+        if len(val) != len(self._distributions):
+            self.weights = [1 / len(val) for ii in range(len(val))]
+            self._distributions = [Bernoulli() for ii in range(len(val))]
+        for ii, v in enumerate(val):
+            self._distributions[ii].prob = v
+
+    @property
+    def densities(self):
+        """Returns a serums.BaseSingleModel object representing the density of the bernoulli distribution."""
+        return _DistListWrapper(self._distributions, "density")
+
+    @densities.setter
+    def densities(self, val):
+        if not isinstance(val, list):
+            warn("Must set densities to a list")
+            return
+        if len(val) != len(self._distributions):
+            self.weights = [1 / len(val) for ii in range(len(val))]
+            self._distributions = [Bernoulli() for ii in range(len(val))]
+        for ii, v in enumerate(val):
+            self._distributions[ii].density = v
+
+    def add_components(self, probs, densities, weights):
+        """Add Bernoulli distributions to the mixture.
+
+                Parameters
+                ----------
+                probs : list
+                    Each is a float between 0 and 1 representing the existance probability of the Bernoulli
+                densities : list
+                    Each is a smodels.BaseSingleModel representing the density of the Bernoulli distribution
+                    to add.
+                weights : list
+                    Each is a float for the weight of the distributions to add. No
+                    normalization is done.
+
+                Returns
+                -------
+                None.
+                """
+        if not isinstance(probs, list):
+            probs = [probs, ]
+        if not isinstance(densities, list):
+            densities = [densities, ]
+        if not isinstance(weights, list):
+            weights = [weights, ]
+
+        dists = [
+            Bernoulli(p, d) for p, d in zip(probs, densities)
+        ]
+        self._distributions.extend(dists)
+        self.weights.extend(weights)
+
+
 class SymmetricGaussianPareto(BaseSingleModel):
     """Represents a Symmetric Gaussian-Pareto Mixture Distribution object.
 
@@ -1648,12 +1765,12 @@ class SymmetricGaussianPareto(BaseSingleModel):
     """
 
     def __init__(
-        self,
-        location=0,
-        scale=None,
-        threshold=None,
-        tail_shape=None,
-        tail_scale=None,
+            self,
+            location=0,
+            scale=None,
+            threshold=None,
+            tail_shape=None,
+            tail_scale=None,
     ):
         """Initialize an object.
 
@@ -1794,10 +1911,10 @@ class SymmetricGaussianPareto(BaseSingleModel):
             loc=self.location,
             scale=self.tail_scale,
         ) * (
-            1 - (halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale))
-        ) + (
-            halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale)
-        )
+                         1 - (halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale))
+                 ) + (
+                     halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale)
+                 )
 
         x = np.append(x_core, x_tail)
         y = np.append(y_core, y_tail)
@@ -1855,10 +1972,10 @@ class SymmetricGaussianPareto(BaseSingleModel):
             loc=self.location,
             scale=self.tail_scale,
         ) * (
-            1 - (halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale))
-        ) + (
-            halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale)
-        )
+                         1 - (halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale))
+                 ) + (
+                     halfnorm.cdf(self.threshold, loc=self.location, scale=self.scale)
+                 )
         x_ob = np.append(x_core, x_tail)
         y_ob = np.append(y_core, y_tail)
         dist_type = halfnorm()
@@ -1916,19 +2033,19 @@ class PairedGaussianPareto(BaseSingleModel):
     """
 
     def __init__(
-        self,
-        location=None,
-        scale=None,
-        left_tail_shape=None,
-        left_tail_scale=None,
-        left_threshold=None,
-        left_mean=None,
-        left_sigma=None,
-        right_tail_shape=None,
-        right_tail_scale=None,
-        right_threshold=None,
-        right_mean=None,
-        right_sigma=None,
+            self,
+            location=None,
+            scale=None,
+            left_tail_shape=None,
+            left_tail_scale=None,
+            left_threshold=None,
+            left_mean=None,
+            left_sigma=None,
+            right_tail_shape=None,
+            right_tail_scale=None,
+            right_threshold=None,
+            right_mean=None,
+            right_sigma=None,
     ):
         """Initialize an object.
 
@@ -2128,7 +2245,7 @@ class PairedGaussianPareto(BaseSingleModel):
             elif x_ob_core[i] >= self.left_mean and x_ob_core[i] <= self.right_mean:
                 y_ob_core[i] = 0.5
             elif (
-                x_ob_core[i] > self.right_mean and x_ob_core[i] <= self.right_threshold
+                    x_ob_core[i] > self.right_mean and x_ob_core[i] <= self.right_threshold
             ):
                 y_ob_core[i] = norm.cdf(
                     x_ob_core[i], loc=self.right_mean, scale=self.right_sigma
@@ -2225,7 +2342,7 @@ class PairedGaussianPareto(BaseSingleModel):
             elif x_ob_core[i] >= self.left_mean and x_ob_core[i] <= self.right_mean:
                 y_ob_core[i] = 0.5
             elif (
-                x_ob_core[i] > self.right_mean and x_ob_core[i] <= self.right_threshold
+                    x_ob_core[i] > self.right_mean and x_ob_core[i] <= self.right_threshold
             ):
                 y_ob_core[i] = norm.cdf(
                     x_ob_core[i], loc=self.right_mean, scale=self.right_sigma
