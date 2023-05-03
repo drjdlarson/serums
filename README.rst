@@ -91,7 +91,7 @@ Please cite the framework as follows
 .. code-block:: bibtex
 
     @Misc{serums,
-        author       = {Jordan D. Larson, et al.},
+        author       = {Jordan D. Larson and Ryan W. Thomas and Vaughn Weirens and Adam Hallmark and Tuan Luong},
         howpublished = {Web page},
         title        = {{SERUMS}: A Python library for Statistical Error and Risk Utility for Multi-sensor Systems},
         year         = {2022},
