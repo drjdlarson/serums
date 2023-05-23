@@ -4,7 +4,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import serums.distribution_overbounder as sdob
 import serums.models as smodels
-from scipy.stats import norm, genpareto, t, halfnorm, probplot, chi2
+from scipy.stats import (
+    norm,
+    genpareto,
+    t,
+    halfnorm,
+    probplot,
+    chi2,
+    multivariate_normal,
+)
 import time
 import pytest
 
@@ -86,7 +94,9 @@ def test_SymmetricGPO():
     end = time.time()
 
     print("\n------")
-    print("Runtime for n = 10,000: ", round((end - start) / 60, 2), " minutes\n")
+    print(
+        "Runtime for n = 10,000: ", round((end - start) / 60, 2), " minutes\n"
+    )
 
     fmt = "\tExpected Output Gamma : {}, Expected Output Beta : {}, Expected Output u : {}, Expected Output Core Sigma : {}, \n\tActual Output Gamma : {}, Actual Output Beta : {}, Actual Output u : {}, Actual Output Core Sigma : {}\n"
     print(
@@ -198,13 +208,58 @@ def test_PairedGPO():
     pass
 
 
+def test_2d_MV_OBer_fixed_partitions_gaussian_only():
+    print(
+        "Testing two-dimensional multivariate overbounder with fixed number of partitions and with gaussian-only constituents:"
+    )
+    # Create test input sample (bivariate normal distribution)
+
+    mu_1 = 0
+    mu_2 = 0
+
+    s1 = 1
+    s2 = 1
+
+    p1 = 0.2
+    p2 = 0
+
+    # define covariance matrix
+    m = np.array([mu_1, mu_2])
+    covar_1 = np.array([[s1**2, p1 * s1 * s2], [p1 * s1 * s2, s2**2]])
+    covar_2 = np.array([[s1**2, p2 * s1 * s2], [p2 * s1 * s2, s2**2]])
+
+    multi_dist_1 = multivariate_normal(mean=m, cov=covar_1)
+    multi_dist_2 = multivariate_normal(mean=m, cov=covar_2)
+
+    test_sample_1 = multi_dist_1.rvs(size=10000)
+    test_sample_2 = multi_dist_2.rvs(size=10000)
+
+    # Prepare for example call of the multivariate overbounder method
+    data = test_sample_2
+
+    # norm_type = 1
+    # norm_type = 2
+    norm_type = np.inf
+
+    mv_ober = sdob.MultivariateNormOverbounder_2d(
+        num_partitions=2, gaussian_only=True, norm_order=norm_type
+    )
+    out_dist = mv_ober.overbound(data)
+
+    if DEBUG:
+        multivariate_CI = out_dist.CI(0.01)
+
+    pass
+
+
 if __name__ == "__main__":
     plt.close("all")
     DEBUG = True
-    test_FusionGaussian()
-    test_SymmetricGaussianOverbound()
-    test_SymmetricGPO()
-    test_PairedGaussianOverbound()
-    test_PairedGPO()
+    # test_FusionGaussian()
+    # test_SymmetricGaussianOverbound()
+    # test_SymmetricGPO()
+    # test_PairedGaussianOverbound()
+    # test_PairedGPO()
+    test_2d_MV_OBer_fixed_partitions_gaussian_only()
 
     plt.show()

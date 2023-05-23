@@ -132,7 +132,8 @@ class OverbounderBase(ABC):
         vect = -pts[1] + 0.5 * (
             1
             + special.erf(
-                (pts[0] - gauss_param_array[0]) / (np.sqrt(2) * gauss_param_array[1])
+                (pts[0] - gauss_param_array[0])
+                / (np.sqrt(2) * gauss_param_array[1])
             )
         )
 
@@ -360,9 +361,9 @@ class SymmetricGPO(OverbounderBase):
 
         Fu = self._erf_gauss(u, 0, core_sigma)
         tail_DKW_ords_CEDF_domain = np.zeros(n)
-        tail_DKW_ords_CEDF_domain[tail_idxs] = np.subtract(DKW_low[tail_idxs], Fu) / (
-            1 - Fu
-        )
+        tail_DKW_ords_CEDF_domain[tail_idxs] = np.subtract(
+            DKW_low[tail_idxs], Fu
+        ) / (1 - Fu)
 
         for i in tail_idxs:
             scales[i] = self._get_pareto_scale(
@@ -402,7 +403,9 @@ class PairedGaussianOverbounder(OverbounderBase):
         cost_vect = y_curve - y_check
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(-1000 * y_check.size * cost_vect[np.logical_not(pos_indices)])
+        cost += np.sum(
+            -1000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
+        )
         return cost
 
     def _cost_right(self, params, x_check, y_check):
@@ -410,7 +413,9 @@ class PairedGaussianOverbounder(OverbounderBase):
         cost_vect = y_check - y_curve
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(-1000 * y_check.size * cost_vect[np.logical_not(pos_indices)])
+        cost += np.sum(
+            -1000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
+        )
         return cost
 
     def overbound(self, data, debug_plots=False):
@@ -528,7 +533,9 @@ class PairedGPO(OverbounderBase):
         cost_vect = y_curve - y_check
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(-10000 * y_check.size * cost_vect[np.logical_not(pos_indices)])
+        cost += np.sum(
+            -10000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
+        )
         return cost
 
     def _cost_right(self, params, x_check, y_check):
@@ -536,7 +543,9 @@ class PairedGPO(OverbounderBase):
         cost_vect = y_check - y_curve
         pos_indices = cost_vect >= 0
         cost = np.sum(cost_vect[pos_indices])
-        cost += np.sum(-10000 * y_check.size * cost_vect[np.logical_not(pos_indices)])
+        cost += np.sum(
+            -10000 * y_check.size * cost_vect[np.logical_not(pos_indices)]
+        )
         return cost
 
     def overbound(self, data):
@@ -642,12 +651,16 @@ class PairedGPO(OverbounderBase):
         DKW_high = np.add(ecdf_ords, epsilon)
 
         if self.StrictPairedEnforcement is True:
-            left_usable_idxs = np.asarray(DKW_high < (1 - epsilon)).nonzero()[0]
+            left_usable_idxs = np.asarray(DKW_high < (1 - epsilon)).nonzero()[
+                0
+            ]
             left_usable_idxs = left_usable_idxs[idx_u_left:]
             x_check_left = data_sorted[left_usable_idxs]
             y_check_left = DKW_high[left_usable_idxs]
         else:
-            left_usable_idxs = np.asarray(DKW_high < (0.5 + epsilon)).nonzero()[0]
+            left_usable_idxs = np.asarray(
+                DKW_high < (0.5 + epsilon)
+            ).nonzero()[0]
             left_usable_idxs = left_usable_idxs[idx_u_left:]
             x_check_left = data_sorted[left_usable_idxs]
             y_check_left = DKW_high[left_usable_idxs]
@@ -678,7 +691,9 @@ class PairedGPO(OverbounderBase):
             x_check_right = data_sorted[right_usable_idxs]
             y_check_right = DKW_low[right_usable_idxs]
         else:
-            right_usable_idxs = np.asarray(DKW_low > (0.5 - epsilon)).nonzero()[0]
+            right_usable_idxs = np.asarray(
+                DKW_low > (0.5 - epsilon)
+            ).nonzero()[0]
             right_usable_idxs = right_usable_idxs[0 : -(n - 1 - idx_u_right)]
             x_check_right = data_sorted[right_usable_idxs]
             y_check_right = DKW_low[right_usable_idxs]
@@ -773,4 +788,87 @@ class PairedGPO(OverbounderBase):
             right_threshold=u_right,
             right_mean=right_mean,
             right_sigma=right_sigma,
+        )
+
+
+class MultivariateNormOverbounder_2d(OverbounderBase):
+    """Represents a two-dimensional multivariate overbounder object."""
+
+    def __init__(self, num_partitions=None, gaussian_only=False, norm_order=2):
+        """Initialize a two-dimensional multivariate overbounder object."""
+        self.num_partitions = num_partitions
+        self.gaussian_only = gaussian_only
+        self.norm_ord = norm_order
+
+    def overbound(self, data):
+        """Produce a multivariate overbound object which overbounds input data."""
+        if self.num_partitions is not None:
+            phi_partition_rad = (2 * np.pi) / self.num_partitions
+            redges = np.arange(self.num_partitions) * phi_partition_rad
+            slice_obs = np.empty(self.num_partitions, dtype=object)
+            data_angles_rad = np.arctan2(data[:, 1], data[:, 0])
+
+            if (
+                self.norm_ord != 1
+                and self.norm_ord != 2
+                and self.norm_ord != np.inf
+            ):
+                raise (
+                    serums.errors.InvalidNormType(
+                        "Invalid Norm Type. Available Orders are 1, 2, and numpy.inf"
+                    )
+                )
+
+            for i in range(data_angles_rad.size):
+                if data_angles_rad[i] < 0:
+                    data_angles_rad[i] = data_angles_rad[i] + 2 * np.pi
+
+            if self.gaussian_only is True:
+                symG_Ober = SymmetricGaussianOverbounder()
+                for i in range(self.num_partitions):
+                    idxs_subdata = [
+                        (data_angles_rad > redges[i])
+                        & (data_angles_rad < (redges[i] + phi_partition_rad))
+                    ][0].nonzero()[0]
+                    slice_obs[i] = symG_Ober.overbound(
+                        np.linalg.norm(
+                            data[idxs_subdata, :], ord=self.norm_ord, axis=1
+                        )
+                    )
+            else:
+                symG_Ober = SymmetricGaussianOverbounder()
+                symGPOber = SymmetricGPO()
+
+                for i in range(self.num_partitions):
+                    idxs_subdata = [
+                        (data_angles_rad > redges[i])
+                        & (data_angles_rad < (redges[i] + phi_partition_rad))
+                    ][0].nonzero()[0]
+                    try:
+                        slice_obs[i] = symGPOber.overbound(
+                            np.linalg.norm(
+                                data[idxs_subdata, :],
+                                ord=self.norm_ord,
+                                axis=1,
+                            )
+                        )
+                    except serums.errors.OverboundingMethodFailed:
+                        slice_obs[i] = symG_Ober.overbound(
+                            np.linalg.norm(
+                                data[idxs_subdata, :],
+                                ord=self.norm_ord,
+                                axis=1,
+                            )
+                        )
+
+        else:
+            raise NotImplementedError(
+                "automatic partitioning not yet implemented"
+            )
+
+        return smodels.MultivariateNormOverbound_2d(
+            redges=redges,
+            phi_partition_rad=phi_partition_rad,
+            overbounds=slice_obs,
+            norm_order=self.norm_ord,
         )
