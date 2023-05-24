@@ -1189,6 +1189,59 @@ class Bernoulli(BaseSingleModel):
         else:
             return rng.binomial(num_samples, self.prob) * self.density.sample(rng, 1)
 
+class MultiBernoulli(BaseSingleModel):
+    """Represents a Multivariate Bernoulli distribution object"""
+    def __init__(self, probs=None, densities=None, **kwargs):
+        """Initialize an object.
+
+                Parameters
+                ----------
+                prob : float, optional
+                    Existence probability of the distribution. The default is None.
+                density : smodels.BaseSingleModel, optional
+                    Probability density of the distribution. The default is None. If None, sample will return 1 or 0.
+
+                Returns
+                -------
+                None.
+                """
+        super().__init__(**kwargs)
+        if probs is not None and densities is not None:
+            if len(probs) != len(densities):
+                raise ValueError("Length of probabilities must be the same as the Bernoulli densities")
+        self.probs = probs
+        self.densities = densities
+
+    def sample(self, rng=None, num_samples=1):
+        """Draw a sample from the current model.
+
+        Parameters
+        ----------
+        rng : numpy random generator, optional
+            Random number generator to use. If none is given then the numpy
+            default is used. The default is None.
+
+        Returns
+        -------
+        numpy array
+            randomly sampled numpy array of the same shape as the mean.
+        """
+        if num_samples != 1:
+            num_samples = 1
+            warn("Bernoulli distribution only accepts a single sample.")
+        if rng is None:
+            rng = rnd.default_rng()
+
+        samples = []
+
+        for ii, p in enumerate(self.probs):
+            if self.densities[ii] is None:
+                samples.append(rng.binomial(num_samples, p))
+            else:
+                samples.append(rng.binomial(num_samples, p) *self.densities[ii].sample(rng, 1))
+
+        return samples
+
 
 class BaseMixtureModelIterator:
     """Iterator for :class:`serums.models.BaseMixutreModel`.
@@ -1675,44 +1728,44 @@ class StudentsTMixture(BaseMixtureModel):
 
 
 class MultiBernoulliMixture(BaseMixtureModel):
-    def __init__(self, probs=None, densities=None, **kwargs):
-        if probs is not None and densities is not None:
+    def __init__(self, probs_list=None, densities_list=None, **kwargs):
+        if probs_list is not None and densities_list is not None:
             kwargs["distributions"] = [
-                Bernoulli(prob=p, density=d) for p, d in zip(probs, densities)
+                MultiBernoulli(probs=p, densities=d) for p, d in zip(probs_lst, densities_lst)
             ]
         super().__init__(**kwargs)
 
     @property
     def probs(self):
         """List of Bernoulli existance probabilities, each is a float between 0 and 1. Read only"""
-        return _DistListWrapper(self._distributions, "prob")
+        return _DistListWrapper(self._distributions, "probs")
 
     @probs.setter
     def probs(self, val):
         if not isinstance(val, list):
-            warn("Must set probs to a list")
+            warn("Must set probs to a list of lists")
             return
         if len(val) != len(self._distributions):
             self.weights = [1 / len(val) for ii in range(len(val))]
-            self._distributions = [Bernoulli() for ii in range(len(val))]
+            self._distributions = [MultiBernoulli() for ii in range(len(val))]
         for ii, v in enumerate(val):
-            self._distributions[ii].prob = v
+            self._distributions[ii].probs = v
 
     @property
     def densities(self):
         """Returns a serums.BaseSingleModel object representing the density of the bernoulli distribution."""
-        return _DistListWrapper(self._distributions, "density")
+        return _DistListWrapper(self._distributions, "densities")
 
     @densities.setter
     def densities(self, val):
         if not isinstance(val, list):
-            warn("Must set densities to a list")
+            warn("Must set densities to a list of lists")
             return
         if len(val) != len(self._distributions):
             self.weights = [1 / len(val) for ii in range(len(val))]
             self._distributions = [Bernoulli() for ii in range(len(val))]
         for ii, v in enumerate(val):
-            self._distributions[ii].density = v
+            self._distributions[ii].densities = v
 
     def add_components(self, probs, densities, weights):
         """Add Bernoulli distributions to the mixture.
@@ -1740,7 +1793,7 @@ class MultiBernoulliMixture(BaseMixtureModel):
             weights = [weights, ]
 
         dists = [
-            Bernoulli(p, d) for p, d in zip(probs, densities)
+            MultiBernoulli(probs=p, densities=d) for p, d in zip(probs, densities)
         ]
         self._distributions.extend(dists)
         self.weights.extend(weights)
