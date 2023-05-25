@@ -2461,16 +2461,60 @@ class MultivariateNormOverbound_2d:
         return norm_bounds
 
     def CIplot(self, alfa):
-        """Plot a two-dimensional confidence interval on the norm."""
-        pass
+        """Plot a two-dimensional confidence interval on the norm.
 
-    def CIreport(self, alfa):
-        """Generate an output report for a two-dimensional norm confidence interval."""
-        pass
+        Parameters
+        ----------
+        alfa : float
+            significance level, i.e. confidence level = (1 - alfa). Must be
+            a positive real number which is less than 1
 
-    def CIobject(self, alfa):
-        """Generate an object to compute norm bounds for particular input vectors."""
-        pass
+        Returns
+        -------
+        matplotlib line plot
+        """
+        norm_bounds = np.empty(self.num_partitions, dtype=float)
+        for i in range(self.num_partitions):
+            norm_bounds[i] = self.overbounds[i].CI(alfa)[0, 1]
+
+        chunk_size = 1000
+        angle_chunks = np.empty(self.num_partitions, dtype=object)
+        radius_chunks = np.empty(self.num_partitions, dtype=object)
+        for i in range(self.num_partitions):
+            angle_chunks[i] = np.linspace(
+                self.redges[i],
+                self.redges[i] + self.phi_partition_rad,
+                num=chunk_size,
+            )
+            if self.norm_order == 1:
+                radius_chunks[i] = np.divide(
+                    norm_bounds[i],
+                    np.add(
+                        np.abs(np.sin(angle_chunks[i])),
+                        np.abs(np.cos(angle_chunks[i])),
+                    ),
+                )
+            elif self.norm_order == 2:
+                radius_chunks[i] = np.ones(chunk_size) * norm_bounds[i]
+            elif self.norm_order == np.inf:
+                radius_chunks[i] = np.divide(
+                    norm_bounds[i],
+                    np.maximum(
+                        np.abs(np.sin(angle_chunks[i])),
+                        np.abs(np.cos(angle_chunks[i])),
+                    ),
+                )
+
+        fig, ax = plt.subplots(subplot_kw={"projection": "polar"})
+        for i in range(self.num_partitions):
+            ax.plot(angle_chunks[i], radius_chunks[i])
+
+        ax.set_rmax(np.max(norm_bounds) * 1.5)
+        ax.set_rticks(np.linspace(0, np.floor(np.max(norm_bounds)), num=5))
+        ax.set_rlabel_position(-22.5)
+        ax.grid(True)
+        ax.set_title("Multivariate Norm Overbound Confidence Interval Plot")
+        plt.show
 
     def sample(self):
         """Generate a two-dimensional sample from the multivariate overbound model."""

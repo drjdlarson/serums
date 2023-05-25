@@ -12,6 +12,7 @@ from scipy.stats import (
     probplot,
     chi2,
     multivariate_normal,
+    multivariate_t,
 )
 import time
 import pytest
@@ -209,9 +210,7 @@ def test_PairedGPO():
 
 
 def test_2d_MV_OBer_fixed_partitions_gaussian_only():
-    print(
-        "Testing two-dimensional multivariate overbounder with fixed number of partitions and with gaussian-only constituents:"
-    )
+    print("Testing two-dimensional gaussian-only overbounder")
     # Create test input sample (bivariate normal distribution)
 
     mu_1 = 0
@@ -220,7 +219,7 @@ def test_2d_MV_OBer_fixed_partitions_gaussian_only():
     s1 = 1
     s2 = 1
 
-    p1 = 0.2
+    p1 = 0.7
     p2 = 0
 
     # define covariance matrix
@@ -231,23 +230,76 @@ def test_2d_MV_OBer_fixed_partitions_gaussian_only():
     multi_dist_1 = multivariate_normal(mean=m, cov=covar_1)
     multi_dist_2 = multivariate_normal(mean=m, cov=covar_2)
 
-    test_sample_1 = multi_dist_1.rvs(size=10000)
-    test_sample_2 = multi_dist_2.rvs(size=10000)
+    test_sample_1 = multi_dist_1.rvs(size=20000)
+    test_sample_2 = multi_dist_2.rvs(size=20000)
 
     # Prepare for example call of the multivariate overbounder method
-    data = test_sample_2
+    data = test_sample_1
+    # data = test_sample_2
 
-    # norm_type = 1
+    norm_type = 1
     # norm_type = 2
-    norm_type = np.inf
+    # norm_type = np.inf
 
+    start = time.time()
     mv_ober = sdob.MultivariateNormOverbounder_2d(
-        num_partitions=2, gaussian_only=True, norm_order=norm_type
+        num_partitions=20, gaussian_only=True, norm_order=norm_type
     )
     out_dist = mv_ober.overbound(data)
+    end = time.time()
+    print((end - start) / 60)
 
     if DEBUG:
         multivariate_CI = out_dist.CI(0.01)
+        out_dist.CIplot(0.01)
+
+    pass
+
+
+def test_2d_MV_OBer_GaussianParetoAllowed():
+    print("Testing two-dimensional overbounder with gaussian-pareto allowed")
+
+    mu_1 = 0
+    mu_2 = 0
+
+    s1 = 1
+    s2 = 1
+
+    p1 = 0.7
+    p2 = 0
+
+    deg_fdm = 7
+
+    # define covariance matrix
+    m = np.array([mu_1, mu_2])
+    covar_1 = np.array([[s1**2, p1 * s1 * s2], [p1 * s1 * s2, s2**2]])
+    covar_2 = np.array([[s1**2, p2 * s1 * s2], [p2 * s1 * s2, s2**2]])
+
+    multi_dist_1 = multivariate_t(loc=m, shape=covar_1, df=deg_fdm)
+    multi_dist_2 = multivariate_t(loc=m, shape=covar_2, df=deg_fdm)
+
+    test_sample_1 = multi_dist_1.rvs(size=20000)
+    test_sample_2 = multi_dist_2.rvs(size=20000)
+
+    # Prepare for example call of the multivariate overbounder method
+    data = test_sample_1
+    # data = test_sample_2
+
+    norm_type = 1
+    # norm_type = 2
+    # norm_type = np.inf
+
+    start = time.time()
+    mv_ober = sdob.MultivariateNormOverbounder_2d(
+        num_partitions=2, gaussian_only=False, norm_order=norm_type
+    )
+    out_dist = mv_ober.overbound(data)
+    end = time.time()
+    print((end - start) / 60)
+
+    if DEBUG:
+        multivariate_CI = out_dist.CI(0.01)
+        out_dist.CIplot(0.01)
 
     pass
 
@@ -260,6 +312,7 @@ if __name__ == "__main__":
     # test_SymmetricGPO()
     # test_PairedGaussianOverbound()
     # test_PairedGPO()
-    test_2d_MV_OBer_fixed_partitions_gaussian_only()
+    # test_2d_MV_OBer_fixed_partitions_gaussian_only()
+    test_2d_MV_OBer_GaussianParetoAllowed()
 
     plt.show()
