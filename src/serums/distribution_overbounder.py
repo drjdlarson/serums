@@ -10,6 +10,7 @@ from scipy.stats import norm, halfnorm, t
 import serums.errors
 import scipy.special as special
 from typing import List, Callable
+import itertools
 
 
 def fusion(
@@ -801,7 +802,7 @@ class MultivariateNormOverbounder_2d(OverbounderBase):
         self.norm_ord = norm_order
 
     def overbound(self, data):
-        """Produce a multivariate overbound object which overbounds input data."""
+        """Produce a bivariate norm overbound object which overbounds input data."""
         if self.num_partitions is not None:
             phi_partition_rad = (2 * np.pi) / self.num_partitions
             redges = np.arange(self.num_partitions) * phi_partition_rad
@@ -815,7 +816,7 @@ class MultivariateNormOverbounder_2d(OverbounderBase):
             ):
                 raise (
                     serums.errors.InvalidNormType(
-                        "Invalid Norm Type. Available Orders are 1, 2, and numpy.inf"
+                        "Invalid norm type. Available orders are 1, 2, and numpy.inf"
                     )
                 )
 
@@ -871,4 +872,136 @@ class MultivariateNormOverbounder_2d(OverbounderBase):
             phi_partition_rad=phi_partition_rad,
             overbounds=slice_obs,
             norm_order=self.norm_ord,
+        )
+
+
+class MultiVariateNormOverbounder(OverbounderBase):
+    """Represents an n-dimensional multivariate norm overbounder object."""
+
+    def __init__(
+        self, partition_order=None, gaussian_only=False, norm_order=2
+    ):
+        """Initialize a two-dimensional multivariate overbounder object.
+
+        Parameters
+        ----------
+        partition_order : int
+            Controls the resolution of the partitioning of the multivariate
+            space. The n-dimensional vector space is transformed to hyperspherical
+            coordinates, and the partition order is an integer representing
+            the number of evenly-sized angular regions for each of the (n-1)
+            angular coordinates in the hyperspherical coordinate system.
+        gaussian_only : bool
+            Controls whether or not symmetric gaussian-pareto overbounds (GPO)
+            are tried first to overbound the norm data in each partition region.
+            If True, only symmetric gaussian overbounds are used to overbound
+            the norms in each parition region.
+        norm_order : float or numpy.inf object
+            Represents the order of the norm used in computing the overbound.
+            Admissible values include 1 or 2 for the L1- or L2 norms,
+            respectively, or a numpy.inf instance for the L_inf norm. Defaults
+            to the L2 norm.
+        """
+        self.partition_order = partition_order
+        self.gaussian_only = gaussian_only
+        self.norm_ord = norm_order
+
+    def overbound(self, data):
+        """Produce a multivariate norm overbound object which overbounds input data.
+
+        Parameters
+        ----------
+        data : N x n numpy array
+            Multivariate sample data to be overbounded. N is the sample size
+            and n is the dimension of the random vector samples.
+        """
+        if (
+            self.norm_ord != 1
+            and self.norm_ord != 2
+            and self.norm_ord != np.inf
+        ):
+            raise (
+                serums.errors.InvalidNormType(
+                    "Invalid norm type. Available orders are 1, 2, and numpy.inf"
+                )
+            )
+
+        input_shape = data.shape
+        N = input_shape[0]
+        n = input_shape[1]
+        k = self.partition_order
+        n_r = k ** (n - 1)
+
+        data_hs = np.zeros((N, n))
+        data_hs[:, 0] = np.linalg.norm(data, ord=2, axis=1)
+
+        for i in np.arange(1, n):
+            subnorm = np.linalg.norm(data[:, (i - 1) :], ord=2, axis=1)
+            for j in range(N):
+                if subnorm[j] == 0:
+                    data_hs[j, i] = 0
+                else:
+                    data_hs[j, i] = np.arccos(
+                        np.divide(data[j, (i - 1)], subnorm[j])
+                    )
+        for i in range(N):
+            if data[i, -1] < 0:
+                data_hs[i, -1] = 2 * np.pi - data_hs[i, -1]
+
+        data_hs_no = np.hstack(
+            (data_hs, np.array([np.arange(0, N)]).transpose())
+        )
+
+        region_ids = np.array(
+            list(itertools.product(range(k), repeat=(n - 1)))
+        ).transpose()
+        region_obs = np.empty(n_r, dtype=object)
+
+        symG_Ober = SymmetricGaussianOverbounder()
+        symGPOber = SymmetricGPO()
+
+        chunk_sizes = np.empty(n_r, dtype=int)
+
+        for i in range(n_r):
+            print(i)
+            subdata = data_hs_no
+            for j in range(n - 1):
+                print("j = ", j)
+                if j < (n - 2):
+                    subdata = subdata[
+                        subdata[:, j + 1] >= region_ids[j, i] * (np.pi / k)
+                    ]
+                    subdata = subdata[
+                        subdata[:, j + 1]
+                        < (region_ids[j, i] + 1) * (np.pi / k)
+                    ]
+                else:
+                    subdata = subdata[
+                        subdata[:, j + 1]
+                        >= region_ids[j, i] * ((2 * np.pi) / k)
+                    ]
+                    subdata = subdata[
+                        subdata[:, j + 1]
+                        < (region_ids[j, i] + 1) * ((2 * np.pi) / k)
+                    ]
+            sub_idxs = np.asarray(np.transpose(subdata[:, -1]), dtype=int)
+            usable = np.linalg.norm(
+                data[sub_idxs, :], ord=self.norm_ord, axis=1
+            )
+            chunk_sizes[i] = usable.shape[0]
+
+            print(i)
+            if self.gaussian_only is True:
+                region_obs[i] = symG_Ober.overbound(usable)
+            else:
+                try:
+                    region_obs[i] = symGPOber.overbound(usable)
+                except serums.errors.OverboundingMethodFailed:
+                    region_obs[i] = symG_Ober.overbound(usable)
+
+        return smodels.MultivariateNormOverbound(
+            region_ids=region_ids,
+            region_obs=region_obs,
+            norm_order=self.norm_ord,
+            dimension=n,
         )

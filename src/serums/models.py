@@ -2519,3 +2519,71 @@ class MultivariateNormOverbound_2d:
     def sample(self):
         """Generate a two-dimensional sample from the multivariate overbound model."""
         pass
+
+
+class MultivariateNormOverbound:
+    """Represents an n-dimensional norm overbound object.
+
+    Attributes
+    ----------
+    region_ids : numpy array, dtype=int
+        Numpy array containing the necessary identifiers to describe the specific
+        angular regions. The number of rows is equal to (n-1), where n is the
+        dimension of the random vectors used to generate the overbound model.
+        This number is also equivalent to the number of angular coordinates
+        required to describe each sampled data point in terms of hyperspherical
+        coordinates. The number of columns is equal to the number of regions
+        that the n-dimensional vector space was divided into when computing
+        the multivariate norm overbound.
+    region_obs : N numpy array, dtype=object
+        Numpy object array containing the overbound models for each partitioned
+        region. The elements of the array are instances of either serums.models.Gaussian
+        or serums.models.SymmetricGaussianPareto objects. Here, N is the number
+        of regions that the n-dimensional vector space was divided into when
+        computing the multivariate norm overbound.
+    num_regions : int
+        The number of regions that the n-dimensional vector space was divided
+        into when computing the multivariate norm overbound.
+    norm_order : float or numpy.inf object
+        Represents the order of the norm used in defining the overbound.
+        Admissible values include 1 or 2 for the L1- or L2 norms,
+        respectively, or numpy.inf for the L_inf norm.
+    dimension : int
+        The dimension n of the random vectors in the input sample used to
+        compute the multivariate norm overbound model.
+    """
+
+    def __init__(
+        self, region_ids=None, region_obs=None, norm_order=None, dimension=None
+    ):
+        """Initializes an n-dimensional norm overbound object."""
+        self.region_ids = region_ids
+        self.region_obs = region_obs
+        self.num_regions = region_obs.shape[0]
+        self.norm_order = norm_order
+        self.dimension = dimension
+
+    def CI(self, alfa):
+        """Compute a multivariate confidence interval on the chosen norm type.
+
+        This method computes a multivariate confidence interval on the error norm
+        for a specific norm order such that the probability of a randomly drawn
+        norm exceeding the computed values is bounded by some probability level
+        'alfa'. This is done for each partitioned region of the two-dimensional
+        model.
+
+        Parameters
+        ----------
+        alfa : float
+            significance level, i.e. confidence level = (1 - alfa). Must be
+            a positive real number which is less than 1
+
+        Returns
+        -------
+        norm_bounds : N numpy array, dtype=float
+            Numpy array containing the norm bounds for each partitioned region
+        """
+        norm_bounds = np.empty(self.num_regions, dtype=float)
+        for i in range(self.num_regions):
+            norm_bounds[i] = self.region_obs[i].CI(alfa)[0, 1]
+        return norm_bounds

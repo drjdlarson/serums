@@ -304,6 +304,36 @@ def test_2d_MV_OBer_GaussianParetoAllowed():
     pass
 
 
+def test_ndimensional_multivariate_norm_overbounder():
+    print("Testing n-dimensional multivariate norm overbounder:")
+
+    mu_1 = 0
+    mu_2 = 0
+    mu_3 = 0
+
+    s1 = 1
+    s2 = 1
+    s3 = 1
+
+    mean = np.array([mu_1, mu_2, mu_3])
+    covar = np.array([[s1, 0, 0], [0, s2, 0], [0, 0, s3]])
+
+    multi_dist = multivariate_normal(mean=mean, cov=covar)
+
+    data = multi_dist.rvs(size=20000)
+
+    start = time.time()
+    nd_mv_ober = sdob.MultiVariateNormOverbounder(
+        partition_order=2, gaussian_only=True, norm_order=2
+    )
+
+    out_model = nd_mv_ober.overbound(data)
+    end = time.time()
+    print((end - start) / 60)
+
+    pass
+
+
 if __name__ == "__main__":
     plt.close("all")
     DEBUG = True
@@ -313,6 +343,7 @@ if __name__ == "__main__":
     # test_PairedGaussianOverbound()
     # test_PairedGPO()
     # test_2d_MV_OBer_fixed_partitions_gaussian_only()
-    test_2d_MV_OBer_GaussianParetoAllowed()
+    # test_2d_MV_OBer_GaussianParetoAllowed()
+    test_ndimensional_multivariate_norm_overbounder()
 
     plt.show()
