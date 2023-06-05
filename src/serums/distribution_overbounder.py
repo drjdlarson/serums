@@ -963,10 +963,10 @@ class MultiVariateNormOverbounder(OverbounderBase):
         chunk_sizes = np.empty(n_r, dtype=int)
 
         for i in range(n_r):
-            print(i)
+            # print(i)
             subdata = data_hs_no
             for j in range(n - 1):
-                print("j = ", j)
+                # print("j = ", j)
                 if j < (n - 2):
                     subdata = subdata[
                         subdata[:, j + 1] >= region_ids[j, i] * (np.pi / k)
@@ -990,7 +990,7 @@ class MultiVariateNormOverbounder(OverbounderBase):
             )
             chunk_sizes[i] = usable.shape[0]
 
-            print(i)
+            # print(i)
             if self.gaussian_only is True:
                 region_obs[i] = symG_Ober.overbound(usable)
             else:
