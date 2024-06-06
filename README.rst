@@ -81,22 +81,3 @@ Note, all tox commands must be run from the root of the repository because this 
 ..
     END TOOLCHAIN INCLUDE
 
-.. 
-    BEGIN CITE INCLUDE
-
-Cite
-====
-Please cite the framework as follows
-
-.. code-block:: bibtex
-
-    @Misc{serums,
-        author       = {Jordan D. Larson and Ryan W. Thomas and Vaughn Weirens and Adam Hallmark and Tuan Luong},
-        howpublished = {Web page},
-        title        = {{SERUMS}: A Python library for Statistical Error and Risk Utility for Multi-sensor Systems},
-        year         = {2022},
-        url          = {https://github.com/drjdlarson/serums},
-    }
-
-..
-    END CITE INCLUDE
