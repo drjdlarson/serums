@@ -1,6 +1,6 @@
 [project]
 name = "serums"
-version = "1.0.1"
+version = "1.0.2"
 description = "A Python package for Statistical Error and Risk Utility for Multi-sensor Systems (SERUMS)."
 readme = "README.rst"
 requires-python = ">=3.7"
