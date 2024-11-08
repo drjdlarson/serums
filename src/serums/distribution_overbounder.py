@@ -1,4 +1,5 @@
 """For SERUMS Overbound Estimation."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -10,6 +11,7 @@ from scipy.stats import norm, halfnorm, t
 import serums.errors
 import scipy.special as special
 from typing import List, Callable
+import math
 
 
 def fusion(
@@ -55,7 +57,7 @@ class OverbounderBase(ABC):
             terms[n] = (
                 ((-1) ** n)
                 * (1 / (2 * n + 1))
-                * (1 / np.math.factorial(n))
+                * (1 / math.factorial(n))
                 * (phi / sigma) ** (2 * n + 1)
             )
             n = n + 1
@@ -73,7 +75,7 @@ class OverbounderBase(ABC):
         while n < n_terms:
             terms[n] = (
                 ((-1) ** (n + 1))
-                * (1 / np.math.factorial(n))
+                * (1 / math.factorial(n))
                 * (phi ** (2 * n + 1))
                 * ((1 / sigma) ** (2 * n + 2))
             )

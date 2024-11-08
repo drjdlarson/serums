@@ -201,9 +201,9 @@ def test_PairedGPO():
 if __name__ == "__main__":
     plt.close("all")
     DEBUG = True
-    test_FusionGaussian()
-    test_SymmetricGaussianOverbound()
-    test_SymmetricGPO()
+    # test_FusionGaussian()
+    # test_SymmetricGaussianOverbound()
+    # test_SymmetricGPO()
     test_PairedGaussianOverbound()
     test_PairedGPO()
 

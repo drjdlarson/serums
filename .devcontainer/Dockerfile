@@ -35,4 +35,4 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-RUN python -m pip install tox genbadge[tests,coverage] numpy matplotlib scipy pytest "setuptools_scm[toml]>=6.2"
+RUN pip install tox genbadge[tests,coverage] numpy matplotlib scipy pytest "setuptools_scm[toml]>=6.2"
