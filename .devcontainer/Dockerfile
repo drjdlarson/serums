@@ -2,6 +2,7 @@ FROM debian:bullseye-slim
 
 SHELL ["/bin/bash", "-c"]
 
+ARG DEBIAN_FRONTEND=noninteractive
 ARG USER_UID=1000
 ARG USER_GID=1000
 
@@ -9,11 +10,15 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         openssh-client \
         software-properties-common \
+        libgl1-mesa-glx \
+        libx11-dev \
+        locales \
+        tk \
         python3-pip \
         python-is-python3 \
-        g++ \
+        python3-dev \
+        python3-tk \
         make \
-        cmake \
         git \
         texlive-base \
         latexmk \
@@ -22,4 +27,12 @@ RUN apt-get update \
         librsvg2-bin \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install tox genbadge[tests,coverage]
+
+# to fix locale errors
+RUN sed -i 's/# \(en_US\.UTF-8 .*\)/\1/' /etc/locale.gen && \
+    locale-gen
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+RUN python -m pip install tox genbadge[tests,coverage] numpy matplotlib scipy pytest "setuptools_scm[toml]>=6.2"
