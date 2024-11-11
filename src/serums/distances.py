@@ -1,4 +1,5 @@
 """Functions for calculating distances."""
+
 import numpy as np
 import numpy.linalg as la
 from scipy.optimize import linear_sum_assignment
@@ -42,8 +43,9 @@ def calculate_hellinger(x, y, cov_x, cov_y):
     diff = (x - y).reshape((cov.shape[0], 1))
     epsilon = -0.25 * diff.T @ la.inv(cov) @ diff
 
-    return (1 - np.sqrt(np.sqrt(la.det(cov_x @ cov_y)) / la.det(0.5 * cov))
-            * np.exp(epsilon))
+    return 1 - np.sqrt(np.sqrt(la.det(cov_x @ cov_y)) / la.det(0.5 * cov)) * np.exp(
+        epsilon
+    )
 
 
 def calculate_mahalanobis(x, y, cov):
@@ -74,8 +76,16 @@ def calculate_mahalanobis(x, y, cov):
     return np.sqrt(diff.T @ cov @ diff)
 
 
-def calculate_ospa(est_mat, true_mat, c, p, use_empty=True, core_method=None,
-                   true_cov_mat=None, est_cov_mat=None):
+def calculate_ospa(
+    est_mat,
+    true_mat,
+    c,
+    p,
+    use_empty=True,
+    core_method=None,
+    true_cov_mat=None,
+    est_cov_mat=None,
+):
     """Calculates the OSPA distance between the truth at all timesteps.
 
     Notes
@@ -165,12 +175,14 @@ def calculate_ospa(est_mat, true_mat, c, p, use_empty=True, core_method=None,
         core_method = SingleObjectDistance.EUCLIDEAN
 
     elif core_method is SingleObjectDistance.MAHALANOBIS and est_cov_mat is None:
-        msg = 'Must give estimated covariances to calculate {:s} OSPA. Using {:s} instead'
+        msg = (
+            "Must give estimated covariances to calculate {:s} OSPA. Using {:s} instead"
+        )
         warnings.warn(msg.format(core_method, SingleObjectDistance.EUCLIDEAN))
         core_method = SingleObjectDistance.EUCLIDEAN
 
     elif core_method is SingleObjectDistance.HELLINGER and true_cov_mat is None:
-        msg = 'Must save covariances to calculate {:s} OSPA. Using {:s} instead'
+        msg = "Must save covariances to calculate {:s} OSPA. Using {:s} instead"
         warnings.warn(msg.format(core_method, SingleObjectDistance.EUCLIDEAN))
         core_method = SingleObjectDistance.EUCLIDEAN
 
@@ -186,8 +198,9 @@ def calculate_ospa(est_mat, true_mat, c, p, use_empty=True, core_method=None,
     nt_objs = true_mat.shape[2]
     ne_objs = est_mat.shape[2]
     distances = np.nan * np.ones((ne_objs, nt_objs, num_timesteps))
-    comb = np.array(np.meshgrid(np.arange(ne_objs, dtype=int),
-                                np.arange(nt_objs, dtype=int))).T.reshape(-1, 2)
+    comb = np.array(
+        np.meshgrid(np.arange(ne_objs, dtype=int), np.arange(nt_objs, dtype=int))
+    ).T.reshape(-1, 2)
     e_inds = comb[:, 0]
     t_inds = comb[:, 1]
     shape = (ne_objs, nt_objs)
@@ -198,43 +211,52 @@ def calculate_ospa(est_mat, true_mat, c, p, use_empty=True, core_method=None,
     for tt in range(num_timesteps):
         # use proper core method
         if core_method is SingleObjectDistance.EUCLIDEAN:
-            distances[:, :, tt] = np.sqrt(np.sum((true_mat[:, tt, t_inds]
-                                                  - est_mat[:, tt, e_inds])**2,
-                                                 axis=0)).reshape(shape)
+            distances[:, :, tt] = np.sqrt(
+                np.sum((true_mat[:, tt, t_inds] - est_mat[:, tt, e_inds]) ** 2, axis=0)
+            ).reshape(shape)
 
         elif core_method is SingleObjectDistance.MANHATTAN:
-            distances[:, :, tt] = np.sum(np.abs(true_mat[:, tt, t_inds]
-                                                - est_mat[:, tt, e_inds]),
-                                         axis=0).reshape(shape)
+            distances[:, :, tt] = np.sum(
+                np.abs(true_mat[:, tt, t_inds] - est_mat[:, tt, e_inds]), axis=0
+            ).reshape(shape)
 
         elif core_method is SingleObjectDistance.HELLINGER:
             for row, col in zip(e_inds, t_inds):
                 if not (e_exists[row, tt] and t_exists[col, tt]):
                     continue
 
-                distances[row, col, tt] = calculate_hellinger(est_mat[:, tt, row],
-                                                              true_mat[:, tt, col],
-                                                              est_cov_mat[:, :, tt, row],
-                                                              true_cov_mat[:, :, tt, col])
+                distances[row, col, tt] = calculate_hellinger(
+                    est_mat[:, tt, row],
+                    true_mat[:, tt, col],
+                    est_cov_mat[:, :, tt, row],
+                    true_cov_mat[:, :, tt, col],
+                )
 
         elif core_method is SingleObjectDistance.MAHALANOBIS:
             for row, col in zip(e_inds, t_inds):
                 if not (e_exists[row, tt] and t_exists[col, tt]):
                     continue
 
-                distances[row, col, tt] = calculate_mahalanobis(est_mat[:, tt, row],
-                                                                true_mat[:, tt, col],
-                                                                est_cov_mat[:, :, tt, row])
+                distances[row, col, tt] = calculate_mahalanobis(
+                    est_mat[:, tt, row],
+                    true_mat[:, tt, col],
+                    est_cov_mat[:, :, tt, row],
+                )
 
         else:
-            warnings.warn('Single-object distance {} is not implemented. SKIPPING'.format(core_method))
+            warnings.warn(
+                "Single-object distance {} is not implemented. SKIPPING".format(
+                    core_method
+                )
+            )
             core_method = None
             break
 
         # check for mismatch
         one_exist = np.logical_xor(e_exists[:, [tt]], t_exists[:, [tt]].T)
-        empty = np.logical_and(np.logical_not(e_exists[:, [tt]]),
-                               np.logical_not(t_exists[:, [tt]]).T)
+        empty = np.logical_and(
+            np.logical_not(e_exists[:, [tt]]), np.logical_not(t_exists[:, [tt]]).T
+        )
 
         distances[one_exist, tt] = c
         if use_empty:
@@ -256,26 +278,42 @@ def calculate_ospa(est_mat, true_mat, c, p, use_empty=True, core_method=None,
             cardinality[tt] = c
             continue
 
-        cont_sub = distances[e_exists[:, tt], :, tt][:, t_exists[:, tt]]**p
+        cont_sub = distances[e_exists[:, tt], :, tt][:, t_exists[:, tt]] ** p
         row_ind, col_ind = linear_sum_assignment(cont_sub)
         cost = cont_sub[row_ind, col_ind].sum()
 
-        inv_max_card = 1. / np.max([n, m])
+        inv_max_card = 1.0 / np.max([n, m])
         card_diff = np.abs(n - m)
-        inv_p = 1. / p
+        inv_p = 1.0 / p
         c_p = c**p
-        localization[tt] = (inv_max_card * cost)**inv_p
-        cardinality[tt] = (inv_max_card * c_p * card_diff)**inv_p
+        localization[tt] = (inv_max_card * cost) ** inv_p
+        cardinality[tt] = (inv_max_card * c_p * card_diff) ** inv_p
 
     ospa = localization + cardinality
 
-    return (ospa, localization, cardinality, core_method, c, p,
-            distances, e_exists, t_exists)
+    return (
+        ospa,
+        localization,
+        cardinality,
+        core_method,
+        c,
+        p,
+        distances,
+        e_exists,
+        t_exists,
+    )
 
 
-def calculate_ospa2(est_mat, true_mat, c, p, win_len,
-                    core_method=SingleObjectDistance.MANHATTAN, true_cov_mat=None,
-                    est_cov_mat=None):
+def calculate_ospa2(
+    est_mat,
+    true_mat,
+    c,
+    p,
+    win_len,
+    core_method=SingleObjectDistance.MANHATTAN,
+    true_cov_mat=None,
+    est_cov_mat=None,
+):
     """Calculates the OSPA(2) distance between the truth at all timesteps.
 
     Notes
@@ -351,29 +389,32 @@ def calculate_ospa2(est_mat, true_mat, c, p, win_len,
         Window length used.
     """
     # Note p is redundant here so set = 1
-    (core_method, c, _,
-     distances, e_exists, t_exists) = calculate_ospa(est_mat, true_mat, c, 1,
-                                                     use_empty=False,
-                                                     core_method=core_method,
-                                                     true_cov_mat=true_cov_mat,
-                                                     est_cov_mat=est_cov_mat)[3:9]
+    (core_method, c, _, distances, e_exists, t_exists) = calculate_ospa(
+        est_mat,
+        true_mat,
+        c,
+        1,
+        use_empty=False,
+        core_method=core_method,
+        true_cov_mat=true_cov_mat,
+        est_cov_mat=est_cov_mat,
+    )[3:9]
 
     num_timesteps = distances.shape[2]
-    inv_p = 1. / p
+    inv_p = 1.0 / p
     c_p = c**p
 
     localization = np.nan * np.ones(num_timesteps)
     cardinality = np.nan * np.ones(num_timesteps)
 
     for tt in range(num_timesteps):
-        win_idx = np.array([ii for ii in range(max(tt - win_len + 1, 0),
-                                               tt + 1)],
-                           dtype=int)
+        win_idx = np.array(
+            [ii for ii in range(max(tt - win_len + 1, 0), tt + 1)], dtype=int
+        )
 
         # find matrix of time averaged OSPA between tracks
         with warnings.catch_warnings():
-            warnings.filterwarnings(action='ignore',
-                                    message='Mean of empty slice')
+            warnings.filterwarnings(action="ignore", message="Mean of empty slice")
             track_dist = np.nanmean(distances[:, :, win_idx], axis=2)
 
         track_dist[np.isnan(track_dist)] = 0
@@ -391,16 +432,17 @@ def calculate_ospa2(est_mat, true_mat, c, p, win_len,
         if n.astype(int) <= 0 or m.astype(int) <= 0:
             cost = 0
         else:
-            inds = np.logical_and(valid_rows.reshape((valid_rows.size, 1)),
-                                  valid_cols.reshape((1, valid_cols.size)))
-            track_dist = (track_dist[inds]**p).reshape((m.astype(int),
-                                                        n.astype(int)))
+            inds = np.logical_and(
+                valid_rows.reshape((valid_rows.size, 1)),
+                valid_cols.reshape((1, valid_cols.size)),
+            )
+            track_dist = (track_dist[inds] ** p).reshape((m.astype(int), n.astype(int)))
             row_ind, col_ind = linear_sum_assignment(track_dist)
             cost = track_dist[row_ind, col_ind].sum()
 
         max_nm = np.max([n, m])
-        localization[tt] = (cost / max_nm)**inv_p
-        cardinality[tt] = (c_p * np.abs(m - n) / max_nm)**inv_p
+        localization[tt] = (cost / max_nm) ** inv_p
+        cardinality[tt] = (c_p * np.abs(m - n) / max_nm) ** inv_p
 
     ospa2 = localization + cardinality
 
@@ -408,8 +450,17 @@ def calculate_ospa2(est_mat, true_mat, c, p, win_len,
 
 
 # TODO: Rewrite function as needed for GOSPA calculation, need to include parameter a
-def calculate_gospa(est_mat, true_mat, c, p, a, use_empty=True, core_method=None,
-                   true_cov_mat=None, est_cov_mat=None):
+def calculate_gospa(
+    est_mat,
+    true_mat,
+    c,
+    p,
+    a,
+    use_empty=True,
+    core_method=None,
+    true_cov_mat=None,
+    est_cov_mat=None,
+):
     """Calculates the OSPA distance between the truth at all timesteps.
 
     Notes
@@ -495,12 +546,14 @@ def calculate_gospa(est_mat, true_mat, c, p, a, use_empty=True, core_method=None
         core_method = SingleObjectDistance.EUCLIDEAN
 
     elif core_method is SingleObjectDistance.MAHALANOBIS and est_cov_mat is None:
-        msg = 'Must give estimated covariances to calculate {:s} OSPA. Using {:s} instead'
+        msg = (
+            "Must give estimated covariances to calculate {:s} OSPA. Using {:s} instead"
+        )
         warnings.warn(msg.format(core_method, SingleObjectDistance.EUCLIDEAN))
         core_method = SingleObjectDistance.EUCLIDEAN
 
     elif core_method is SingleObjectDistance.HELLINGER and true_cov_mat is None:
-        msg = 'Must save covariances to calculate {:s} OSPA. Using {:s} instead'
+        msg = "Must save covariances to calculate {:s} OSPA. Using {:s} instead"
         warnings.warn(msg.format(core_method, SingleObjectDistance.EUCLIDEAN))
         core_method = SingleObjectDistance.EUCLIDEAN
 
@@ -516,8 +569,9 @@ def calculate_gospa(est_mat, true_mat, c, p, a, use_empty=True, core_method=None
     nt_objs = true_mat.shape[2]
     ne_objs = est_mat.shape[2]
     distances = np.nan * np.ones((ne_objs, nt_objs, num_timesteps))
-    comb = np.array(np.meshgrid(np.arange(ne_objs, dtype=int),
-                                np.arange(nt_objs, dtype=int))).T.reshape(-1, 2)
+    comb = np.array(
+        np.meshgrid(np.arange(ne_objs, dtype=int), np.arange(nt_objs, dtype=int))
+    ).T.reshape(-1, 2)
     e_inds = comb[:, 0]
     t_inds = comb[:, 1]
     shape = (ne_objs, nt_objs)
@@ -528,43 +582,52 @@ def calculate_gospa(est_mat, true_mat, c, p, a, use_empty=True, core_method=None
     for tt in range(num_timesteps):
         # use proper core method
         if core_method is SingleObjectDistance.EUCLIDEAN:
-            distances[:, :, tt] = np.sqrt(np.sum((true_mat[:, tt, t_inds]
-                                                  - est_mat[:, tt, e_inds])**2,
-                                                 axis=0)).reshape(shape)
+            distances[:, :, tt] = np.sqrt(
+                np.sum((true_mat[:, tt, t_inds] - est_mat[:, tt, e_inds]) ** 2, axis=0)
+            ).reshape(shape)
 
         elif core_method is SingleObjectDistance.MANHATTAN:
-            distances[:, :, tt] = np.sum(np.abs(true_mat[:, tt, t_inds]
-                                                - est_mat[:, tt, e_inds]),
-                                         axis=0).reshape(shape)
+            distances[:, :, tt] = np.sum(
+                np.abs(true_mat[:, tt, t_inds] - est_mat[:, tt, e_inds]), axis=0
+            ).reshape(shape)
 
         elif core_method is SingleObjectDistance.HELLINGER:
             for row, col in zip(e_inds, t_inds):
                 if not (e_exists[row, tt] and t_exists[col, tt]):
                     continue
 
-                distances[row, col, tt] = calculate_hellinger(est_mat[:, tt, row],
-                                                              true_mat[:, tt, col],
-                                                              est_cov_mat[:, :, tt, row],
-                                                              true_cov_mat[:, :, tt, col])
+                distances[row, col, tt] = calculate_hellinger(
+                    est_mat[:, tt, row],
+                    true_mat[:, tt, col],
+                    est_cov_mat[:, :, tt, row],
+                    true_cov_mat[:, :, tt, col],
+                )
 
         elif core_method is SingleObjectDistance.MAHALANOBIS:
             for row, col in zip(e_inds, t_inds):
                 if not (e_exists[row, tt] and t_exists[col, tt]):
                     continue
 
-                distances[row, col, tt] = calculate_mahalanobis(est_mat[:, tt, row],
-                                                                true_mat[:, tt, col],
-                                                                est_cov_mat[:, :, tt, row])
+                distances[row, col, tt] = calculate_mahalanobis(
+                    est_mat[:, tt, row],
+                    true_mat[:, tt, col],
+                    est_cov_mat[:, :, tt, row],
+                )
 
         else:
-            warnings.warn('Single-object distance {} is not implemented. SKIPPING'.format(core_method))
+            warnings.warn(
+                "Single-object distance {} is not implemented. SKIPPING".format(
+                    core_method
+                )
+            )
             core_method = None
             break
 
         # check for mismatch
         one_exist = np.logical_xor(e_exists[:, [tt]], t_exists[:, [tt]].T)
-        empty = np.logical_and(np.logical_not(e_exists[:, [tt]]),
-                               np.logical_not(t_exists[:, [tt]]).T)
+        empty = np.logical_and(
+            np.logical_not(e_exists[:, [tt]]), np.logical_not(t_exists[:, [tt]]).T
+        )
 
         distances[one_exist, tt] = c
         if use_empty:
@@ -586,17 +649,27 @@ def calculate_gospa(est_mat, true_mat, c, p, a, use_empty=True, core_method=None
             cardinality[tt] = c
             continue
 
-        cont_sub = distances[e_exists[:, tt], :, tt][:, t_exists[:, tt]]**p
+        cont_sub = distances[e_exists[:, tt], :, tt][:, t_exists[:, tt]] ** p
         row_ind, col_ind = linear_sum_assignment(cont_sub)
         cost = cont_sub[row_ind, col_ind].sum()
 
         card_diff = np.abs(n - m)
-        inv_p = 1. / p
+        inv_p = 1.0 / p
         c_p = c**p
-        localization[tt] = (cost)**inv_p
-        cardinality[tt] = ((c_p / a) * card_diff)**inv_p
+        localization[tt] = (cost) ** inv_p
+        cardinality[tt] = ((c_p / a) * card_diff) ** inv_p
 
     ospa = localization + cardinality
 
-    return (ospa, localization, cardinality, core_method, c, p,
-            distances, e_exists, t_exists)
+    return (
+        ospa,
+        localization,
+        cardinality,
+        core_method,
+        c,
+        p,
+        a,
+        distances,
+        e_exists,
+        t_exists,
+    )
