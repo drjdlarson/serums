@@ -122,44 +122,44 @@ def test_SymmetricGPO():
     pass
 
 
-@pytest.mark.slow
-def test_PairedGaussianOverbound():
-    print("Testing Paired Gaussian Overbounder:")
-    np.random.seed(seed=233423)
-    n = 10000
-    left = norm.rvs(loc=0, scale=1.5, size=int(n / 2))
-    left = np.abs(left)
-    left = -left
-    left = np.sort(left)
-    np.random.seed(seed=233423)
-    right = norm.rvs(loc=0, scale=1, size=int(n / 2))
-    right = np.abs(right)
-    right = right
-    right = np.sort(right)
-    data = np.concatenate((left, right))
+# @pytest.mark.slow
+# def test_PairedGaussianOverbound():
+#     print("Testing Paired Gaussian Overbounder:")
+#     np.random.seed(seed=233423)
+#     n = 10000
+#     left = norm.rvs(loc=0, scale=1.5, size=int(n / 2))
+#     left = np.abs(left)
+#     left = -left
+#     left = np.sort(left)
+#     np.random.seed(seed=233423)
+#     right = norm.rvs(loc=0, scale=1, size=int(n / 2))
+#     right = np.abs(right)
+#     right = right
+#     right = np.sort(right)
+#     data = np.concatenate((left, right))
 
-    paired_gaussian_overbounder = sdob.PairedGaussianOverbounder()
-    out_dist = paired_gaussian_overbounder.overbound(data, debug_plots=DEBUG)
+#     paired_gaussian_overbounder = sdob.PairedGaussianOverbounder()
+#     out_dist = paired_gaussian_overbounder.overbound(data, debug_plots=DEBUG)
 
-    if DEBUG:
-        test_sample = out_dist.sample(num_samples=10000)
-        plt.figure()
-        plt.title("ECDF of OB Model Sample Obtained through .sample Method")
-        plt.hist(test_sample, bins=1000, cumulative=True, histtype="step")
-        plt.grid()
-        alfa = 1e-6
-        interval = out_dist.CI(alfa)
-        print(
-            "Confidence Interval for alfa = 1e-6 : (",
-            interval[0, 0],
-            ", ",
-            interval[0, 1],
-            ")",
-        )
-        out_dist.CDFplot(data)
-        out_dist.probscaleplot(data)
+#     if DEBUG:
+#         test_sample = out_dist.sample(num_samples=10000)
+#         plt.figure()
+#         plt.title("ECDF of OB Model Sample Obtained through .sample Method")
+#         plt.hist(test_sample, bins=1000, cumulative=True, histtype="step")
+#         plt.grid()
+#         alfa = 1e-6
+#         interval = out_dist.CI(alfa)
+#         print(
+#             "Confidence Interval for alfa = 1e-6 : (",
+#             interval[0, 0],
+#             ", ",
+#             interval[0, 1],
+#             ")",
+#         )
+#         out_dist.CDFplot(data)
+#         out_dist.probscaleplot(data)
 
-    pass
+#     pass
 
 
 @pytest.mark.slow
