@@ -1,26 +1,26 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data Fusion Examples &mdash; SERUMS 1.0.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
-    <link rel="canonical" href="https://drjdlarson.github.io/serums/usage/distribution_overbounder/fusion.html" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>Data Fusion Examples &mdash; SERUMS 1.0.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
-        <script src="../../_static/clipboard.min.js"></script>
-        <script src="../../_static/copybutton.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="canonical" href="https://drjdlarson.github.io/serums/usage/distribution_overbounder/fusion.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d55fa986"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=cbcfbdad"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -40,9 +40,6 @@
             SERUMS
               <img src="../../_static/logo.svg" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.0.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -56,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../_autosummary/serums.html">serums</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distances.html">distances</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_gospa.html">serums.distances.calculate_gospa</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_hellinger.html">serums.distances.calculate_hellinger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_mahalanobis.html">serums.distances.calculate_mahalanobis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_ospa.html">serums.distances.calculate_ospa</a></li>
@@ -98,12 +96,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModel.html">BaseMixtureModel</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModelIterator.html">BaseMixtureModelIterator</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseSingleModel.html">BaseSingleModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Bernoulli.html">Bernoulli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Cauchy.html">Cauchy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.ChiSquared.html">ChiSquared</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Gaussian.html">Gaussian</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianMixture.html">GaussianMixture</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianScaleMixture.html">GaussianScaleMixture</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GeneralizedPareto.html">GeneralizedPareto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.MultiBernoulliMixture.html">MultiBernoulliMixture</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussian.html">PairedGaussian</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussianPareto.html">PairedGaussianPareto</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.StudentsT.html">StudentsT</a></li>
@@ -166,7 +166,7 @@
            <div itemprop="articleBody">
              
   <section id="data-fusion-examples">
-<h1>Data Fusion Examples<a class="headerlink" href="#data-fusion-examples" title="Permalink to this heading"></a></h1>
+<h1>Data Fusion Examples<a class="headerlink" href="#data-fusion-examples" title="Link to this heading"></a></h1>
 <nav class="contents local" id="examples">
 <p class="topic-title">Examples</p>
 <ul class="simple">
@@ -176,7 +176,7 @@
 </ul>
 </nav>
 <section id="gaussian-multiplication">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Gaussian Multiplication</a><a class="headerlink" href="#gaussian-multiplication" title="Permalink to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Gaussian Multiplication</a><a class="headerlink" href="#gaussian-multiplication" title="Link to this heading"></a></h2>
 <p>The PDF of the multiplication of two zero mean normal PDFs follows a Normal Product distribution
 see <a class="reference external" href="https://mathworld.wolfram.com/NormalProductDistribution.html">here</a>.
 For random variables <span class="math notranslate nohighlight">\(X, Y\)</span> with zero mean and standard deviations <span class="math notranslate nohighlight">\(\sigma_X, \sigma_Y\)</span> the
@@ -231,7 +231,7 @@ product of their PDF follows the PDF given by</p>
 <img alt="../../_images/fusion_gaussian_multiplication.png" class="align-center" src="../../_images/fusion_gaussian_multiplication.png" />
 </section>
 <section id="general-polynomial">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">General Polynomial</a><a class="headerlink" href="#general-polynomial" title="Permalink to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">General Polynomial</a><a class="headerlink" href="#general-polynomial" title="Link to this heading"></a></h2>
 <p>Data fusion for a generic polynomial function can be performed as shown in the following script. Note Gaussians are used here
 as an example however, any child of <a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseSingleModel.html#serums.models.BaseSingleModel" title="serums.models.BaseSingleModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">serums.models.BaseSingleModel</span></code></a> can be used.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
@@ -262,7 +262,7 @@ as an example however, any child of <a class="reference internal" href="../../_a
 <img alt="../../_images/fusion_gaussian.png" class="align-center" src="../../_images/fusion_gaussian.png" />
 </section>
 <section id="gps-examples">
-<h2><a class="toc-backref" href="#id4" role="doc-backlink">GPS Examples</a><a class="headerlink" href="#gps-examples" title="Permalink to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">GPS Examples</a><a class="headerlink" href="#gps-examples" title="Link to this heading"></a></h2>
 <p>An example of a real world application is GPS pseudorange measurements. Here it is assumed the reciever and satellite positions are known but the measured pseudoranges follow a Gaussian distribution. This is based on <span id="id1">[<a class="reference internal" href="../../References.html#id13" title="Jordan D Larson, Demoz Gebre-Egziabher, and Jason H Rife. Improving navigation system availability using gaussian-pareto overbounding. In Proceedings of the 32nd International Technical Meeting of the Satellite Division of The Institute of Navigation (ION GNSS+ 2019), 3153–3161. 2019.">7</a>]</span>. Note, a Gaussian is used for simplicity but any child of <a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseSingleModel.html#serums.models.BaseSingleModel" title="serums.models.BaseSingleModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">serums.models.BaseSingleModel</span></code></a> may be used. The following script shows how to get samples from the fused distribution for output position and time delay. These outputs are often what is of interest instead of the measured pseudoranges. A linearized transformation from pseudoranges to positions is used.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
 <span class="linenos"> 2</span>    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>

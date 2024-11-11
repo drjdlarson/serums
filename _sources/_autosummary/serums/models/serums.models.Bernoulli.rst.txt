@@ -1,0 +1,28 @@
+Bernoulli
+=========
+
+.. currentmodule:: serums.models
+
+.. autoclass:: Bernoulli
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~Bernoulli.__init__
+      ~Bernoulli.pdf
+      ~Bernoulli.sample
+   
+   
+
+   
+   
+   

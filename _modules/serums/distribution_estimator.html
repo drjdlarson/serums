@@ -1,24 +1,24 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>serums.distribution_estimator &mdash; SERUMS 1.0.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
-    <link rel="canonical" href="https://drjdlarson.github.io/serums/_modules/serums/distribution_estimator.html" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>serums.distribution_estimator &mdash; SERUMS 1.0.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
-        <script src="../../_static/clipboard.min.js"></script>
-        <script src="../../_static/copybutton.js"></script>
+    <link rel="canonical" href="https://drjdlarson.github.io/serums/_modules/serums/distribution_estimator.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d55fa986"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=cbcfbdad"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -36,9 +36,6 @@
             SERUMS
               <img src="../../_static/logo.svg" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.0.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,6 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../_autosummary/serums.html">serums</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/serums/serums.distances.html">distances</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_gospa.html">serums.distances.calculate_gospa</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_hellinger.html">serums.distances.calculate_hellinger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_mahalanobis.html">serums.distances.calculate_mahalanobis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/distances/serums.distances.calculate_ospa.html">serums.distances.calculate_ospa</a></li>
@@ -94,12 +92,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModel.html">BaseMixtureModel</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseMixtureModelIterator.html">BaseMixtureModelIterator</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.BaseSingleModel.html">BaseSingleModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Bernoulli.html">Bernoulli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Cauchy.html">Cauchy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.ChiSquared.html">ChiSquared</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.Gaussian.html">Gaussian</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianMixture.html">GaussianMixture</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GaussianScaleMixture.html">GaussianScaleMixture</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.GeneralizedPareto.html">GeneralizedPareto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.MultiBernoulliMixture.html">MultiBernoulliMixture</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussian.html">PairedGaussian</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.PairedGaussianPareto.html">PairedGaussianPareto</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/serums/models/serums.models.StudentsT.html">StudentsT</a></li>
@@ -202,7 +202,9 @@
     <span class="k">return</span> <span class="n">cost_function</span>
 
 
-<div class="viewcode-block" id="estimate_distribution_params"><a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.estimate_distribution_params.html#serums.distribution_estimator.estimate_distribution_params">[docs]</a><span class="k">def</span> <span class="nf">estimate_distribution_params</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="estimate_distribution_params">
+<a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.estimate_distribution_params.html#serums.distribution_estimator.estimate_distribution_params">[docs]</a>
+<span class="k">def</span> <span class="nf">estimate_distribution_params</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate distribution parameters from data.</span>
 
 <span class="sd">    Parameters</span>
@@ -315,7 +317,10 @@
     <span class="k">return</span> <span class="n">output</span></div>
 
 
-<div class="viewcode-block" id="grimshaw_MLE"><a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.grimshaw_MLE.html#serums.distribution_estimator.grimshaw_MLE">[docs]</a><span class="k">def</span> <span class="nf">grimshaw_MLE</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+
+<div class="viewcode-block" id="grimshaw_MLE">
+<a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.grimshaw_MLE.html#serums.distribution_estimator.grimshaw_MLE">[docs]</a>
+<span class="k">def</span> <span class="nf">grimshaw_MLE</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds estimates for GPD shape and scale using Grimshaw&#39;s MLE Procedure.</span>
 
 <span class="sd">    Notes</span>
@@ -563,7 +568,10 @@
     <span class="k">return</span> <span class="n">shape_gamma</span><span class="p">,</span> <span class="n">scale_beta</span><span class="p">,</span> <span class="n">gpd_covar</span></div>
 
 
-<div class="viewcode-block" id="genpareto_MOM_est"><a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_MOM_est.html#serums.distribution_estimator.genpareto_MOM_est">[docs]</a><span class="k">def</span> <span class="nf">genpareto_MOM_est</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+
+<div class="viewcode-block" id="genpareto_MOM_est">
+<a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_MOM_est.html#serums.distribution_estimator.genpareto_MOM_est">[docs]</a>
+<span class="k">def</span> <span class="nf">genpareto_MOM_est</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds estimates for GPD shape and scale using the method of moments.</span>
 
 <span class="sd">    Important: The covariance of these estimators is only shown to be</span>
@@ -615,7 +623,10 @@
     <span class="k">return</span> <span class="n">shape_gamma</span><span class="p">,</span> <span class="n">scale_beta</span><span class="p">,</span> <span class="n">gpd_covar</span></div>
 
 
-<div class="viewcode-block" id="genpareto_PWM_est"><a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_PWM_est.html#serums.distribution_estimator.genpareto_PWM_est">[docs]</a><span class="k">def</span> <span class="nf">genpareto_PWM_est</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+
+<div class="viewcode-block" id="genpareto_PWM_est">
+<a class="viewcode-back" href="../../_autosummary/serums/distribution_estimator/serums.distribution_estimator.genpareto_PWM_est.html#serums.distribution_estimator.genpareto_PWM_est">[docs]</a>
+<span class="k">def</span> <span class="nf">genpareto_PWM_est</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds estimates for GPD shape and scale using the PWM method.</span>
 
 <span class="sd">    Important: The covariance matrix calculated below is only valid if the</span>
@@ -670,6 +681,7 @@
     <span class="n">gpd_covar</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">mat11</span><span class="p">,</span> <span class="n">mat12</span><span class="p">],</span> <span class="p">[</span><span class="n">mat21</span><span class="p">,</span> <span class="n">mat22</span><span class="p">]])</span>
 
     <span class="k">return</span> <span class="n">shape_gamma</span><span class="p">,</span> <span class="n">scale_beta</span><span class="p">,</span> <span class="n">gpd_covar</span></div>
+
 </pre></div>
 
            </div>

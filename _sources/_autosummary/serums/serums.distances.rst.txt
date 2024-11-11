@@ -15,6 +15,7 @@ distances
       :toctree: distances
       :nosignatures:
    
+      calculate_gospa
       calculate_hellinger
       calculate_mahalanobis
       calculate_ospa

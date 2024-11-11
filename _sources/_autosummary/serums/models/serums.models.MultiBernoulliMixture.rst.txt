@@ -1,0 +1,37 @@
+MultiBernoulliMixture
+=====================
+
+.. currentmodule:: serums.models
+
+.. autoclass:: MultiBernoulliMixture
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~MultiBernoulliMixture.__init__
+      ~MultiBernoulliMixture.add_components
+      ~MultiBernoulliMixture.pdf
+      ~MultiBernoulliMixture.remove_components
+      ~MultiBernoulliMixture.sample
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MultiBernoulliMixture.densities
+      ~MultiBernoulliMixture.probs
+   
+   

@@ -1,26 +1,26 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GaussianScaleMixture &mdash; SERUMS 1.0.0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
-    <link rel="canonical" href="https://drjdlarson.github.io/serums/_autosummary/serums/models/serums.models.GaussianScaleMixture.html" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>GaussianScaleMixture &mdash; SERUMS 1.0.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
-        <script src="../../../_static/clipboard.min.js"></script>
-        <script src="../../../_static/copybutton.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="canonical" href="https://drjdlarson.github.io/serums/_autosummary/serums/models/serums.models.GaussianScaleMixture.html" />
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d55fa986"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=cbcfbdad"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -40,9 +40,6 @@
             SERUMS
               <img src="../../../_static/logo.svg" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.0.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -56,6 +53,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../../../api.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../../serums.html">serums</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../serums.distances.html">distances</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../distances/serums.distances.calculate_gospa.html">serums.distances.calculate_gospa</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../distances/serums.distances.calculate_hellinger.html">serums.distances.calculate_hellinger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../distances/serums.distances.calculate_mahalanobis.html">serums.distances.calculate_mahalanobis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../distances/serums.distances.calculate_ospa.html">serums.distances.calculate_ospa</a></li>
@@ -98,12 +96,14 @@
 <li class="toctree-l4"><a class="reference internal" href="serums.models.BaseMixtureModel.html">BaseMixtureModel</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.BaseMixtureModelIterator.html">BaseMixtureModelIterator</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.BaseSingleModel.html">BaseSingleModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="serums.models.Bernoulli.html">Bernoulli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.Cauchy.html">Cauchy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.ChiSquared.html">ChiSquared</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.Gaussian.html">Gaussian</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.GaussianMixture.html">GaussianMixture</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">GaussianScaleMixture</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.GeneralizedPareto.html">GeneralizedPareto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="serums.models.MultiBernoulliMixture.html">MultiBernoulliMixture</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.PairedGaussian.html">PairedGaussian</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.PairedGaussianPareto.html">PairedGaussianPareto</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serums.models.StudentsT.html">StudentsT</a></li>
@@ -168,10 +168,10 @@
            <div itemprop="articleBody">
              
   <section id="gaussianscalemixture">
-<h1>GaussianScaleMixture<a class="headerlink" href="#gaussianscalemixture" title="Permalink to this heading"></a></h1>
+<h1>GaussianScaleMixture<a class="headerlink" href="#gaussianscalemixture" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="serums.models.GaussianScaleMixture">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GaussianScaleMixture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gsm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees_of_freedom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/serums/models.html#GaussianScaleMixture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#serums.models.GaussianScaleMixture" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GaussianScaleMixture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gsm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees_of_freedom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/serums/models.html#GaussianScaleMixture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#serums.models.GaussianScaleMixture" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="serums.models.BaseSingleModel.html#serums.models.BaseSingleModel" title="serums.models.BaseSingleModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSingleModel</span></code></a></p>
 <p>Helper class for defining Gaussian Scale Mixture objects.</p>
 <div class="admonition note">
@@ -184,13 +184,13 @@ another positive random variable known as the generating variate, <span class="m
 <p>where <span class="math notranslate nohighlight">\(\overset{d}{=}\)</span> means equal in distribution and <span class="math notranslate nohighlight">\(x\)</span>
 follows a GSM distribution (in general, a heavy tailed distribution).
 This formulation is based on
-<span id="id1">[<a class="reference internal" href="../../../References.html#id2" title="Jordi Vila-Valls, Pau Closas, Carles Fernández-Prades, and Juan A Fernandez-Rubio. Nonlinear bayesian filtering in the gaussian scale mixture context. In 2012 Proceedings of the 20th European Signal Processing Conference (EUSIPCO), 529–533. IEEE, 2012.">11</a>]</span>,
-<span id="id2">[<a class="reference internal" href="../../../References.html#id3" title="Martin J Wainwright and Eero P Simoncelli. Scale mixtures of gaussians and the statistics of natural images. In Nips, volume 12, 855–861. 1999.">12</a>]</span>, and
+<span id="id1">[<a class="reference internal" href="../../../References.html#id2" title="Jordi Vila-Valls, Pau Closas, Carles Fernández-Prades, and Juan A Fernandez-Rubio. Nonlinear bayesian filtering in the gaussian scale mixture context. In 2012 Proceedings of the 20th European Signal Processing Conference (EUSIPCO), 529–533. IEEE, 2012.">12</a>]</span>,
+<span id="id2">[<a class="reference internal" href="../../../References.html#id3" title="Martin J Wainwright and Eero P Simoncelli. Scale mixtures of gaussians and the statistics of natural images. In Nips, volume 12, 855–861. 1999.">13</a>]</span>, and
 <span id="id3">[<a class="reference internal" href="../../../References.html#id4" title="Ercan E. Kuruoğlu, Christophe Molina, and William J. Fitzgerald. Approximation of \ensuremath \alpha -stable probability densities using finite gaussian mixtures. In 9th European Signal Processing Conference (EUSIPCO 1998), 1-4. 1998.">5</a>]</span>.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="serums.models.GaussianScaleMixture.type">
-<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.type" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.type" title="Link to this definition"></a></dt>
 <dd><p>Type of the distribution to represent as a GSM.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -201,7 +201,7 @@ This formulation is based on
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="serums.models.GaussianScaleMixture.location_range">
-<span class="sig-name descname"><span class="pre">location_range</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.location_range" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">location_range</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.location_range" title="Link to this definition"></a></dt>
 <dd><p>Minimum and maximum values for the location parameter. Useful if being
 fed to a filter for estimating the location parameter. Each element must
 match the type of the <a class="reference internal" href="serums.models.BaseSingleModel.html#serums.models.BaseSingleModel.location" title="serums.models.BaseSingleModel.location"><code class="xref py py-attr docutils literal notranslate"><span class="pre">BaseSingleModel.location</span></code></a> attribute.</p>
@@ -214,7 +214,7 @@ match the type of the <a class="reference internal" href="serums.models.BaseSing
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="serums.models.GaussianScaleMixture.scale_range">
-<span class="sig-name descname"><span class="pre">scale_range</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.scale_range" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scale_range</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.scale_range" title="Link to this definition"></a></dt>
 <dd><p>Minimum and maximum values for the scale parameter. Useful if being
 fed to a filter for estimating the scale parameter. Each element must
 match the type of the <a class="reference internal" href="serums.models.BaseSingleModel.html#serums.models.BaseSingleModel.scale" title="serums.models.BaseSingleModel.scale"><code class="xref py py-attr docutils literal notranslate"><span class="pre">BaseSingleModel.scale</span></code></a> attribute. The default is None.</p>
@@ -227,7 +227,7 @@ match the type of the <a class="reference internal" href="serums.models.BaseSing
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="serums.models.GaussianScaleMixture.df_range">
-<span class="sig-name descname"><span class="pre">df_range</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.df_range" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">df_range</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.df_range" title="Link to this definition"></a></dt>
 <dd><p>Minimum and maximum values for the degree of freedom parameter.
 Useful if being fed to a filter for estimating the degree of freedom
 parameter. Each element must be a float. The default is None.</p>
@@ -240,7 +240,7 @@ parameter. Each element must be a float. The default is None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="serums.models.GaussianScaleMixture.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gsm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees_of_freedom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/serums/models.html#GaussianScaleMixture.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#serums.models.GaussianScaleMixture.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gsm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees_of_freedom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/serums/models.html#GaussianScaleMixture.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#serums.models.GaussianScaleMixture.__init__" title="Link to this definition"></a></dt>
 <dd><p>Initialize a GSM Object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -292,7 +292,7 @@ parameter. Each element must be a float. The default is None.</p></li>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="serums.models.GaussianScaleMixture.pdf">
-<span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#serums.models.GaussianScaleMixture.pdf" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#serums.models.GaussianScaleMixture.pdf" title="Link to this definition"></a></dt>
 <dd><p>Calculate the PDF value at the given point.</p>
 <p>This should be implemented by the child class.</p>
 <dl class="field-list simple">
@@ -310,7 +310,7 @@ parameter. Each element must be a float. The default is None.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="serums.models.GaussianScaleMixture.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/serums/models.html#GaussianScaleMixture.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#serums.models.GaussianScaleMixture.sample" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/serums/models.html#GaussianScaleMixture.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#serums.models.GaussianScaleMixture.sample" title="Link to this definition"></a></dt>
 <dd><p>Draw a sample from the specified GSM type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -328,7 +328,7 @@ default is used. The default is None.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="serums.models.GaussianScaleMixture.degrees_of_freedom">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">degrees_of_freedom</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.degrees_of_freedom" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">degrees_of_freedom</span></span><a class="headerlink" href="#serums.models.GaussianScaleMixture.degrees_of_freedom" title="Link to this definition"></a></dt>
 <dd><p>Degrees of freedom parameter of the distribution being represented as a GSM.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>

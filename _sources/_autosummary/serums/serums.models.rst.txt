@@ -23,12 +23,14 @@ models
       BaseMixtureModel
       BaseMixtureModelIterator
       BaseSingleModel
+      Bernoulli
       Cauchy
       ChiSquared
       Gaussian
       GaussianMixture
       GaussianScaleMixture
       GeneralizedPareto
+      MultiBernoulliMixture
       PairedGaussian
       PairedGaussianPareto
       StudentsT
